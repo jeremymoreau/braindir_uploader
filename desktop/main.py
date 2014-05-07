@@ -1,7 +1,6 @@
 import paramiko
 from scp import SCPClient
 import os
-from distutils import dir_util
 import tarfile
 
 ##### General variables
@@ -37,13 +36,36 @@ ssh.load_host_keys(hostkey_file)
 
 
 ##### tar and gzip the dir_to_upload / extract .tar.gz archive
+# functions and counter for progress bar
+bytes_completed = 0
+
+def get_size(dir_path):
+	"""get the size of dir at dir_path recursively"""
+	total_size = 0
+	for dirpath, dirnames, filenames in os.walk(dir_path):
+		for f in filenames:
+			fp = os.path.join(dirpath, f)
+			total_size += os.path.getsize(fp)
+	return total_size
+
+def compress_progress(TarInfo):
+	"""get the size of the file currently being compressed"""
+	global bytes_completed
+	bytes_completed += TarInfo.size
+	print(bytes_completed)
+	return TarInfo
+
+
 def compress(dir_path):
-	"copies dir at dir_path to ./files/ and adds dir to a tar.gz archive"
+	"""adds dir at dir_path to tmp_archive.tar.gz in ./files/"""
+	# get basename of the directory to upload
 	name_of_dir = os.path.basename(dir_path)
 	
-	dir_util.copy_tree(dir_path, os.path.join(local_path,'files','tmp_upload_dir'))
-	tar = tarfile.open(os.path.join(local_path,'files','tmp_archive_to_upload.tar.gz'),'w:gz')
-	tar.add(os.path.join(local_path,'files','tmp_upload_dir'), arcname = name_of_dir)
+	# create empty archive in the ./files/ directory
+	tar = tarfile.open(os.path.join(local_path,'files','tmp_archive.tar.gz'),'w:gz')
+	
+	# add directory at dir_path to the empty archive
+	tar.add(dir_path, arcname = name_of_dir, filter = compress_progress)
 	tar.close()
 	
 
@@ -55,4 +77,5 @@ def compress(dir_path):
 
 
 ##### Testing
+print(get_size(dir_to_upload))
 compress(dir_to_upload)
