@@ -37,7 +37,6 @@ ssh.load_host_keys(hostkey_file)
 
 ##### tar and gzip the dir_to_upload / extract .tar.gz archive
 # functions and counter for progress bar
-bytes_completed = 0
 
 def get_size(dir_path):
 	"""get the size of dir at dir_path recursively"""
@@ -48,24 +47,32 @@ def get_size(dir_path):
 			total_size += os.path.getsize(fp)
 	return total_size
 
-def compress_progress(TarInfo):
-	"""get the size of the file currently being compressed"""
-	global bytes_completed
-	bytes_completed += TarInfo.size
-	print(bytes_completed)
-	return TarInfo
-
-
 def compress(dir_path):
-	"""adds dir at dir_path to tmp_archive.tar.gz in ./files/"""
-	# get basename of the directory to upload
-	name_of_dir = os.path.basename(dir_path)
+	"""adds dir at dir_path to tmp_archive.tar.gz in ./files/ and tracks operation progress"""
+	# get basename of the directory to compress
+	root_path = os.path.basename(dir_path)
+	
+	# set progress counter to 0
+	progress_counter = 0
 	
 	# create empty archive in the ./files/ directory
 	tar = tarfile.open(os.path.join(local_path,'files','tmp_archive.tar.gz'),'w:gz')
 	
-	# add directory at dir_path to the empty archive
-	tar.add(dir_path, arcname = name_of_dir, filter = compress_progress)
+	# recursively add all files in the dir at dir_path to the empty archive
+	# also track progress (which is why os.walk and convoluted code is used to loop over files)
+	for dirpath, dirnames, filenames in os.walk(dir_path):
+		for f in filenames:
+			file_path = os.path.join(dirpath, f)
+
+			path_split = file_path.partition(root_path)
+			name_for_file = path_split[1] + path_split[2]
+
+			tar.addfile(tarfile.TarInfo(name_for_file), file(file_path))
+			
+			
+			# track progress of compression (!!! update the print to GUI display later !!!)	
+			progress_counter += os.path.getsize(file_path)
+			print(progress_counter)
 	tar.close()
 	
 
@@ -78,4 +85,5 @@ def compress(dir_path):
 
 ##### Testing
 print(get_size(dir_to_upload))
+
 compress(dir_to_upload)
