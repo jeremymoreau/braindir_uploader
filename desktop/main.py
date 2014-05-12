@@ -12,7 +12,7 @@ local_path = os.path.realpath('.')
 dir_to_upload = '/Users/jeremymoreau/Desktop/testdir'
 pass_encrypt = 'ipsum'
 
-# download
+# download 
 id_of_dir_to_download = 'ipsum'
 pass_decrypt = 'ipsum'
 path_for_download = '/Users/jeremymoreau/Desktop/'
@@ -53,6 +53,9 @@ def compress(dir_path):
 	# get basename of the directory to compress
 	root_path = os.path.basename(dir_path)
 	
+	# get total size of directory to compress
+	dir_total_size = get_size(dir_path)
+	
 	# set progress counter to 0
 	compress_progress_counter = 0
 	
@@ -64,7 +67,7 @@ def compress(dir_path):
 	for dirpath, dirnames, filenames in os.walk(dir_path):
 		for f in filenames:
 			file_path = os.path.join(dirpath, f)
-
+	
 			# get the relative path of the file to add
 			path_split = file_path.partition(root_path)
 			name_for_file = path_split[1] + path_split[2]
@@ -76,36 +79,30 @@ def compress(dir_path):
 			# add file to archive
 			tar.addfile(file_tarinfo, file(file_path))
 			
-			# get total size of directory to compress
-			dir_total_size = get_size(dir_path)
-			#print(dir_total_size)
-			
-			# track progress of compression	
+			# track progress of compression
 			compress_progress_counter += os.path.getsize(file_path)
-			#print(compress_progress_counter) # !!! update the print to GUI display later !!!
-	
+			compress_progress = (compress_progress_counter * 100) / dir_total_size
+			print('compression progress: ' + str(compress_progress)) # !!! update the print to GUI display later !!!
+			
 	tar.close()
+
 	
-def extract(archive_path):
-	"""extract the archive at archive_path and save the extracted files at path_to_save"""
-	# archive_size = os.path.getsize(archive_path)
+def extract(archive_path, save_path):
+	"""extract the archive at archive_path and save the extracted files at save_path"""
+	# get total size of archive
+	total_size = os.path.getsize(archive_path)
 	
-	# open tar.gz archive
-	tar = tarfile.open(os.path.join(local_path,'files','tmp_archive.tar.gz'),'r:gz')
+	# monitor extraction progress
+	class MyFileObj(file):
+		def read(self, size):
+			extract_progress = (self.tell() * 100) / total_size
+			print('extraction progress: ' + str(extract_progress)) # !!! update the print to GUI display later !!!
+			return file.read(self, size)
 	
-	# get total size of uncompressed files
-	size_of_extracted_archive = 0
-	for f in tar.getmembers():
-		size_of_extracted_archive += f.size
-	print(size_of_extracted_archive)
+	tar = tarfile.open(fileobj=MyFileObj(archive_path))
 	
-	# track progress of extraction
-	extract_progress_counter = 0
-	# while (extract_progress_counter != size_of_extracted_archive)
-	#	extract_progress_counter = 
-	
-	# extract all files 
-	tar.extractall('./files/')
+	# extract files at save_path
+	tar.extractall(save_path)
 	tar.close()
 		
 
@@ -119,8 +116,7 @@ def extract(archive_path):
 ##### Testing
 
 ## compress
-print(get_size(dir_to_upload))
 compress(dir_to_upload)
 
 ## extract
-extract(os.path.join(local_path,'files','tmp_archive.tar.gz'))
+extract(os.path.join(local_path,'files','tmp_archive.tar.gz'), os.path.join(local_path,'files'))
