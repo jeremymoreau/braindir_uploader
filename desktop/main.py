@@ -150,22 +150,21 @@ def cat_files(indir, outfile, buffer = 10**6):
 	infiles = [os.path.join(indir, x) for x in os.listdir(indir)]
 	
 	# track progress
-	total_files = len(infiles)
-	current_file = 0 
+	total_size = sum(os.path.getsize(x) for x in infiles)
+	current_bytecount = 0
 	
 	with open(outfile, 'w+b') as tgt:
 		for infile in sorted(infiles):
-			
-			# track progress
-			current_file += 1
-			cat_progress = (current_file * 100) / total_files
-			print('concatenation progress: ' + str(cat_progress)) # !!! update the print to GUI display later !!!
-			
 			with open(infile, 'r+b') as src:
 				while True:
 					data = src.read(buffer)
 					if data:
 						tgt.write(data)
+						
+						# track progress
+						current_bytecount += buffer
+						cat_progress = (current_bytecount * 100) / total_size
+						print('concatenation progress: ' + str(cat_progress)) # !!! update the print to GUI display later !!!
 					else:
 						break
 
