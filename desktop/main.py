@@ -154,7 +154,8 @@ def cat_files(indir, outfile, buffer = 10**6):
 	outfile: the file that will be created
 	buffer: buffer size in bytes
 	"""
-	infiles = [os.path.join(indir, x) for x in os.listdir(indir)]
+	# get list of files in indir, excluding hidden files starting with a dot
+	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not x.startswith('.')]
 	
 	# track progress
 	total_size = sum(os.path.getsize(x) for x in infiles)
@@ -185,13 +186,13 @@ def cat_files(indir, outfile, buffer = 10**6):
 ##### Testing
 
 ## compress
-compress(dir_to_upload)
+#compress(dir_to_upload)
 
 ## extract
 #extract(os.path.join(local_path,'files','tmp_archive.tar.gz'), os.path.join(local_path,'files'))
 
 # split
-#split_file(os.path.join(local_path,'files','testfile.tar.gz'), os.path.join(local_path,'files','split','part'))
+#split_file(os.path.join(local_path,'files','tmp_archive.tar.gz'), os.path.join(local_path,'files','split','part'))
 
 # concatenate
-#cat_files(os.path.join(local_path,'files','split'), os.path.join(local_path,'files','test.tar.gz'))
+#cat_files(os.path.join(local_path,'files','split'), os.path.join(local_path,'files','tmp_archive.tar.gz'))
