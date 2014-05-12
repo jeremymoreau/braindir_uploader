@@ -44,7 +44,10 @@ def get_size(dir_path):
 	for dirpath, dirnames, filenames in os.walk(dir_path):
 		for f in filenames:
 			fp = os.path.join(dirpath, f)
-			total_size += os.path.getsize(fp)
+			
+			# skip over broken symlinks
+			if os.path.exists(fp):
+				total_size += os.path.getsize(fp)
 	return total_size
 
 
@@ -68,6 +71,10 @@ def compress(dir_path):
 	for dirpath, dirnames, filenames in os.walk(dir_path):
 		for f in filenames:
 			file_path = os.path.join(dirpath, f)
+			
+			# skip over broken symlinks
+			if not os.path.exists(file_path):
+				continue
 	
 			# get the relative path of the file to add
 			path_split = file_path.partition(root_path)
@@ -178,7 +185,7 @@ def cat_files(indir, outfile, buffer = 10**6):
 ##### Testing
 
 ## compress
-#compress(dir_to_upload)
+compress(dir_to_upload)
 
 ## extract
 #extract(os.path.join(local_path,'files','tmp_archive.tar.gz'), os.path.join(local_path,'files'))
@@ -187,4 +194,4 @@ def cat_files(indir, outfile, buffer = 10**6):
 #split_file(os.path.join(local_path,'files','testfile.tar.gz'), os.path.join(local_path,'files','split','part'))
 
 # concatenate
-cat_files(os.path.join(local_path,'files','split'), os.path.join(local_path,'files','test.tar.gz'))
+#cat_files(os.path.join(local_path,'files','split'), os.path.join(local_path,'files','test.tar.gz'))
