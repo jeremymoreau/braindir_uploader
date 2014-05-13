@@ -3,6 +3,7 @@ from scp import SCPClient
 import os
 import tarfile
 import Crypto
+from time import time
 
 ##### General variables
 local_path = os.path.realpath('.')
@@ -114,12 +115,12 @@ def extract(archive_path, save_path):
 
 
 ##### Split / concatenate files
-def split_file(input_file, prefix, max_size = 5 * (10**7), buffer = 10**6):
+def split_file(input_file, prefix, max_size = 5 * (10**7), buffer_size = 10**6):
 	"""
 	file: the input file
 	prefix: prefix of the output files that will be created
 	max_size: maximum size of each created file in bytes
-	buffer: buffer size in bytes
+	buffer_size: buffer_size size in bytes
 	
 	Returns the number of parts created.
 	"""
@@ -133,13 +134,13 @@ def split_file(input_file, prefix, max_size = 5 * (10**7), buffer = 10**6):
 			with open(prefix + '.%s' % suffix, 'w+b') as tgt:
 				written = 0
 				while written <= max_size:
-					data = src.read(buffer)
+					data = src.read(buffer_size)
 					if data:
 						tgt.write(data)
-						written += buffer
+						written += buffer_size
 						
 						# track progress
-						current_bytecount += buffer
+						current_bytecount += buffer_size
 						split_progress = (current_bytecount * 100) / total_file_size
 						print('split progress: ' + str(split_progress)) # !!! update the print to GUI display later !!!
 						
@@ -147,11 +148,11 @@ def split_file(input_file, prefix, max_size = 5 * (10**7), buffer = 10**6):
 						return suffix
 				suffix += 1
 
-def cat_files(indir, outfile, buffer = 10**6):
+def cat_files(indir, outfile, buffer_size = 10**6):
 	"""
 	indir: directory containing files to concatenate
 	outfile: the file that will be created
-	buffer: buffer size in bytes
+	buffer_size: buffer_size size in bytes
 	"""
 	# get list of files in indir, excluding hidden files starting with a dot
 	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not x.startswith('.')]
@@ -164,23 +165,24 @@ def cat_files(indir, outfile, buffer = 10**6):
 		for infile in sorted(infiles):
 			with open(infile, 'r+b') as src:
 				while True:
-					data = src.read(buffer)
+					data = src.read(buffer_size)
 					if data:
 						tgt.write(data)
 						
 						# track progress
-						current_bytecount += buffer
+						current_bytecount += buffer_size
 						cat_progress = (current_bytecount * 100) / total_size
 						print('concatenation progress: ' + str(cat_progress)) # !!! update the print to GUI display later !!!
 					else:
 						break
 
 
-##### Generate MD5 hash of file to use as unique ID for files
+##### Generate SHA256 hash of infile and appends time() to generate a unique ID (BDID) for files
 def generate_ID(infile):
 	
+	# generate SHA256 of file
 	buffer_size = 10**6
-	hasher = Crypto.Hash.MD5.new()
+	hasher = Crypto.Hash.SHA256.new()
 	
 	# track progress
 	total_file_size = os.path.getsize(infile)
@@ -196,7 +198,11 @@ def generate_ID(infile):
 			current_bytecount += buffer_size
 			id_progress = (current_bytecount * 100) / total_file_size
 			print('Hashing progress: ' + str(id_progress)) # !!! update the print to GUI display later !!!
-	return hasher.hexdigest()
+			
+	# create BDID
+	BDID = hasher.hexdigest() + '_' + str(int(time()))
+	
+	return BDID
 
 ##### Encrypt the dir_to_upload with password_for_dir / decrypt
 
@@ -211,6 +217,7 @@ def generate_ID(infile):
 #compress(dir_to_upload)
 
 ## generate unique ID
+#print(int(time()))
 #print(generate_ID(os.path.join(local_path,'files','tmp_archive.tar.gz')))
 
 ## split
