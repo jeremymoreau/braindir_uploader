@@ -2,8 +2,7 @@ import paramiko
 from scp import SCPClient
 import os
 import tarfile
-from time import sleep
-from sys import getsizeof
+import Crypto
 
 ##### General variables
 local_path = os.path.realpath('.')
@@ -176,6 +175,29 @@ def cat_files(indir, outfile, buffer = 10**6):
 					else:
 						break
 
+
+##### Generate MD5 hash of file to use as unique ID for files
+def generate_ID(infile):
+	
+	buffer_size = 10**6
+	hasher = Crypto.Hash.MD5.new()
+	
+	# track progress
+	total_file_size = os.path.getsize(infile)
+	current_bytecount = 0
+	
+	with open(infile, 'r+b') as f:
+		data = f.read(buffer_size)
+		while len(data) > 0:
+			hasher.update(data)
+			data = f.read(buffer_size)
+			
+			# track progress
+			current_bytecount += buffer_size
+			id_progress = (current_bytecount * 100) / total_file_size
+			print('Hashing progress: ' + str(id_progress)) # !!! update the print to GUI display later !!!
+	return hasher.hexdigest()
+
 ##### Encrypt the dir_to_upload with password_for_dir / decrypt
 
 
@@ -188,11 +210,18 @@ def cat_files(indir, outfile, buffer = 10**6):
 ## compress
 #compress(dir_to_upload)
 
-## extract
-#extract(os.path.join(local_path,'files','tmp_archive.tar.gz'), os.path.join(local_path,'files'))
+## generate unique ID
+#print(generate_ID(os.path.join(local_path,'files','tmp_archive.tar.gz')))
 
-# split
+## split
 #split_file(os.path.join(local_path,'files','tmp_archive.tar.gz'), os.path.join(local_path,'files','split','part'))
 
-# concatenate
+## encrypt
+
+## decrypt
+
+## concatenate
 #cat_files(os.path.join(local_path,'files','split'), os.path.join(local_path,'files','tmp_archive.tar.gz'))
+
+## extract
+#extract(os.path.join(local_path,'files','tmp_archive.tar.gz'), os.path.join(local_path,'files'))
