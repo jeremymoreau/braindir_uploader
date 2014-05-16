@@ -118,7 +118,7 @@ def extract(archive_path, save_path):
 
 
 ##### Split / concatenate files
-def split_file(input_file, prefix, max_size = 5 * (10**7), buffer_size = 10**6):
+def split_file(input_file, prefix, max_size = 49000000, buffer_size = 1000000):
 	"""
 	file: the input file
 	prefix: prefix of the output files that will be created
@@ -148,10 +148,11 @@ def split_file(input_file, prefix, max_size = 5 * (10**7), buffer_size = 10**6):
 						print('split progress: ' + str(split_progress)) # !!! update the print to GUI display later !!!
 						
 					else:
+						os.remove(input_file)
 						return suffix
 				suffix += 1
 
-def cat_files(indir, outfile, buffer_size = 10**6):
+def cat_files(indir, outfile, buffer_size = 1000000):
 	"""
 	indir: directory containing files to concatenate
 	outfile: the file that will be created
@@ -178,6 +179,7 @@ def cat_files(indir, outfile, buffer_size = 10**6):
 						print('concatenation progress: ' + str(cat_progress)) # !!! update the print to GUI display later !!!
 					else:
 						break
+			os.remove(infile)
 
 
 ##### Generate SHA256 hash of infile and appends time.time() to generate a unique ID (BDID) for files
@@ -302,7 +304,7 @@ def decrypt(indir, password):
 #decrypt(os.path.join(local_path,'files','split'), 'this is not a good password')
 
 ## concatenate
-#cat_files(os.path.join(local_path,'files','split'), os.path.join(local_path,'files','tmp_archive.tar.gz'))
+cat_files(os.path.join(local_path,'files','split'), os.path.join(local_path,'files','tmp_archive.tar.gz'))
 
 ## extract
 #extract(os.path.join(local_path,'files','tmp_archive.tar.gz'), os.path.join(local_path,'files'))
