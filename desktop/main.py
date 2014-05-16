@@ -2,8 +2,11 @@ import paramiko
 from scp import SCPClient
 import os
 import tarfile
-import Crypto
-from time import time
+import time
+from Crypto import Hash
+from Crypto.Protocol.KDF import PBKDF2
+from Crypto.Cipher import AES
+import struct
 
 ##### General variables
 local_path = os.path.realpath('.')
@@ -177,12 +180,12 @@ def cat_files(indir, outfile, buffer_size = 10**6):
 						break
 
 
-##### Generate SHA256 hash of infile and appends time() to generate a unique ID (BDID) for files
+##### Generate SHA256 hash of infile and appends time.time() to generate a unique ID (BDID) for files
 def generate_ID(infile):
 	
 	# generate SHA256 of file
 	buffer_size = 10**6
-	hasher = Crypto.Hash.SHA256.new()
+	hasher = Hash.SHA256.new()
 	
 	# track progress
 	total_file_size = os.path.getsize(infile)
@@ -200,13 +203,82 @@ def generate_ID(infile):
 			print('Hashing progress: ' + str(id_progress)) # !!! update the print to GUI display later !!!
 			
 	# create BDID
-	BDID = hasher.hexdigest() + '_' + str(int(time()))
+	BDID = hasher.hexdigest() + '_' + str(int(time.time()))
 	
 	return BDID
 
 ##### Encrypt the dir_to_upload with password_for_dir / decrypt
-
-
+def encrypt(indir, password):
+	
+	# generate key from password
+	print('Generating key. . . (this should take about 10 seconds)') # !!! update the print to GUI display later !!!
+	iterations = 100 # !!! change this values to 100000 later !!!
+	key = ''
+	salt = os.urandom(32)
+	key = PBKDF2(password, salt, dkLen = 32, count = iterations)
+	
+	
+	# get list of files in indir, excluding hidden files starting with a dot
+	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not x.startswith('.')]
+	
+	# encrypt files in indir using key and save them in the same directory
+	chunksize = 64 * 1024
+	for f in infiles:
+		filesize = os.path.getsize(f)
+		with open(f, 'r+b') as plaintext_file:
+			out_filename = f + '.enc'
+			iv = os.urandom(16)
+			print(out_filename)
+			encryptor = AES.new(key, AES.MODE_CBC, iv)
+			
+			with open(out_filename, 'w+b') as ciphertext_file:
+				ciphertext_file.write(struct.pack('<Q', filesize))
+				ciphertext_file.write(iv)
+				print(iv.encode('hex'))
+				print(salt.encode('hex'))
+				print(key.encode('hex'))
+				
+				while True:
+					chunk = plaintext_file.read(chunksize)
+					if len(chunk) == 0:
+						break
+					elif len(chunk) % 16 != 0:
+						chunk += ' ' * (16 - (len(chunk) % 16))
+					
+					ciphertext_file.write(encryptor.encrypt(chunk))
+		os.remove(f)
+					
+	# save salt in file
+	salt_file = open(os.path.join(indir,'.salt'), 'w+b')
+	salt_file.write(salt)
+					
+def decrypt(indir, password):
+	# get list of files in indir, excluding hidden files starting with a dot
+	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not x.startswith('.')]
+	
+	# obtain key from password
+	iterations = 100 # !!! change this values to 100000 later !!!
+	salt = open(os.path.join(indir,'.salt'), 'r+b').read()
+	key = PBKDF2(password, salt, dkLen = 32, count = iterations)
+	print(key.encode('hex'))	
+	
+	# decrypt files in indir using key and save them in the same directory
+	chunksize = 64 * 1024
+	for f in infiles:
+		out_filename = os.path.splitext(f)[0]
+		with open(f, 'r+b') as ciphertext_file:
+			origsize = struct.unpack('<Q', ciphertext_file.read(struct.calcsize('Q')))[0]
+			iv = ciphertext_file.read(16)
+			decryptor = AES.new(key, AES.MODE_CBC, iv)
+			
+			with open(out_filename, 'w+b') as plaintext_file:
+				while True:
+					chunk = ciphertext_file.read(chunksize)
+					if len(chunk) == 0:
+						break
+					plaintext_file.write(decryptor.decrypt(chunk))
+				plaintext_file.truncate(origsize)
+		os.remove(f)
 
 
 
@@ -224,8 +296,10 @@ def generate_ID(infile):
 #split_file(os.path.join(local_path,'files','tmp_archive.tar.gz'), os.path.join(local_path,'files','split','part'))
 
 ## encrypt
+#encrypt(os.path.join(local_path,'files','split'), 'this is not a good password')
 
 ## decrypt
+#decrypt(os.path.join(local_path,'files','split'), 'this is not a good password')
 
 ## concatenate
 #cat_files(os.path.join(local_path,'files','split'), os.path.join(local_path,'files','tmp_archive.tar.gz'))
