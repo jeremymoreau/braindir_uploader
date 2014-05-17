@@ -223,6 +223,10 @@ def encrypt(indir, password):
 	# get list of files in indir, excluding hidden files starting with a dot
 	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not x.startswith('.')]
 	
+	# track progress
+	total_file_count = len(infiles)
+	encrypt_progress_counter = 0
+	
 	# encrypt files in indir using key and save them in the same directory
 	chunksize = 64 * 1024
 	for f in infiles:
@@ -248,6 +252,13 @@ def encrypt(indir, password):
 						chunk += ' ' * (16 - (len(chunk) % 16))
 					
 					ciphertext_file.write(encryptor.encrypt(chunk))
+					
+		# track progress
+		encrypt_progress_counter += 1
+		encrypt_progress = (encrypt_progress_counter * 100) / total_file_count
+		print('Encryption progress: ' + str(encrypt_progress)) # !!! update the print to GUI display later !!!
+		
+		# remove plaintext file
 		os.remove(f)
 					
 	# save salt in file
@@ -263,6 +274,10 @@ def decrypt(indir, password):
 	salt = open(os.path.join(indir,'.salt'), 'r+b').read()
 	key = PBKDF2(password, salt, dkLen = 32, count = iterations)
 	print(key.encode('hex'))	
+	
+	# track progress
+	total_file_count = len(infiles)
+	decrypt_progress_counter = 0
 	
 	# decrypt files in indir using key and save them in the same directory
 	chunksize = 64 * 1024
@@ -280,6 +295,13 @@ def decrypt(indir, password):
 						break
 					plaintext_file.write(decryptor.decrypt(chunk))
 				plaintext_file.truncate(origsize)
+		
+		# track progress
+		decrypt_progress_counter += 1
+		decrypt_progress = (decrypt_progress_counter * 100) / total_file_count
+		print('Decryption progress: ' + str(decrypt_progress)) # !!! update the print to GUI display later !!!
+		
+		# remove ciphertext file
 		os.remove(f)
 
 
@@ -304,7 +326,7 @@ def decrypt(indir, password):
 #decrypt(os.path.join(local_path,'files','split'), 'this is not a good password')
 
 ## concatenate
-cat_files(os.path.join(local_path,'files','split'), os.path.join(local_path,'files','tmp_archive.tar.gz'))
+#cat_files(os.path.join(local_path,'files','split'), os.path.join(local_path,'files','tmp_archive.tar.gz'))
 
 ## extract
 #extract(os.path.join(local_path,'files','tmp_archive.tar.gz'), os.path.join(local_path,'files'))
