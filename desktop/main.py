@@ -57,6 +57,11 @@ def get_size(dir_path):
 ##### tar and gzip the dir_to_upload / extract .tar.gz archive
 def compress(dir_path):
 	"""adds dir at dir_path to tmp_archive.tar.gz in ./files/ and tracks operation progress"""
+	# set progress_file to 0
+	progress_file = open(os.path.join(local_path,'files','.progress_file.txt'), 'w+b')
+	progress_file.write('0')
+	progress_file.close()
+	
 	# get basename of the directory to compress
 	root_path = os.path.basename(dir_path)
 	
@@ -93,7 +98,10 @@ def compress(dir_path):
 			# track progress of compression
 			compress_progress_counter += os.path.getsize(file_path)
 			compress_progress = (compress_progress_counter * 100) / dir_total_size
-			print('compression progress: ' + str(compress_progress)) # !!! update the print to GUI display later !!!
+			progress_file = open(os.path.join(local_path,'files','.progress_file.txt'), 'w+b')
+			progress_file.write(str(compress_progress))
+			progress_file.close()
+			#print('compression progress: ' + str(compress_progress)) # !!! update the print to GUI display later !!!
 			
 	tar.close()
 

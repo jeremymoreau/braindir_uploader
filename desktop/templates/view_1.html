@@ -11,13 +11,22 @@
   </head>
   
   <body>
-	<h1>Progress</h1>
+	 <form>
+		<div class="input-group">
+		  <span class="input-group-btn">
+			<button class="btn btn-default" type="button">Select</button>
+		  </span>
+		  <input type="text" class="form-control" name="file_to_upload_path">
+		</div><!-- /input-group -->
+		<button type="submit" class="btn btn-lg btn-default" id="upload_button">Upload</button>
+	</form>
+	
+	<h3>Progress</h3>
 	<div class="progress progress-striped active">
 	  <div class="progress-bar"  role="progressbar" style="width: 0%">
 		<span class="progress-bar-label">0%</span>
 	  </div>
 	</div>
-	<button type="button" class="btn btn-lg btn-default">Default</button>
 
 	<!-- jQuery  -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -31,15 +40,15 @@
 		{{ g.sijax.get_js()|safe }}
 	</script>
 	<script type="text/javascript">
-		// $(document).ready(function(){
-		// 	$('.progress-bar').setInterval(function(){
-		// 		Sijax.request('set_progress');	
-		// 	}, 1);
-		// });
 		$(document).ready(function(){
 			setInterval(function(){
-				Sijax.request('set_progress')
+				Sijax.request('set_progress');
 			}, 3000);
+		});
+		$(document).ready(function(){
+			$('#upload_button').click(function(){
+				Sijax.request('start_upload');
+			});
 		});
 	</script>
   </body>
