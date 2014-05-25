@@ -32,10 +32,10 @@ class SijaxHandler(object):
 		obj_response.html('.progress-bar-label',progress_bar_value)
 		
 	@staticmethod
-	def start_upload(obj_response):
-		t = threading.Thread(target=main.compress, args=(dir_to_upload,))
-		t.start()
-		#main.compress(dir_to_upload)
+	def start_upload(obj_response, file_to_upload_path):
+		print(file_to_upload_path)
+		#t = threading.Thread(target=main.compress, args=(dir_to_upload,))
+		#t.start()
 
 @flask_sijax.route(app, '/')
 def index():
