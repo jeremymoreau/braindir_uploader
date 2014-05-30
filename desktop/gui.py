@@ -68,8 +68,8 @@ class SijaxHandler(object):
 			
 		
 	@staticmethod
-	def start_upload(obj_response, dir_to_upload_path):
-		t = threading.Thread(target=main.upload_private, args=(dir_to_upload_path, 'this is not a good password',))
+	def start_upload(obj_response, dir_to_upload_path, passphrase):
+		t = threading.Thread(target=main.upload_private, args=(dir_to_upload_path, passphrase,))
 		t.start()
 
 @flask_sijax.route(app, '/')

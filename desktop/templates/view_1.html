@@ -12,12 +12,19 @@
   
   <body>
 	 <form id="upload_form" name="upload_form">
+		<!-- dir to upload -->
 		<div class="input-group">
 		  <span class="input-group-btn">
 			<button class="btn btn-default" type="button">Select</button>
 		  </span>
 		  <input type="text" class="form-control" id="dir_to_upload_path">
 		</div><!-- /input-group -->
+		
+		<!-- passphrase field -->
+		<h5>Passphrase</h5>
+		<input type="text" class="form-control" id="passphrase">
+		
+		<!-- upload button -->
 		<button type="submit" class="btn btn-lg btn-default" id="upload_button">Upload</button>
 	</form>
 	
@@ -104,7 +111,7 @@
 			}, 3000);
 			         
 			$('#upload_form').bind('submit', function() {
-				Sijax.request('start_upload', [$('#dir_to_upload_path').val()]);
+				Sijax.request('start_upload', [$('#dir_to_upload_path').val()], [$('#passphrase').val()]);
 			
 				//Prevent the form from being submitted
 				return false;
