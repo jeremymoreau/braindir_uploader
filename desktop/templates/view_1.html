@@ -16,17 +16,75 @@
 		  <span class="input-group-btn">
 			<button class="btn btn-default" type="button">Select</button>
 		  </span>
-		  <input type="text" class="form-control" id="file_to_upload_path">
+		  <input type="text" class="form-control" id="dir_to_upload_path">
 		</div><!-- /input-group -->
 		<button type="submit" class="btn btn-lg btn-default" id="upload_button">Upload</button>
 	</form>
 	
 	<h3>Progress</h3>
-	<div class="progress progress-striped active">
-	  <div class="progress-bar"  role="progressbar" style="width: 0%">
-		<span class="progress-bar-label">0%</span>
-	  </div>
+	<div id = "progress_state"></div>
+<!-- 	<div class="progress progress-striped active">
+		<div class="progress-bar progress-bar-primary" id ="pgb" style="width: 99%">
+			<span class="progress-bar-label" id="pgb-label">0%</span>
+	</div> -->
+	<div id="pgb-container" style="position: relative">
+		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 1">
+		<div class="progress progress-striped active">
+			<div class="progress-bar progress-bar-primary" id="pgb1" style="width: 0%">
+				<span class="progress-bar-label" id="pgb1-label"></span>
+			</div>
+		</div>
+		</div>
+		
+		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 2">
+		<div class="progress progress-striped active" style="background-color: transparent">
+			<div class="progress-bar progress-bar-info" id="pgb2" style="width: 0%">
+				<span class="progress-bar-label" id="pgb2-label"></span>
+			</div>
+		</div>
+		</div>
+
+		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 3">
+		<div class="progress progress-striped active" style="background-color: transparent">
+			<div class="progress-bar progress-bar-success" id="pgb3" style="width: 0%">
+				<span class="progress-bar-label" id="pgb3-label"></span>
+			</div>
+		</div>
+		</div>
+		
+		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 4">
+		<div class="progress progress-striped active" style="background-color: transparent">
+			<div class="progress-bar progress-bar-warning" id="pgb4" style="width: 0%">
+				<span class="progress-bar-label" id="pgb4-label"></span>
+			</div>
+		</div>
+		</div>
+
+		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 5">
+		<div class="progress progress-striped active" style="background-color: transparent">
+			<div class="progress-bar progress-bar-danger" id="pgb5" style="width: 0%">
+				<span class="progress-bar-label" id="pgb5-label"></span>
+			</div>
+		</div>
+		</div>	
 	</div>
+	<!-- <div class="progress progress-striped active">
+		  <div class="progress-bar progress-bar-primary" style="width: 50%">
+			<span class="progress-bar-label" id="blue_pgb-label">0%</span>
+		  </div>
+		  <div class="progress-bar progress-bar-warning" style="width: 20%">
+			<span class="progress-bar-label" id="orange_pgb-label">0%</span>
+		  </div>
+		  <div class="progress-bar progress-bar-info" style="width: 0%">
+			<span class="progress-bar-label" id="lightblue_pgb-label">0%</span>
+		  </div>
+		  <div class="progress-bar progress-bar-danger" style="width: 0%">
+			<span class="progress-bar-label" id="red_pgb-label">0%</span>
+		  </div>
+		  <div class="progress-bar progress-bar-success" style="width: 0%">
+			<span class="progress-bar-label" id="green_pgb-label">0%</span>
+		  </div>
+	</div> -->
 
 	<!-- jQuery  -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -41,16 +99,16 @@
 	</script>
 	<script type="text/javascript">
 		$(document).ready(function(){
-			// setInterval(function(){
-			// 	Sijax.request('set_progress');
-			// }, 3000);
+			setInterval(function(){
+				Sijax.request('set_progress');
+			}, 3000);
 			         
-		$('#upload_form').bind('submit', function() {
-			Sijax.request('start_upload', [$('#file_to_upload_path').val()]);
-		
-			//Prevent the form from being submitted
-			return false;
-		});
+			$('#upload_form').bind('submit', function() {
+				Sijax.request('start_upload', [$('#dir_to_upload_path').val()]);
+			
+				//Prevent the form from being submitted
+				return false;
+			});
 		});
 		// $(document).ready(function(){
 		// 	$('#upload_button').click(function(){

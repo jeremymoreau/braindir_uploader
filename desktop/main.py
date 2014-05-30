@@ -55,11 +55,11 @@ def get_size(dir_path):
 
 
 ##### tar and gzip the dir_to_upload / extract .tar.gz archive
-def compress(dir_path):
+def compress(dir_path, out_path, progress_log_path):
 	"""adds dir at dir_path to tmp_archive.tar.gz in ./files/ and tracks operation progress"""
-	# set progress_file to 0
-	progress_file = open(os.path.join(local_path,'files','.progress_file.txt'), 'w+b')
-	progress_file.write('0')
+	# create blank progress file
+	progress_file = open(progress_log_path, 'w+b')
+	progress_file.write('00')
 	progress_file.close()
 	
 	# get basename of the directory to compress
@@ -72,7 +72,7 @@ def compress(dir_path):
 	compress_progress_counter = 0
 	
 	# create empty archive in the ./files/ directory
-	tar = tarfile.open(os.path.join(local_path,'files','tmp_archive.tar.gz'), 'w:gz')
+	tar = tarfile.open(out_path, 'w:gz')
 	
 	# recursively add all files in the dir at dir_path to the empty archive
 	# also track progress (which is why os.walk and convoluted code is used to loop over files)
@@ -98,8 +98,8 @@ def compress(dir_path):
 			# track progress of compression
 			compress_progress_counter += os.path.getsize(file_path)
 			compress_progress = (compress_progress_counter * 100) / dir_total_size
-			progress_file = open(os.path.join(local_path,'files','.progress_file.txt'), 'w+b')
-			progress_file.write(str(compress_progress))
+			progress_file = open(progress_log_path, 'w+b')
+			progress_file.write('c' + str(compress_progress))
 			progress_file.close()
 			#print('compression progress: ' + str(compress_progress)) # !!! update the print to GUI display later !!!
 			
@@ -126,7 +126,7 @@ def extract(archive_path, save_path):
 
 
 ##### Split / concatenate files
-def split_file(input_file, prefix, max_size = 49000000, buffer_size = 1000000):
+def split_file(input_file, prefix, progress_log_path):
 	"""
 	file: the input file
 	prefix: prefix of the output files that will be created
@@ -135,6 +135,9 @@ def split_file(input_file, prefix, max_size = 49000000, buffer_size = 1000000):
 	
 	Returns the number of parts created.
 	"""
+	max_size = 49000000
+	buffer_size = 1000000
+	
 	# track progress
 	total_file_size = os.path.getsize(input_file)
 	current_bytecount = 0
@@ -153,7 +156,10 @@ def split_file(input_file, prefix, max_size = 49000000, buffer_size = 1000000):
 						# track progress
 						current_bytecount += buffer_size
 						split_progress = (current_bytecount * 100) / total_file_size
-						print('split progress: ' + str(split_progress)) # !!! update the print to GUI display later !!!
+						progress_file = open(progress_log_path, 'w+b')
+						progress_file.write('s' + str(split_progress))
+						progress_file.close()
+						#print('split progress: ' + str(split_progress)) # !!! update the print to GUI display later !!!
 						
 					else:
 						os.remove(input_file)
@@ -191,7 +197,7 @@ def cat_files(indir, outfile, buffer_size = 1000000):
 
 
 ##### Generate SHA256 hash of infile and appends time.time() to generate a unique ID (BDID) for files
-def generate_ID(infile):
+def generate_ID(infile, progress_log_path):
 	
 	# generate SHA256 of file
 	buffer_size = 10**6
@@ -210,7 +216,10 @@ def generate_ID(infile):
 			# track progress
 			current_bytecount += buffer_size
 			id_progress = (current_bytecount * 100) / total_file_size
-			print('Hashing progress: ' + str(id_progress)) # !!! update the print to GUI display later !!!
+			progress_file = open(progress_log_path, 'w+b')
+			progress_file.write('i' + str(id_progress))
+			progress_file.close()
+			#print('Hashing progress: ' + str(id_progress)) # !!! update the print to GUI display later !!!
 			
 	# create BDID
 	BDID = hasher.hexdigest() + '_' + str(int(time.time()))
@@ -218,10 +227,10 @@ def generate_ID(infile):
 	return BDID
 
 ##### Encrypt the dir_to_upload with password_for_dir / decrypt
-def encrypt(indir, password):
+def encrypt(indir, password, progress_log_path):
 	
 	# generate key from password
-	print('Generating key. . . (this should take about 10 seconds)') # !!! update the print to GUI display later !!!
+	#print('Generating key. . . (this should take about 10 seconds)') # !!! update the print to GUI display later !!!
 	iterations = 100 # !!! change this values to 100000 later !!!
 	key = ''
 	salt = os.urandom(32)
@@ -242,15 +251,15 @@ def encrypt(indir, password):
 		with open(f, 'r+b') as plaintext_file:
 			out_filename = f + '.enc'
 			iv = os.urandom(16)
-			print(out_filename)
+			#print(out_filename)
 			encryptor = AES.new(key, AES.MODE_CBC, iv)
 			
 			with open(out_filename, 'w+b') as ciphertext_file:
 				ciphertext_file.write(struct.pack('<Q', filesize))
 				ciphertext_file.write(iv)
-				print(iv.encode('hex'))
-				print(salt.encode('hex'))
-				print(key.encode('hex'))
+				#print(iv.encode('hex'))
+				#print(salt.encode('hex'))
+				#print(key.encode('hex'))
 				
 				while True:
 					chunk = plaintext_file.read(chunksize)
@@ -264,7 +273,10 @@ def encrypt(indir, password):
 		# track progress
 		encrypt_progress_counter += 1
 		encrypt_progress = (encrypt_progress_counter * 100) / total_file_count
-		print('Encryption progress: ' + str(encrypt_progress)) # !!! update the print to GUI display later !!!
+		progress_file = open(progress_log_path, 'w+b')
+		progress_file.write('e' + str(encrypt_progress))
+		progress_file.close()
+		#print('Encryption progress: ' + str(encrypt_progress)) # !!! update the print to GUI display later !!!
 		
 		# remove plaintext file
 		os.remove(f)
@@ -272,6 +284,7 @@ def encrypt(indir, password):
 	# save salt in file
 	salt_file = open(os.path.join(indir,'.salt'), 'w+b')
 	salt_file.write(salt)
+	salt_file.close()
 					
 def decrypt(indir, password):
 	# get list of files in indir, excluding hidden files starting with a dot
@@ -314,8 +327,20 @@ def decrypt(indir, password):
 
 
 
-
+def upload_private(dir_to_upload, passphrase):
+	tmp_archive_path = os.path.join(local_path,'files','tmp_archive.tar.gz')
+	progress_log_path = os.path.join(local_path,'files','.progress_file.txt')
+	
+	compress(dir_to_upload, tmp_archive_path, progress_log_path)
+	archive_id = generate_ID(tmp_archive_path, progress_log_path)
+	os.rename(tmp_archive_path, os.path.join(local_path,'files', archive_id + '.tar.gz'))
+	os.mkdir(os.path.join(local_path,'files', archive_id))
+	split_file(os.path.join(local_path,'files', archive_id + '.tar.gz'), os.path.join(local_path,'files', archive_id, archive_id), progress_log_path)
+	encrypt(os.path.join(local_path,'files', archive_id), passphrase, progress_log_path)
+	
 ##### Testing
+# upload_private
+#upload_private('/Users/jeremymoreau/Desktop/testdir', 'this is not a good password')
 
 ## compress
 #compress(dir_to_upload)
