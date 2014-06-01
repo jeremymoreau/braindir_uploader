@@ -6,13 +6,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Bootstrap 101 Template</title>
 
-	<!-- Bootstrap -->
+	<!-- CSS -->
 	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link href="https://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
   </head>
   
   <body>
 	 <form id="upload_form" name="upload_form">
-		<!-- dir to upload -->
+		<!-- field for dir to upload -->
 		<div class="input-group">
 		  <span class="input-group-btn">
 			<button class="btn btn-default" type="button">Select</button>
@@ -25,7 +26,9 @@
 		<input type="text" class="form-control" id="passphrase">
 		
 		<!-- upload button -->
-		<button type="submit" class="btn btn-lg btn-default" id="upload_button">Upload</button>
+		<button type="submit" class="btn btn-lg btn-default" id="upload_button">
+			<span class="fa fa-cloud-upload" id="upload_spinner"></span><span id="upload_txt"> Upload</span>
+		</button>
 	</form>
 	
 	<h3>Progress</h3>
@@ -111,10 +114,17 @@
 			}, 3000);
 			         
 			$('#upload_form').bind('submit', function() {
-				Sijax.request('start_upload', [$('#dir_to_upload_path').val()], [$('#passphrase').val()]);
+				Sijax.request('start_upload', [$('#dir_to_upload_path').val()],[$('#passphrase').val()]);
 			
 				//Prevent the form from being submitted
 				return false;
+			});
+			
+			// modify upload icon when clicked
+			$("#upload_button").click(function() {
+				$("#upload_button").removeClass("btn-default").addClass("btn-success");
+				$("#upload_spinner").removeClass("fa-cloud-upload").addClass("fa-spinner fa-spin");
+				$("#upload_txt").html(" Uploading…");
 			});
 		});
 		// $(document).ready(function(){
