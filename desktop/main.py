@@ -338,6 +338,10 @@ def upload_private(dir_to_upload, passphrase):
 	split_file(os.path.join(local_path,'files', archive_id + '.tar.gz'), os.path.join(local_path,'files', archive_id, archive_id), progress_log_path)
 	encrypt(os.path.join(local_path,'files', archive_id), passphrase, progress_log_path)
 	
+	progress_file = open(progress_log_path, 'w+b')
+	progress_file.write('f')
+	progress_file.close()
+	
 ##### Testing
 # upload_private
 #upload_private('/Users/jeremymoreau/Desktop/testdir', 'this is not a good password')

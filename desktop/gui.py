@@ -57,6 +57,14 @@ class SijaxHandler(object):
 				obj_response.html('#progress_state', 'Stage 4 of 5: encrypting files...')
 				obj_response.css('#pgb4', 'width', progress_bar_value)
 				obj_response.html('#pgb4-label', progress_bar_value)
+			elif progress_file_text[0] == 'f':
+				obj_response.css('#pgb4', 'width', '100%')
+				obj_response.html('#pgb4-label', '100%')
+				
+				obj_response.script(
+				"$('#upload_button').removeClass('btn-default').addClass('btn-success');"
+				"$('#upload_spinner').removeClass('fa-spinner fa-spin').addClass('fa-check');"
+				"$('#upload_txt').html(' Upload Complete');")
 			elif progress_file_text == '':
 				print('no progress')
 				obj_response.html('#progress_state', '')
