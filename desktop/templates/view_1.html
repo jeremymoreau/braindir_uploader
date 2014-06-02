@@ -1,42 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
+	{% block head %}
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Bootstrap 101 Template</title>
+	<title>BrainDir Desktop Uploader</title>
 
 	<!-- CSS -->
 	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 	<link href="https://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-  </head>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	{% endblock %}
+</head>
   
-  <body>
-	 <form id="upload_form" name="upload_form">
+<body>
+	<div class="upload_wrapper">
+	<!-- Start dir chooser and passphrase fields + upload button -->
+	<form id="upload_form" name="upload_form">
 		<!-- field for dir to upload -->
-		<div class="input-group">
-		  <span class="input-group-btn">
-			<button class="btn btn-default" type="button">Select</button>
-		  </span>
-		  <input type="text" class="form-control" id="dir_to_upload_path">
-		</div><!-- /input-group -->
+		<div class="form-group">
+			<label for="dir_to_upload_path">Choose a directory  to Upload</label>
+			<div class="input-group">
+			  <span class="input-group-btn">
+				<button class="btn btn-default" type="button">Select</button>
+			  </span>
+			  <input type="text" class="form-control" id="dir_to_upload_path">
+			</div><!-- /input-group -->
+		</div>
 		
 		<!-- passphrase field -->
-		<h5>Passphrase</h5>
-		<input type="text" class="form-control" id="passphrase">
+		<div class="form-group">
+			<label for="passphrase_field">Enter a passphrase to encrypt</label>
+			<input type="password" class="form-control" id="passphrase_field">
+		</div>
 		
 		<!-- upload button -->
 		<button type="submit" class="btn btn-lg btn-default" id="upload_button">
 			<span class="fa fa-cloud-upload" id="upload_spinner"></span><span id="upload_txt"> Upload</span>
 		</button>
 	</form>
+	<!-- End dir chooser and passphrase fields + upload button -->
 	
-	<h3>Progress</h3>
+	<br><br>
+	<!-- Start Progress Bar -->
+	<h4>Progress</h4>
 	<div id = "progress_state"></div>
-<!-- 	<div class="progress progress-striped active">
-		<div class="progress-bar progress-bar-primary" id ="pgb" style="width: 99%">
-			<span class="progress-bar-label" id="pgb-label">0%</span>
-	</div> -->
 	<div id="pgb-container" style="position: relative">
 		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 1">
 		<div class="progress progress-striped active">
@@ -77,25 +86,11 @@
 			</div>
 		</div>
 		</div>	
+	</div><!-- pgb-container -->
+	<!-- End Progress Bar -->
 	</div>
-	<!-- <div class="progress progress-striped active">
-		  <div class="progress-bar progress-bar-primary" style="width: 50%">
-			<span class="progress-bar-label" id="blue_pgb-label">0%</span>
-		  </div>
-		  <div class="progress-bar progress-bar-warning" style="width: 20%">
-			<span class="progress-bar-label" id="orange_pgb-label">0%</span>
-		  </div>
-		  <div class="progress-bar progress-bar-info" style="width: 0%">
-			<span class="progress-bar-label" id="lightblue_pgb-label">0%</span>
-		  </div>
-		  <div class="progress-bar progress-bar-danger" style="width: 0%">
-			<span class="progress-bar-label" id="red_pgb-label">0%</span>
-		  </div>
-		  <div class="progress-bar progress-bar-success" style="width: 0%">
-			<span class="progress-bar-label" id="green_pgb-label">0%</span>
-		  </div>
-	</div> -->
 
+	<!-- Start JavaScript Libraries -->
 	<!-- jQuery  -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	
@@ -107,6 +102,8 @@
 	<script type="text/javascript">
 		{{ g.sijax.get_js()|safe }}
 	</script>
+	<!-- End JavaScript Libraries -->
+	
 	<script type="text/javascript">
 		$(document).ready(function(){
 			setInterval(function(){
@@ -114,7 +111,7 @@
 			}, 3000);
 			         
 			$('#upload_form').bind('submit', function() {
-				Sijax.request('start_upload', [$('#dir_to_upload_path').val()],[$('#passphrase').val()]);
+				Sijax.request('start_upload', [$('#dir_to_upload_path').val(), $('#passphrase_field').val()]);
 			
 				//Prevent the form from being submitted
 				return false;
@@ -127,11 +124,6 @@
 				$("#upload_txt").html(" Uploading…");
 			});
 		});
-		// $(document).ready(function(){
-		// 	$('#upload_button').click(function(){
-		// 		Sijax.request('start_upload');
-		// 	});
-		// });
 	</script>
-  </body>
+</body>
 </html>
