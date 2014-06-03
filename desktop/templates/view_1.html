@@ -32,12 +32,7 @@
 				<div class="row">
 				<div class="form-group">
 					<label for="dir_to_upload_path">Here is your upload's unique ID:</label>
-					<div class="input-group">
-					  <span class="input-group-btn">
-						<button class="btn btn-default" type="button">Click to copy</button>
-					  </span>
-					  <input type="text" class="form-control" id="upload_id">
-					</div>
+					<input type="text" class="form-control" id="upload_id" value="">
 				</div><!-- form-group -->
 				</div><!-- row -->
 			</div>
@@ -153,10 +148,11 @@
 	<script type="text/javascript">
 		$(document).ready(function(){
 		
+			// fullPage.js configuration
 			$('#fullpage').fullpage({
-        verticalCentered: true,
-        resize : false,
-    });
+		        verticalCentered: true,
+		        resize : false,
+			});
 			
 			// update progress bars in function of python backend progress
 			setInterval(function(){
@@ -175,6 +171,18 @@
 				//Prevent the form from being submitted
 				return false;
 			});
+			
+			// select text on focus
+			$("#upload_id").focus(
+			    function() { 
+			         $(this).select(); 
+			    }
+			 )
+			 .mouseup(
+			    function(e) {
+			        e.preventDefault();
+			    }
+			 );
 			
 			// // modify upload icon when clicked
 			// $("#upload_button").click(function() {

@@ -339,7 +339,7 @@ def upload_private(dir_to_upload, passphrase):
 	encrypt(os.path.join(local_path,'files', archive_id), passphrase, progress_log_path)
 	
 	progress_file = open(progress_log_path, 'w+b')
-	progress_file.write('f')
+	progress_file.write('f' + archive_id)
 	progress_file.close()
 	
 ##### Testing

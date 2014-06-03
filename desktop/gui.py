@@ -61,16 +61,20 @@ class SijaxHandler(object):
 				obj_response.css('#pgb4', 'width', '100%')
 				obj_response.html('#pgb4-label', '100%')
 				
+				upload_archive_id = progress_file_text[1:]
+				obj_response.attr('#upload_id','value', upload_archive_id)
+				
 				obj_response.script(
 				"$('#upload_button').removeClass('btn-default').addClass('btn-success');"
 				"$('#upload_spinner').removeClass('fa-spinner fa-spin').addClass('fa-check');"
 				"$('#upload_txt').html(' Upload Complete');")
+				#obj_response.script("$.fn.fullpage.moveSectionUp();") # move up one slide
 			elif progress_file_text == '':
 				print('no progress')
 				obj_response.html('#progress_state', '')
 				progress_bar_value = 0	
 				obj_response.css('.progress-bar', 'width', progress_bar_value)
-				obj_response.html('.progress-bar-label', progress_bar_value)	
+				#obj_response.html('.progress-bar-label', progress_bar_value)	
 		except:
 			pass
 			
