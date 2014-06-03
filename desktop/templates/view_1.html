@@ -8,16 +8,46 @@
 	<title>BrainDir Desktop Uploader</title>
 
 	<!-- CSS -->
-	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-	<link href="https://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.fullPage.css') }}">
 	{% endblock %}
 </head>
   
 <body>
-	<div class="upload_wrapper">
+<div id="fullpage">
+	<div class="section"><!-- upload_complete section -->
+		<div class="upload_complete">
+			<div id="upload_complete_info">
+				<div class="row">
+				<div id="upload_complete_cloud_wrapper">
+					<i class="fa fa-cloud-upload" id="upload_complete_cloud"></i>
+					<div id="upload_complete_cloud_label"><h3>Upload Complete!</h3></div>
+				</div>
+				</div><!-- row -->
+				
+				<div class="vertical_spacer"></div>
+				
+				<div class="row">
+				<div class="form-group">
+					<label for="dir_to_upload_path">Here is your upload's unique ID:</label>
+					<div class="input-group">
+					  <span class="input-group-btn">
+						<button class="btn btn-default" type="button">Click to copy</button>
+					  </span>
+					  <input type="text" class="form-control" id="upload_id">
+					</div>
+				</div><!-- form-group -->
+				</div><!-- row -->
+			</div>
+		</div>
+	</div><!-- upload_complete section -->
+	<div class="section active"><!-- upload_main section -->
+		<div class="upload_main">
 	<!-- Start dir chooser and passphrase fields + upload button -->
 	<form id="upload_form" name="upload_form">
+		<div class="row">
 		<!-- field for dir to upload -->
 		<div class="form-group">
 			<label for="dir_to_upload_path">Choose a directory  to Upload</label>
@@ -26,24 +56,30 @@
 				<button class="btn btn-default" type="button">Select</button>
 			  </span>
 			  <input type="text" class="form-control" id="dir_to_upload_path">
-			</div><!-- /input-group -->
-		</div>
+			</div>
+		</div><!-- form-group -->
+		</div><!-- row -->
 		
+		<div class="row">
 		<!-- passphrase field -->
 		<div class="form-group">
 			<label for="passphrase_field">Enter a passphrase to encrypt</label>
 			<input type="password" class="form-control" id="passphrase_field">
 		</div>
+		</div><!-- row -->
 		
+		<div class="row">
 		<!-- upload button -->
 		<button type="submit" class="btn btn-lg btn-default" id="upload_button">
 			<span class="fa fa-cloud-upload" id="upload_spinner"></span><span id="upload_txt"> Upload</span>
 		</button>
+		</div><!-- row -->
 	</form>
 	<!-- End dir chooser and passphrase fields + upload button -->
 	
-	<br><br>
 	<!-- Start Progress Bar -->
+	<div class="row">
+	<div class="pgb_wrapper">
 	<h4>Progress</h4>
 	<div id = "progress_state"></div>
 	<div id="pgb-container" style="position: relative">
@@ -87,25 +123,41 @@
 		</div>
 		</div>	
 	</div><!-- pgb-container -->
+	</div><!-- pgb_wrapper -->
+	</div><!-- row -->
 	<!-- End Progress Bar -->
-	</div>
+	</div><!-- upload_main -->
+	</div><!-- upload_main section -->
+</div>
 
 	<!-- Start JavaScript Libraries -->
-	<!-- jQuery  -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	
-	<!-- Bootstrap -->
-	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-	
-	<!-- sijax -->
-	<script type="text/javascript" src="static/js/sijax/sijax.js"></script>
-	<script type="text/javascript">
-		{{ g.sijax.get_js()|safe }}
-	</script>
+		{% block javascript_lib %}
+		<!-- jQuery  -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		
+		<!-- Bootstrap -->
+		<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+		
+		<!-- sijax -->
+		<script type="text/javascript" src="{{ url_for('static', filename='js/sijax/sijax.js') }}"></script>
+		<script type="text/javascript">
+			{{ g.sijax.get_js()|safe }}
+		</script>
+		
+		<!-- fullPage.js -->
+		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.fullPage.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.easings.min.js') }}"></script>
+		{% endblock %}
 	<!-- End JavaScript Libraries -->
 	
 	<script type="text/javascript">
 		$(document).ready(function(){
+		
+			$('#fullpage').fullpage({
+        verticalCentered: true,
+        resize : false,
+    });
+			
 			// update progress bars in function of python backend progress
 			setInterval(function(){
 				Sijax.request('set_progress');
@@ -116,7 +168,7 @@
 				Sijax.request('start_upload', [$('#dir_to_upload_path').val(), $('#passphrase_field').val()]);
 				
 				// modify upload button
-				$("#upload_button").removeClass("btn-default").addClass("btn-success").prop("disabled", true);
+				$("#upload_button").prop("disabled", true);
 				$("#upload_spinner").removeClass("fa-cloud-upload").addClass("fa-spinner fa-spin");
 				$("#upload_txt").html(" Uploading…");
 			
