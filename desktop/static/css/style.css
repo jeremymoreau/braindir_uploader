@@ -76,3 +76,17 @@
     text-align: center;
 }
 
+/* download_main */
+.download_main {
+    width: 85%;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    clear: both;
+    top: -30px;
+}
+
+#download_button {
+  clear: both;
+  float: right;
+}
