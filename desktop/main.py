@@ -106,7 +106,7 @@ def compress(dir_path, out_path, progress_log_path):
 	tar.close()
 
 	
-def extract(archive_path, save_path):
+def extract(archive_path, save_path, progress_log_path):
 	"""extract the archive at archive_path and save the extracted files at save_path"""
 	# get total size of archive
 	total_size = os.path.getsize(archive_path)
@@ -115,7 +115,10 @@ def extract(archive_path, save_path):
 	class MyFileObj(file):
 		def read(self, size):
 			extract_progress = (self.tell() * 100) / total_size
-			print('extraction progress: ' + str(extract_progress)) # !!! update the print to GUI display later !!!
+			progress_file = open(progress_log_path, 'w+b')
+			progress_file.write('x' + str(extract_progress))
+			progress_file.close()
+			#print('extraction progress: ' + str(extract_progress)) # !!! update the print to GUI display later !!!
 			return file.read(self, size)
 	
 	tar = tarfile.open(fileobj=MyFileObj(archive_path))
@@ -166,12 +169,14 @@ def split_file(input_file, prefix, progress_log_path):
 						return suffix
 				suffix += 1
 
-def cat_files(indir, outfile, buffer_size = 1000000):
+def cat_files(indir, outfile, progress_log_path):
 	"""
 	indir: directory containing files to concatenate
 	outfile: the file that will be created
 	buffer_size: buffer_size size in bytes
 	"""
+	buffer_size = 1000000
+	
 	# get list of files in indir, excluding hidden files starting with a dot
 	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not x.startswith('.')]
 	
@@ -190,7 +195,10 @@ def cat_files(indir, outfile, buffer_size = 1000000):
 						# track progress
 						current_bytecount += buffer_size
 						cat_progress = (current_bytecount * 100) / total_size
-						print('concatenation progress: ' + str(cat_progress)) # !!! update the print to GUI display later !!!
+						progress_file = open(progress_log_path, 'w+b')
+						progress_file.write('m' + str(cat_progress))
+						progress_file.close()
+						#print('concatenation progress: ' + str(cat_progress)) # !!! update the print to GUI display later !!!
 					else:
 						break
 			os.remove(infile)
@@ -286,7 +294,7 @@ def encrypt(indir, password, progress_log_path):
 	salt_file.write(salt)
 	salt_file.close()
 					
-def decrypt(indir, password):
+def decrypt(indir, password, progress_log_path):
 	# get list of files in indir, excluding hidden files starting with a dot
 	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not x.startswith('.')]
 	
@@ -320,7 +328,10 @@ def decrypt(indir, password):
 		# track progress
 		decrypt_progress_counter += 1
 		decrypt_progress = (decrypt_progress_counter * 100) / total_file_count
-		print('Decryption progress: ' + str(decrypt_progress)) # !!! update the print to GUI display later !!!
+		progress_file = open(progress_log_path, 'w+b')
+		progress_file.write('d' + str(decrypt_progress))
+		progress_file.close()
+		#print('Decryption progress: ' + str(decrypt_progress)) # !!! update the print to GUI display later !!!
 		
 		# remove ciphertext file
 		os.remove(f)
@@ -342,7 +353,30 @@ def upload_private(dir_to_upload, passphrase):
 	progress_file.write('f' + archive_id)
 	progress_file.close()
 	
+def download_private(archive_id, save_path, passphrase):
+	tmp_archive_path = os.path.join(local_path,'files','tmp_archive.tar.gz')
+	tmp_download_dir_path = os.path.join(local_path,'files', archive_id)
+	progress_log_path = os.path.join(local_path,'files','.progress_file.txt')
+
+	decrypt(tmp_download_dir_path, passphrase, progress_log_path)
+	cat_files(tmp_download_dir_path, tmp_archive_path, progress_log_path)
+	check_id = generate_ID(tmp_archive_path, progress_log_path)
+	
+	# replace with GUI display
+	print(archive_id)
+	print(check_id)
+	if archive_id[:64] == check_id[:64]:
+		print('download is good!')
+	else:
+		print('download is corrupt!')
+	# replace with GUI display
+		
+	extract(tmp_archive_path, save_path, progress_log_path)
+
 ##### Testing
+# download_private
+#download_private('2a33ebf3b5f2f6b134fd0aef4553551a242e7f992465277878a43cf70cd703a8_1401920448', '/Users/jeremymoreau/Desktop', 't')
+
 # upload_private
 #upload_private('/Users/jeremymoreau/Desktop/testdir', 'this is not a good password')
 
