@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 	{% block head %}
+	<title>BrainDir Desktop Uploader</title>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>BrainDir Desktop Uploader</title>
 
 	<!-- CSS -->
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
@@ -38,7 +38,7 @@
 			</div>
 		</div>
 	</div><!-- upload_complete section -->
-	<div class="section active"><!-- upload_main section -->
+	<div class="section"><!-- upload_main section -->
 		<div class="upload_main">
 	<!-- Start dir chooser and passphrase fields + upload button -->
 	<form id="upload_form" name="upload_form">
@@ -123,6 +123,13 @@
 	<!-- End Progress Bar -->
 	</div><!-- upload_main -->
 	</div><!-- upload_main section -->
+	
+	<div class="section active"><!-- main_menu section -->
+		<div class="main_menu">
+			<button type="button" class="btn btn-default btn-xlg" id="main_menu_download_btn"><span class="fa fa-cloud-download"></span> Download</button>
+			<button type="button" class="btn btn-default btn-xlg" id="main_menu_upload_btn"><span class="fa fa-cloud-upload"></span> Upload</button>
+		</div>
+	</div><!-- main_menu section -->
 </div>
 
 	<!-- Start JavaScript Libraries -->
@@ -183,6 +190,16 @@
 			        e.preventDefault();
 			    }
 			 );
+			 
+			 // main_menu navigation buttons control
+			 $("#main_menu_download_btn").click(function() {
+				$.fn.fullpage.moveSectionDown(); 
+			 });
+			 
+			 $("#main_menu_upload_btn").click(function() {
+				$.fn.fullpage.moveSectionUp(); 
+			 });
+
 			
 			// // modify upload icon when clicked
 			// $("#upload_button").click(function() {

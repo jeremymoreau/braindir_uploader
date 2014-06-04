@@ -1,6 +1,24 @@
+/* General */
 .vertical_spacer {
 	margin-top: 5%;
 }
+
+.btn:focus {
+  outline: none;
+}
+
+.btn-xlg {
+    padding: 18px 28px;
+    margin-left: 10px;
+    font-size: 30px;
+    width: 250px;
+    line-height: normal;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+
+/* upload_main */
 
 .upload_main {
     width: 85%;
@@ -11,6 +29,12 @@
     top: -30px;
 }
 
+#upload_button {
+  clear: both;
+  float: right;
+}
+
+/* upload_complete */
 .upload_complete {
 	width: 85%;
     position: relative;
@@ -41,10 +65,14 @@
 /* 	color: #468847; */
 }
 
-.btn:focus {
-  outline: none;
+/* main_menu */
+.main_menu {
+	width: 85%;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    clear: both;
+    top: -30px;
+    text-align: center;
 }
-#upload_button {
-  clear: both;
-  float: right;
-}
+

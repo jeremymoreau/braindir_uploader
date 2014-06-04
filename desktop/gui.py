@@ -74,7 +74,7 @@ class SijaxHandler(object):
 				obj_response.html('#progress_state', '')
 				progress_bar_value = 0	
 				obj_response.css('.progress-bar', 'width', progress_bar_value)
-				#obj_response.html('.progress-bar-label', progress_bar_value)	
+				obj_response.html('.progress-bar-label', progress_bar_value)	
 		except:
 			pass
 			
