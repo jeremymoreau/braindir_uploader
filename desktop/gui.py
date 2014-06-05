@@ -69,6 +69,43 @@ class SijaxHandler(object):
 				"$('#upload_spinner').removeClass('fa-spinner fa-spin').addClass('fa-check');"
 				"$('#upload_txt').html(' Upload Complete');")
 				#obj_response.script("$.fn.fullpage.moveSectionUp();") # move up one slide
+			elif progress_file_text[0] == 'd':
+				obj_response.html('#d_progress_state', 'Stage 1 of 5: decrypting...')
+				obj_response.css('#d_pgb1', 'width', progress_bar_value)
+				obj_response.html('#d_pgb1-label', progress_bar_value)
+			elif progress_file_text[0] == 'm':
+				obj_response.css('#d_pgb1', 'width', '100%')
+				obj_response.html('#d_pgb1-label', '100%')
+				
+				obj_response.html('#d_progress_state', 'Stage 2 of 5: concatenating files...')
+				obj_response.css('#d_pgb2', 'width', progress_bar_value)
+				obj_response.html('#d_pgb2-label', progress_bar_value)
+			elif progress_file_text[0] == 'v':
+				obj_response.css('#d_pgb2', 'width', '100%')
+				obj_response.html('#d_pgb2-label', '100%')
+				
+				obj_response.html('#d_progress_state', 'Stage 3 of 5: checking download integrity...')
+				obj_response.css('#d_pgb3', 'width', progress_bar_value)
+				obj_response.html('#d_pgb3-label', progress_bar_value)
+			elif progress_file_text[0] == 'x':
+				obj_response.css('#d_pgb3', 'width', '100%')
+				obj_response.html('#d_pgb3-label', '100%')
+				
+				obj_response.html('#d_progress_state', 'Stage 4 of 5: extracting archive...')
+				obj_response.css('#d_pgb4', 'width', progress_bar_value)
+				obj_response.html('#d_pgb4-label', progress_bar_value)
+			# elif progress_file_text[0] == 'f':
+			# 	obj_response.css('#pgb4', 'width', '100%')
+			# 	obj_response.html('#pgb4-label', '100%')
+			# 	
+			# 	upload_archive_id = progress_file_text[1:]
+			# 	obj_response.attr('#upload_id','value', upload_archive_id)
+			# 	
+			# 	obj_response.script(
+			# 	"$('#upload_button').removeClass('btn-default').addClass('btn-success');"
+			# 	"$('#upload_spinner').removeClass('fa-spinner fa-spin').addClass('fa-check');"
+			# 	"$('#upload_txt').html(' Upload Complete');")
+			# 	#obj_response.script("$.fn.fullpage.moveSectionUp();") # move up one slide		
 			elif progress_file_text == '':
 				print('no progress')
 				obj_response.html('#progress_state', '')

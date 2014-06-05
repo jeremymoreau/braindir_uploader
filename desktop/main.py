@@ -233,6 +233,36 @@ def generate_ID(infile, progress_log_path):
 	BDID = hasher.hexdigest() + '_' + str(int(time.time()))
 	
 	return BDID
+	
+##### Generate SHA256 hash of infile and appends time.time() to generate a unique ID (BDID) for files
+def check_ID(infile, progress_log_path):
+
+	# generate SHA256 of file
+	buffer_size = 10**6
+	hasher = Hash.SHA256.new()
+
+	# track progress
+	total_file_size = os.path.getsize(infile)
+	current_bytecount = 0
+
+	with open(infile, 'r+b') as f:
+		data = f.read(buffer_size)
+		while len(data) > 0:
+			hasher.update(data)
+			data = f.read(buffer_size)
+
+			# track progress
+			current_bytecount += buffer_size
+			id_progress = (current_bytecount * 100) / total_file_size
+			progress_file = open(progress_log_path, 'w+b')
+			progress_file.write('v' + str(id_progress))
+			progress_file.close()
+			#print('Hashing progress: ' + str(id_progress)) # !!! update the print to GUI display later !!!
+
+	# create BDID
+	BDID = hasher.hexdigest() + '_' + str(int(time.time()))
+
+	return BDID
 
 ##### Encrypt the dir_to_upload with password_for_dir / decrypt
 def encrypt(indir, password, progress_log_path):
@@ -360,12 +390,12 @@ def download_private(archive_id, save_path, passphrase):
 
 	decrypt(tmp_download_dir_path, passphrase, progress_log_path)
 	cat_files(tmp_download_dir_path, tmp_archive_path, progress_log_path)
-	check_id = generate_ID(tmp_archive_path, progress_log_path)
+	checked_id = check_ID(tmp_archive_path, progress_log_path)
 	
 	# replace with GUI display
 	print(archive_id)
-	print(check_id)
-	if archive_id[:64] == check_id[:64]:
+	print(checked_id)
+	if archive_id[:64] == checked_id[:64]:
 		print('download is good!')
 	else:
 		print('download is corrupt!')
