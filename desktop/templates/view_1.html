@@ -31,7 +31,7 @@
 				
 				<div class="row">
 				<div class="form-group">
-					<label for="dir_to_upload_path">Here is your dataset's unique ID:</label>
+					<label for="upload_id">Here is your dataset's unique ID:</label>
 					<input type="text" class="form-control" id="upload_id" value="">
 				</div><!-- form-group -->
 				</div><!-- row -->
@@ -137,10 +137,10 @@
 	<!-- Start dir chooser and passphrase fields + download button -->
 	<form id="download_form" name="download_form">
 		<div class="row">
-		<!-- field for dir to download -->
+		<!-- field for archive id -->
 		<div class="form-group">
-			<label for="dir_to_download_path">Enter the unique ID of the dataset you would like to download</label>
-			<input type="text" class="form-control" id="dir_to_download_path">
+			<label for="archive_id">Enter the unique ID of the dataset you would like to download</label>
+			<input type="text" class="form-control" id="archive_id">
 		</div><!-- form-group -->
 		</div><!-- row -->
 		
@@ -269,6 +269,19 @@
 				$("#upload_button").prop("disabled", true);
 				$("#upload_spinner").removeClass("fa-cloud-upload").addClass("fa-spinner fa-spin");
 				$("#upload_txt").html(" Uploading…");
+			
+				//Prevent the form from being submitted
+				return false;
+			});
+			
+			// start download pipeline  
+			$('#download_form').bind('submit', function() {
+				Sijax.request('start_download', [$('#archive_id').val(), $('#save_path').val(), $('#decrypt_passphrase_field').val()]);
+				
+				// modify upload button
+				$("#download_button").prop("disabled", true);
+				$("#download_spinner").removeClass("fa-cloud-download").addClass("fa-spinner fa-spin");
+				$("#download_txt").html(" Downloading…");
 			
 				//Prevent the form from being submitted
 				return false;

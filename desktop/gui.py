@@ -83,6 +83,11 @@ class SijaxHandler(object):
 	def start_upload(obj_response, dir_to_upload_path, passphrase):
 		t = threading.Thread(target=main.upload_private, args=(dir_to_upload_path, passphrase,))
 		t.start()
+		
+	@staticmethod
+	def start_download(obj_response, archive_id, save_path, passphrase):
+		tr = threading.Thread(target=main.download_private, args=(archive_id, save_path, passphrase,))
+		tr.start()
 
 @flask_sijax.route(app, '/')
 def index():
