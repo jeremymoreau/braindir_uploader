@@ -402,6 +402,10 @@ def download_private(archive_id, save_path, passphrase):
 	# replace with GUI display
 		
 	extract(tmp_archive_path, save_path, progress_log_path)
+	
+	progress_file = open(progress_log_path, 'w+b')
+	progress_file.write('j' + save_path)
+	progress_file.close()
 
 ##### Testing
 # download_private
