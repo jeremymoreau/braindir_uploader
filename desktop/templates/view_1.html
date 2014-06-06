@@ -17,7 +17,7 @@
   
 <body>
 <div id="fullpage">
-	<div class="section"><!-- upload_complete section -->
+	<div class="section"><!-- ###################### upload_complete section ###################### -->
 		<div class="upload_complete">
 			<div id="upload_complete_info">
 				<div class="row">
@@ -27,7 +27,7 @@
 				</div>
 				</div><!-- row -->
 				
-				<div class="vertical_spacer"></div>
+<!-- 				<div class="vertical_spacer"></div> -->
 				
 				<div class="row">
 				<div class="form-group">
@@ -35,11 +35,19 @@
 					<input type="text" class="form-control" id="upload_id" value="">
 				</div><!-- form-group -->
 				</div><!-- row -->
+				
+				<div class="row">
+				<div class="main_menu_btn_align">
+					<button type="submit" class="btn btn-lg btn-default return_to_main_menu_btn pull-right">
+						<span class="fa fa-home" ></span><span> Return to main menu</span>
+					</button>
+				</div>
+				</div><!-- row -->
 			</div>
 		</div>
 	</div><!-- upload_complete section -->
 	
-	<div class="section"><!-- upload_main section -->
+	<div class="section"><!-- ###################### upload_main section ###################### -->
 		<div class="upload_main">
 	<!-- Start dir chooser and passphrase fields + upload button -->
 	<form id="upload_form" name="upload_form">
@@ -125,14 +133,14 @@
 	</div><!-- upload_main -->
 	</div><!-- upload_main section -->
 	
-	<div class="section active"><!-- main_menu section -->
+	<div class="section active"><!-- ###################### main_menu section ###################### -->
 		<div class="main_menu">
 			<button type="button" class="btn btn-default btn-xlg" id="main_menu_download_btn"><span class="fa fa-cloud-download"></span> Download</button>
 			<button type="button" class="btn btn-default btn-xlg" id="main_menu_upload_btn"><span class="fa fa-cloud-upload"></span> Upload</button>
 		</div>
 	</div><!-- main_menu section -->
 	
-	<div class="section"><!-- download_main section -->
+	<div class="section"><!-- ###################### download_main section ###################### -->
 		<div class="download_main">
 	<!-- Start dir chooser and passphrase fields + download button -->
 	<form id="download_form" name="download_form">
@@ -225,6 +233,34 @@
 	<!-- End Progress Bar -->
 	</div><!-- download_main -->
 	</div><!-- download_main section -->
+	
+	<div class="section"><!-- ###################### download_complete section ###################### -->
+		<div class="download_complete">
+			<div id="download_complete_info">
+				<div class="row">
+				<div id="download_complete_cloud_wrapper">
+					<i class="fa fa-cloud-download" id="upload_complete_cloud"></i>
+					<div id="download_complete_cloud_label"><h3>Download Complete!</h3></div>
+				</div>
+				</div><!-- row -->
+				
+				<div class="row">
+				<div class="form-group">
+					<label for="download_location">Your download is located in:</label>
+					<input type="text" class="form-control" id="download_location" value="">
+				</div><!-- form-group -->
+				</div><!-- row -->
+				
+				<div class="row">
+				<div class="main_menu_btn_align">
+					<button type="submit" class="btn btn-lg btn-default return_to_main_menu_btn pull-right">
+						<span class="fa fa-home" ></span><span> Return to main menu</span>
+					</button>
+				</div>
+				</div><!-- row -->
+			</div>
+		</div>
+	</div><!-- download_complete section -->
 </div>
 
 	<!-- Start JavaScript Libraries -->
@@ -306,6 +342,11 @@
 			 
 			 $("#main_menu_upload_btn").click(function() {
 				$.fn.fullpage.moveSectionUp(); 
+			 });
+			 
+			 // return to main_menu buttons control
+			 $(".return_to_main_menu_btn").click(function() {
+				$.fn.fullpage.moveTo(3);
 			 });
 
 			

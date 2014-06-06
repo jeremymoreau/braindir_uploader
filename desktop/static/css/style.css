@@ -90,3 +90,39 @@
   clear: both;
   float: right;
 }
+
+/* download_complete */
+.download_complete {
+	width: 85%;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    clear: both;
+    top: 0px;
+}
+
+#download_complete_cloud {
+	font-size: 250px;
+	text-align: center;
+	line-height: 0.6;
+/* 	color: #468847; */
+	
+}
+
+#download_complete_cloud_wrapper {
+	position: relative;
+	width: 268px;
+	margin-left: auto;
+    margin-right: auto;
+	
+}
+
+#download_complete_cloud_label {
+	text-align: center;
+	top: -50px;
+/* 	color: #468847; */
+}
+
+.main_menu_btn_align {
+	text-align: center;
+}
