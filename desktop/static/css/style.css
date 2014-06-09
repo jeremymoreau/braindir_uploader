@@ -7,17 +7,6 @@
   outline: none;
 }
 
-.btn-xlg {
-    padding: 18px 28px;
-    margin-left: 10px;
-    font-size: 30px;
-    width: 250px;
-    line-height: normal;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
-}
-
 /* upload_main */
 
 .upload_main {
@@ -75,6 +64,38 @@
     top: -30px;
     text-align: center;
 }
+
+.btn-xlg {
+    padding: 18px 28px;
+    font-size: 30px;
+    width: 250px;
+    line-height: normal;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+
+.btn-xlg-drop {
+    padding: 18px 28px;
+    font-size: 15px;
+    text-align: center;
+    height: 74px;
+    width: 35px;
+    line-height: normal;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+
+.main_menu_btn_group {
+	margin: 5px 5px 5px 5px;
+}
+
+/*
+.main_menu_dropdown > ul {
+	margin-right: 20px;
+}
+*/
 
 /* download_main */
 .download_main {

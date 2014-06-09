@@ -135,8 +135,20 @@
 	
 	<div class="section active"><!-- ###################### main_menu section ###################### -->
 		<div class="main_menu">
-			<button type="button" class="btn btn-default btn-xlg" id="main_menu_download_btn"><span class="fa fa-cloud-download"></span> Download</button>
-			<button type="button" class="btn btn-default btn-xlg" id="main_menu_upload_btn"><span class="fa fa-cloud-upload"></span> Upload</button>
+			<div class="btn-group main_menu_btn_group">
+				<button type="button" class="btn btn-default btn-xlg" id="main_menu_download_btn"><span class="fa fa-cloud-download"></span> Download</button>
+				<button type="button" class="btn btn-default dropdown-toggle btn-xlg-drop" id="" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>
+				<ul class="dropdown-menu pull-right" role="menu">
+					<li><a href="#">Resume interrupted download</a></li>
+				</ul>
+			</div>
+			<div class="btn-group main_menu_btn_group" id="upload_btn_group">
+				<button type="button" class="btn btn-default btn-xlg" id="main_menu_upload_btn"><span class="fa fa-cloud-upload"></span> Upload</button>
+				<button type="button" class="btn btn-default dropdown-toggle btn-xlg-drop" id="" data-toggle="dropdown"><span class="glyphicon glyphicon-chevron-down"></span></button>
+				<ul class="dropdown-menu pull-right main_menu_dropdown" role="menu">
+					<li><a href="#">Resume interrupted upload</a></li>
+				</ul>
+			</div>
 		</div>
 	</div><!-- main_menu section -->
 	
