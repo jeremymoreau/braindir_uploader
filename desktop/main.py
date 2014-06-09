@@ -369,23 +369,26 @@ def decrypt(indir, password, progress_log_path):
 
 
 def upload_private(dir_to_upload, passphrase):
-	tmp_archive_path = os.path.join(local_path,'files','tmp_archive.tar.gz')
+	os.mkdir(os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload'))
+	tmp_archive_path = os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload', 'tmp_archive.tar.gz')
 	progress_log_path = os.path.join(local_path,'files','.progress_file.txt')
 	
 	compress(dir_to_upload, tmp_archive_path, progress_log_path)
 	archive_id = generate_ID(tmp_archive_path, progress_log_path)
-	os.rename(tmp_archive_path, os.path.join(local_path,'files', archive_id + '.tar.gz'))
-	os.mkdir(os.path.join(local_path,'files', archive_id))
-	split_file(os.path.join(local_path,'files', archive_id + '.tar.gz'), os.path.join(local_path,'files', archive_id, archive_id), progress_log_path)
-	encrypt(os.path.join(local_path,'files', archive_id), passphrase, progress_log_path)
+	os.rename(tmp_archive_path, os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload', archive_id + '.tar.gz'))
+	os.mkdir(os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload', archive_id))
+	split_file(os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload', archive_id + '.tar.gz'), os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload', archive_id, archive_id), progress_log_path)
+	encrypt(os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload', archive_id), passphrase, progress_log_path)
 	
 	progress_file = open(progress_log_path, 'w+b')
 	progress_file.write('f' + archive_id)
 	progress_file.close()
 	
 def download_private(archive_id, save_path, passphrase):
-	tmp_archive_path = os.path.join(local_path,'files','tmp_archive.tar.gz')
-	tmp_download_dir_path = os.path.join(local_path,'files', archive_id)
+	if not os.path.isdir(os.path.join(save_path,'tmp_download')):
+		os.mkdir(os.path.join(save_path,'tmp_download'))
+	tmp_archive_path = os.path.join(save_path,'tmp_download','tmp_archive.tar.gz')
+	tmp_download_dir_path = os.path.join(save_path,'tmp_download', archive_id)
 	progress_log_path = os.path.join(local_path,'files','.progress_file.txt')
 
 	decrypt(tmp_download_dir_path, passphrase, progress_log_path)
