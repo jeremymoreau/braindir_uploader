@@ -14,31 +14,6 @@ local_path = os.path.realpath('.')
 ##### Stuff which will eventually be inputted through the GUI
 # upload
 dir_to_upload = '/Users/jeremymoreau/Desktop/testdir'
-pass_encrypt = 'ipsum'
-
-# download 
-id_of_dir_to_download = 'ipsum'
-pass_decrypt = 'ipsum'
-path_for_download = '/Users/jeremymoreau/Desktop/'
-
-
-##### Connect to BDFS via SSH and enable SCP
-ssh = paramiko.SSHClient()
-
-# get path of user braindir's private key and load the key in the variable 'key'
-key_file = os.path.join(local_path, 'keys','braindir_rsa')
-key = paramiko.RSAKey.from_private_key_file(key_file)
-
-# get the path of BDFS's hostkey and tell paramiko to accept BDFS as a known host
-hostkey_file = os.path.join(local_path, 'keys','known_hosts')
-ssh.load_host_keys(hostkey_file)
-
-# establish an SSH connection to BDFS as user 'braindir'
-#ssh.connect('bdfs.braindir.com', username='braindir', pkey=key)
-
-# create scp object with which to use scp
-#scp = SCPClient(ssh.get_transport())
-
 
 ##### General Functions
 def get_size(dir_path):
@@ -263,6 +238,31 @@ def check_ID(infile, progress_log_path):
 	BDID = hasher.hexdigest() + '_' + str(int(time.time()))
 
 	return BDID
+	
+##### save MD5 hash of infile at save_path
+def md5_hash(infile):
+
+	# generate MD5 hash of file
+	buffer_size = 10**6
+	hasher = Hash.MD5.new()
+
+	with open(infile, 'r+b') as f:
+		data = f.read(buffer_size)
+		while len(data) > 0:
+			hasher.update(data)
+			data = f.read(buffer_size)
+
+
+	# convert to hex
+	md5_hash = hasher.hexdigest()
+	
+	# save hash value in file
+	saved_file_path = infile + '.md5'
+	saved_file = open(saved_file_path, 'w+b')
+	saved_file.write(md5_hash)
+	saved_file.close()
+	
+	return saved_file_path
 
 ##### Encrypt the dir_to_upload with password_for_dir / decrypt
 def encrypt(indir, password, progress_log_path):
@@ -366,7 +366,80 @@ def decrypt(indir, password, progress_log_path):
 		# remove ciphertext file
 		os.remove(f)
 
-
+def upload_files(indir, progress_log_path):
+	# get list of files in indir, excluding hidden files starting with a dot
+	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not x.startswith('.')]
+	
+	# track progress
+	total_file_count = len(infiles)
+	upload_files_progress_counter = 0
+	
+	ssh = paramiko.SSHClient()
+	
+	# get path of user braindir's private key and load the key in the variable 'key'
+	key_file = os.path.join(local_path, 'keys','braindir_rsa')
+	key = paramiko.RSAKey.from_private_key_file(key_file)
+	
+	# get the path of BDFS's hostkey and tell paramiko to accept BDFS as a known host
+	hostkey_file = os.path.join(local_path, 'keys','known_hosts')
+	ssh.load_host_keys(hostkey_file)
+	
+	# establish an SSH connection to BDFS as user 'braindir'
+	ssh.connect('bdfs.braindir.com', username='braindir', pkey=key)
+	
+	# open an sftp session
+	sftp = ssh.open_sftp()
+	# create scp object with which to use scp
+	#scp = SCPClient(ssh.get_transport())
+	
+	# create a dir on the host named after indir
+	sftp.mkdir(os.path.split(indir)[1], mode=0755)
+	sftp.chdir(os.path.split(indir)[1])
+	
+	for f in infiles:				
+		upload_status = ''
+		max_tries = 0
+		while upload_status != 'ok':
+			md5_file_path = md5_hash(f)
+			
+			file_to_upload_name = os.path.split(f)[1]
+			md5_file_name = os.path.split(md5_file_path)[1]
+			
+			sftp.put(f, file_to_upload_name)
+			sftp.put(md5_file_path, md5_file_name)
+			check_md5_command = '[ `openssl md5 ' + file_to_upload_name + ' | cut -d " " -f2` == `cat ' + md5_file_name + '` ] && printf "ok"'
+			(stdin, stdout, stderr) = ssh.exec_command(check_md5_command)
+			upload_status = stdout.read()
+			
+			print(file_to_upload_name + ': ' + upload_status)
+			if upload_status == 'ok':
+				sftp.remove(md5_file_name)
+				#os.remove(f)
+				os.remove(md5_file_path)
+				
+				# track progress
+				upload_files_progress_counter += 1
+				upload_files_progress = (upload_files_progress_counter * 100) / total_file_count
+				progress_file = open(progress_log_path, 'w+b')
+				progress_file.write('u' + str(upload_files_progress))
+				progress_file.close()
+				
+			else:
+				try:
+					sftp.remove(file_to_upload_name)
+					sftp.remove(md5_file_name)
+				except:
+					pass
+				
+				if max_tries > 9:
+					break
+				max_tries += 1
+				
+	# code to check that upload is complete
+		
+		
+	# close ssh client
+	ssh.close()
 
 def upload_private(dir_to_upload, passphrase):
 	os.mkdir(os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload'))
@@ -411,6 +484,9 @@ def download_private(archive_id, save_path, passphrase):
 	progress_file.close()
 
 ##### Testing
+# upload_files
+upload_files('/Users/jeremymoreau/Desktop/tmp_upload/dfb75f2c28fba098f359db9a1380be55f647a4082c9b3e394f6d86d9c75ff274_1402341627', os.path.join(local_path,'files','.progress_file.txt'))
+
 # download_private
 #download_private('2a33ebf3b5f2f6b134fd0aef4553551a242e7f992465277878a43cf70cd703a8_1401920448', '/Users/jeremymoreau/Desktop', 't')
 
