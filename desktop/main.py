@@ -1,6 +1,7 @@
 import paramiko
 from scp import SCPClient
 import os
+import shutil
 import tarfile
 import time
 from Crypto import Hash
@@ -414,7 +415,7 @@ def upload_files(indir, progress_log_path):
 			print(file_to_upload_name + ': ' + upload_status)
 			if upload_status == 'ok':
 				sftp.remove(md5_file_name)
-				#os.remove(f)
+				os.remove(f)
 				os.remove(md5_file_path)
 				
 				# track progress
@@ -442,20 +443,27 @@ def upload_files(indir, progress_log_path):
 	ssh.close()
 
 def upload_private(dir_to_upload, passphrase):
-	os.mkdir(os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload'))
-	tmp_archive_path = os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload', 'tmp_archive.tar.gz')
+	tmp_upload_dir = os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload')
+	os.mkdir(tmp_upload_dir)
+	tmp_archive_path = os.path.join(tmp_upload_dir, 'tmp_archive.tar.gz')
 	progress_log_path = os.path.join(local_path,'files','.progress_file.txt')
 	
 	compress(dir_to_upload, tmp_archive_path, progress_log_path)
 	archive_id = generate_ID(tmp_archive_path, progress_log_path)
-	os.rename(tmp_archive_path, os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload', archive_id + '.tar.gz'))
-	os.mkdir(os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload', archive_id))
-	split_file(os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload', archive_id + '.tar.gz'), os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload', archive_id, archive_id), progress_log_path)
-	encrypt(os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload', archive_id), passphrase, progress_log_path)
+	os.rename(tmp_archive_path, os.path.join(tmp_upload_dir, archive_id + '.tar.gz'))
+	os.mkdir(os.path.join(tmp_upload_dir, archive_id))
+	split_file(os.path.join(tmp_upload_dir, archive_id + '.tar.gz'), os.path.join(tmp_upload_dir, archive_id, archive_id), progress_log_path)
+	encrypt(os.path.join(tmp_upload_dir, archive_id), passphrase, progress_log_path)
+	
+	upload_files(os.path.join(tmp_upload_dir, archive_id), progress_log_path)
+	
+	# remove tmp_upload dir and progress_log
+	shutil.rmtree(tmp_upload_dir)
+	os.remove(progress_log_path)
 	
 	progress_file = open(progress_log_path, 'w+b')
 	progress_file.write('f' + archive_id)
-	progress_file.close()
+	progress_file.close(tmp_upload_dir)
 	
 def download_private(archive_id, save_path, passphrase):
 	if not os.path.isdir(os.path.join(save_path,'tmp_download')):
@@ -485,7 +493,7 @@ def download_private(archive_id, save_path, passphrase):
 
 ##### Testing
 # upload_files
-upload_files('/Users/jeremymoreau/Desktop/tmp_upload/dfb75f2c28fba098f359db9a1380be55f647a4082c9b3e394f6d86d9c75ff274_1402341627', os.path.join(local_path,'files','.progress_file.txt'))
+#upload_files('/Users/jeremymoreau/Desktop/tmp_upload/dfb75f2c28fba098f359db9a1380be55f647a4082c9b3e394f6d86d9c75ff274_1402341627', os.path.join(local_path,'files','.progress_file.txt'))
 
 # download_private
 #download_private('2a33ebf3b5f2f6b134fd0aef4553551a242e7f992465277878a43cf70cd703a8_1401920448', '/Users/jeremymoreau/Desktop', 't')

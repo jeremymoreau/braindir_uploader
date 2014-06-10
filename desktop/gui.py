@@ -32,7 +32,6 @@ class SijaxHandler(object):
 			progress_bar_value = progress_file_text[1:] + '%'
 			
 			if progress_file_text[0] == 'c':
-				print('compressing...')
 				obj_response.html('#progress_state', 'Stage 1 of 5: compressing...')
 				obj_response.css('#pgb1', 'width', progress_bar_value)
 				obj_response.html('#pgb1-label', progress_bar_value)
@@ -57,9 +56,16 @@ class SijaxHandler(object):
 				obj_response.html('#progress_state', 'Stage 4 of 5: encrypting files...')
 				obj_response.css('#pgb4', 'width', progress_bar_value)
 				obj_response.html('#pgb4-label', progress_bar_value)
-			elif progress_file_text[0] == 'f':
+			elif progress_file_text[0] == 'u':
 				obj_response.css('#pgb4', 'width', '100%')
 				obj_response.html('#pgb4-label', '100%')
+				
+				obj_response.html('#progress_state', 'Stage 5 of 5: uploading files...')
+				obj_response.css('#pgb5', 'width', progress_bar_value)
+				obj_response.html('#pgb5-label', progress_bar_value)
+			elif progress_file_text[0] == 'f':
+				obj_response.css('#pgb5', 'width', '100%')
+				obj_response.html('#pgb5-label', '100%')
 				
 				upload_archive_id = progress_file_text[1:]
 				obj_response.attr('#upload_id','value', upload_archive_id)
@@ -68,7 +74,8 @@ class SijaxHandler(object):
 				"$('#upload_button').removeClass('btn-default').addClass('btn-success');"
 				"$('#upload_spinner').removeClass('fa-spinner fa-spin').addClass('fa-check');"
 				"$('#upload_txt').html(' Upload Complete');")
-				#obj_response.script("$.fn.fullpage.moveSectionUp();") # move up one slide
+				obj_response.script("$.fn.fullpage.moveSectionUp();") # move up one slide
+				
 			elif progress_file_text[0] == 'd':
 				obj_response.html('#d_progress_state', 'Stage 1 of 5: decrypting...')
 				obj_response.css('#d_pgb1', 'width', progress_bar_value)
@@ -105,7 +112,7 @@ class SijaxHandler(object):
 				"$('#download_button').removeClass('btn-default').addClass('btn-success');"
 				"$('#download_spinner').removeClass('fa-spinner fa-spin').addClass('fa-check');"
 				"$('#download_txt').html(' Download Complete');")
-				#obj_response.script("$.fn.fullpage.moveSectionUp();") # move up one slide		
+				#obj_response.script("$.fn.fullpage.moveSectionDown();") # move up one slide		
 			elif progress_file_text == '':
 				print('no progress')
 				obj_response.html('#progress_state', '')
