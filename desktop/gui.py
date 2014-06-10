@@ -76,6 +76,10 @@ class SijaxHandler(object):
 				"$('#upload_txt').html(' Upload Complete');")
 				obj_response.script("$.fn.fullpage.moveSectionUp();") # move up one slide
 				
+				progress_file = open(os.path.join(local_path,'files','.progress_file.txt'), 'w+b')
+				progress_file.write('0')
+				progress_file.close()
+				
 			elif progress_file_text[0] == 'd':
 				obj_response.html('#d_progress_state', 'Stage 1 of 5: decrypting...')
 				obj_response.css('#d_pgb1', 'width', progress_bar_value)
@@ -112,14 +116,27 @@ class SijaxHandler(object):
 				"$('#download_button').removeClass('btn-default').addClass('btn-success');"
 				"$('#download_spinner').removeClass('fa-spinner fa-spin').addClass('fa-check');"
 				"$('#download_txt').html(' Download Complete');")
-				#obj_response.script("$.fn.fullpage.moveSectionDown();") # move up one slide		
-			elif progress_file_text == '':
+				#obj_response.script("$.fn.fullpage.moveSectionDown();") # move down one slide		
+			elif progress_file_text[0] == '0':
 				print('no progress')
 				obj_response.html('#progress_state', '')
-				progress_bar_value = 0	
+				progress_bar_value = ''	
 				obj_response.css('.progress-bar', 'width', progress_bar_value)
-				obj_response.html('.progress-bar-label', progress_bar_value)	
-		except:
+				obj_response.html('.progress-bar-label', progress_bar_value)
+				
+				obj_response.script(
+				"$('#upload_button').removeClass('btn-success').addClass('btn-default');"
+				"$('#upload_spinner').removeClass('fa-check').addClass('fa-cloud-upload');"
+				"$('#upload_txt').html(' Upload');"
+				"$('#dir_to_upload_path').val('');"
+				"$('#passphrase_field').val('');"
+				"$('#upload_button').prop('disabled', false);")
+				
+				progress_file = open(os.path.join(local_path,'files','.progress_file.txt'), 'w+b')
+				progress_file.write('')
+				progress_file.close()
+		except Exception as e:
+			print(e)
 			pass
 			
 		

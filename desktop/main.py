@@ -457,13 +457,12 @@ def upload_private(dir_to_upload, passphrase):
 	
 	upload_files(os.path.join(tmp_upload_dir, archive_id), progress_log_path)
 	
-	# remove tmp_upload dir and progress_log
+	# remove tmp_upload dir
 	shutil.rmtree(tmp_upload_dir)
-	os.remove(progress_log_path)
 	
 	progress_file = open(progress_log_path, 'w+b')
 	progress_file.write('f' + archive_id)
-	progress_file.close(tmp_upload_dir)
+	progress_file.close()
 	
 def download_private(archive_id, save_path, passphrase):
 	if not os.path.isdir(os.path.join(save_path,'tmp_download')):
