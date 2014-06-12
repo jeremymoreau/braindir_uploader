@@ -154,7 +154,7 @@ def cat_files(indir, outfile, progress_log_path):
 	buffer_size = 1000000
 	
 	# get list of files in indir, excluding hidden files starting with a dot
-	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not x.startswith('.')]
+	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not (x.startswith('.') or x.startswith('salt'))]
 	
 	# track progress
 	total_size = sum(os.path.getsize(x) for x in infiles)
@@ -264,6 +264,26 @@ def md5_hash(infile):
 	saved_file.close()
 	
 	return saved_file_path
+	
+##### save MD5 hash of infile at save_path
+def return_md5_hash(infile):
+
+	# generate MD5 hash of file
+	buffer_size = 10**6
+	hasher = Hash.MD5.new()
+
+	with open(infile, 'r+b') as f:
+		data = f.read(buffer_size)
+		while len(data) > 0:
+			hasher.update(data)
+			data = f.read(buffer_size)
+
+
+	# convert to hex
+	md5_hash = hasher.hexdigest()
+
+	return md5_hash
+
 
 ##### Encrypt the dir_to_upload with password_for_dir / decrypt
 def encrypt(indir, password, progress_log_path):
@@ -321,19 +341,19 @@ def encrypt(indir, password, progress_log_path):
 		os.remove(f)
 					
 	# save salt in file
-	salt_file = open(os.path.join(indir,'.salt'), 'w+b')
+	salt_file = open(os.path.join(indir,'salt'), 'w+b')
 	salt_file.write(salt)
 	salt_file.close()
 					
 def decrypt(indir, password, progress_log_path):
 	# get list of files in indir, excluding hidden files starting with a dot
-	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not x.startswith('.')]
+	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not (x.startswith('.') or x.startswith('salt'))]
 	
 	# obtain key from password
 	iterations = 100 # !!! change this values to 100000 later !!!
-	salt = open(os.path.join(indir,'.salt'), 'r+b').read()
+	salt = open(os.path.join(indir,'salt'), 'r+b').read()
 	key = PBKDF2(password, salt, dkLen = 32, count = iterations)
-	print(key.encode('hex'))	
+	#print(key.encode('hex'))	
 	
 	# track progress
 	total_file_count = len(infiles)
@@ -414,7 +434,6 @@ def upload_files(indir, progress_log_path):
 			
 			print(file_to_upload_name + ': ' + upload_status)
 			if upload_status == 'ok':
-				sftp.remove(md5_file_name)
 				os.remove(f)
 				os.remove(md5_file_path)
 				
@@ -439,6 +458,81 @@ def upload_files(indir, progress_log_path):
 	# code to check that upload is complete
 		
 		
+	# close ssh client
+	ssh.close()
+
+def download_files(archive_id, save_path, progress_log_path):
+	ssh = paramiko.SSHClient()
+
+	# get path of user braindir's private key and load the key in the variable 'key'
+	key_file = os.path.join(local_path, 'keys','braindir_rsa')
+	key = paramiko.RSAKey.from_private_key_file(key_file)
+
+	# get the path of BDFS's hostkey and tell paramiko to accept BDFS as a known host
+	hostkey_file = os.path.join(local_path, 'keys','known_hosts')
+	ssh.load_host_keys(hostkey_file)
+
+	# establish an SSH connection to BDFS as user 'braindir'
+	ssh.connect('bdfs.braindir.com', username='braindir', pkey=key)
+
+	# open an sftp session
+	sftp = ssh.open_sftp()
+	# create scp object with which to use scp
+	#scp = SCPClient(ssh.get_transport())
+
+	# cd into directory of archive to download
+	sftp.chdir(archive_id)
+
+	# get the list of files to download
+	remote_files = sftp.listdir('.')
+	infiles = [x for x in remote_files if not x.endswith('.md5')]
+	
+	# track progress
+	total_file_count = len(infiles)
+	download_files_progress_counter = 0
+
+	for f in infiles:
+		file_download_path = os.path.join(save_path, f)
+		md5_file_name = f + '.md5'
+		md5_download_path = os.path.join(save_path, md5_file_name)
+		download_status = ''
+		max_tries = 0
+		while download_status != 'ok':
+			
+			#download archive blocks and md5 hashes
+			sftp.get(f, file_download_path)
+			sftp.get(md5_file_name, md5_download_path)
+			
+			# check that downloaded blocks are intact
+			md5_of_file = return_md5_hash(file_download_path)
+			with open(md5_download_path, 'r+b') as f:
+				md5_file_value = f.read()
+				
+			if md5_of_file == md5_file_value:
+				download_status = 'ok'
+			else:
+				download_status = 'error'
+
+			print('download status: ' + download_status)
+			if download_status == 'ok':
+				# remove md5 hash file
+				os.remove(md5_download_path)
+				
+				# track progress
+				download_files_progress_counter += 1
+				download_files_progress = (download_files_progress_counter * 100) / total_file_count
+				progress_file = open(progress_log_path, 'w+b')
+				progress_file.write('g' + str(download_files_progress))
+				progress_file.close()
+
+			else:
+				if max_tries > 9:
+					break
+				max_tries += 1
+
+	# code to check that upload is complete
+
+
 	# close ssh client
 	ssh.close()
 
@@ -468,9 +562,10 @@ def download_private(archive_id, save_path, passphrase):
 	if not os.path.isdir(os.path.join(save_path,'tmp_download')):
 		os.mkdir(os.path.join(save_path,'tmp_download'))
 	tmp_archive_path = os.path.join(save_path,'tmp_download','tmp_archive.tar.gz')
-	tmp_download_dir_path = os.path.join(save_path,'tmp_download', archive_id)
+	tmp_download_dir_path = os.path.join(save_path,'tmp_download')
 	progress_log_path = os.path.join(local_path,'files','.progress_file.txt')
-
+	
+	download_files(archive_id, tmp_download_dir_path, progress_log_path)
 	decrypt(tmp_download_dir_path, passphrase, progress_log_path)
 	cat_files(tmp_download_dir_path, tmp_archive_path, progress_log_path)
 	checked_id = check_ID(tmp_archive_path, progress_log_path)
@@ -486,16 +581,21 @@ def download_private(archive_id, save_path, passphrase):
 		
 	extract(tmp_archive_path, save_path, progress_log_path)
 	
+	# remove tmp_download dir
+	shutil.rmtree(tmp_download_dir_path)
+	
 	progress_file = open(progress_log_path, 'w+b')
 	progress_file.write('j' + save_path)
 	progress_file.close()
 
 ##### Testing
+#download_files('4ad7b11238b5c42123e02270f4749cc6e3f7beaa4c317a0fffa375dc6747673b_1402522758', '/Users/jeremymoreau/Desktop/tmp_download', os.path.join(local_path,'files','.progress_file.txt'))
+
 # upload_files
 #upload_files('/Users/jeremymoreau/Desktop/tmp_upload/dfb75f2c28fba098f359db9a1380be55f647a4082c9b3e394f6d86d9c75ff274_1402341627', os.path.join(local_path,'files','.progress_file.txt'))
 
 # download_private
-#download_private('2a33ebf3b5f2f6b134fd0aef4553551a242e7f992465277878a43cf70cd703a8_1401920448', '/Users/jeremymoreau/Desktop', 't')
+download_private('1263145327ff3253be7f52122e61a257de8f434897e0e2d44d7b8f82fbd14f10_1402526499', '/Users/jeremymoreau/Desktop', 't')
 
 # upload_private
 #upload_private('/Users/jeremymoreau/Desktop/testdir', 'this is not a good password')
