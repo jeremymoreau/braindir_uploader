@@ -302,7 +302,9 @@
 			$('#fullpage').fullpage({
 		        verticalCentered: true,
 		        resize : false,
+		        keyboardScrolling: true,
 			});
+			$.fn.fullpage.setAllowScrolling(false);
 			
 			// update progress bars in function of python backend progress
 			setInterval(function(){
