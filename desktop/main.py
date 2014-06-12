@@ -33,9 +33,9 @@ def get_size(dir_path):
 ##### tar and gzip the dir_to_upload / extract .tar.gz archive
 def compress(dir_path, out_path, progress_log_path):
 	"""adds dir at dir_path to tmp_archive.tar.gz in ./files/ and tracks operation progress"""
-	# create blank progress file
+	# create progress file
 	progress_file = open(progress_log_path, 'w+b')
-	progress_file.write('00')
+	progress_file.write('c0')
 	progress_file.close()
 	
 	# get basename of the directory to compress
@@ -84,6 +84,11 @@ def compress(dir_path, out_path, progress_log_path):
 	
 def extract(archive_path, save_path, progress_log_path):
 	"""extract the archive at archive_path and save the extracted files at save_path"""
+	# create progress file
+	progress_file = open(progress_log_path, 'w+b')
+	progress_file.write('x0')
+	progress_file.close()
+	
 	# get total size of archive
 	total_size = os.path.getsize(archive_path)
 	
@@ -114,6 +119,11 @@ def split_file(input_file, prefix, progress_log_path):
 	
 	Returns the number of parts created.
 	"""
+	# create progress file
+	progress_file = open(progress_log_path, 'w+b')
+	progress_file.write('s0')
+	progress_file.close()
+	
 	max_size = 49000000
 	buffer_size = 1000000
 	
@@ -151,6 +161,11 @@ def cat_files(indir, outfile, progress_log_path):
 	outfile: the file that will be created
 	buffer_size: buffer_size size in bytes
 	"""
+	# create progress file
+	progress_file = open(progress_log_path, 'w+b')
+	progress_file.write('m0')
+	progress_file.close()
+	
 	buffer_size = 1000000
 	
 	# get list of files in indir, excluding hidden files starting with a dot
@@ -182,6 +197,10 @@ def cat_files(indir, outfile, progress_log_path):
 
 ##### Generate SHA256 hash of infile and appends time.time() to generate a unique ID (BDID) for files
 def generate_ID(infile, progress_log_path):
+	# create progress file
+	progress_file = open(progress_log_path, 'w+b')
+	progress_file.write('i0')
+	progress_file.close()
 	
 	# generate SHA256 of file
 	buffer_size = 10**6
@@ -212,6 +231,10 @@ def generate_ID(infile, progress_log_path):
 	
 ##### Generate SHA256 hash of infile and appends time.time() to generate a unique ID (BDID) for files
 def check_ID(infile, progress_log_path):
+	# create progress file
+	progress_file = open(progress_log_path, 'w+b')
+	progress_file.write('v0')
+	progress_file.close()
 
 	# generate SHA256 of file
 	buffer_size = 10**6
@@ -287,6 +310,10 @@ def return_md5_hash(infile):
 
 ##### Encrypt the dir_to_upload with password_for_dir / decrypt
 def encrypt(indir, password, progress_log_path):
+	# create progress file
+	progress_file = open(progress_log_path, 'w+b')
+	progress_file.write('e0')
+	progress_file.close()
 	
 	# generate key from password
 	#print('Generating key. . . (this should take about 10 seconds)') # !!! update the print to GUI display later !!!
@@ -346,6 +373,11 @@ def encrypt(indir, password, progress_log_path):
 	salt_file.close()
 					
 def decrypt(indir, password, progress_log_path):
+	# create progress file
+	progress_file = open(progress_log_path, 'w+b')
+	progress_file.write('d0')
+	progress_file.close()
+	
 	# get list of files in indir, excluding hidden files starting with a dot
 	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not (x.startswith('.') or x.startswith('salt'))]
 	
@@ -388,6 +420,11 @@ def decrypt(indir, password, progress_log_path):
 		os.remove(f)
 
 def upload_files(indir, progress_log_path):
+	# create progress file
+	progress_file = open(progress_log_path, 'w+b')
+	progress_file.write('u0')
+	progress_file.close()
+	
 	# get list of files in indir, excluding hidden files starting with a dot
 	infiles = [os.path.join(indir, x) for x in os.listdir(indir) if not x.startswith('.')]
 	
@@ -462,6 +499,11 @@ def upload_files(indir, progress_log_path):
 	ssh.close()
 
 def download_files(archive_id, save_path, progress_log_path):
+	# create progress file
+	progress_file = open(progress_log_path, 'w+b')
+	progress_file.write('g0')
+	progress_file.close()
+	
 	ssh = paramiko.SSHClient()
 
 	# get path of user braindir's private key and load the key in the variable 'key'
@@ -595,7 +637,7 @@ def download_private(archive_id, save_path, passphrase):
 #upload_files('/Users/jeremymoreau/Desktop/tmp_upload/dfb75f2c28fba098f359db9a1380be55f647a4082c9b3e394f6d86d9c75ff274_1402341627', os.path.join(local_path,'files','.progress_file.txt'))
 
 # download_private
-download_private('1263145327ff3253be7f52122e61a257de8f434897e0e2d44d7b8f82fbd14f10_1402526499', '/Users/jeremymoreau/Desktop', 't')
+#download_private('1263145327ff3253be7f52122e61a257de8f434897e0e2d44d7b8f82fbd14f10_1402526499', '/Users/jeremymoreau/Desktop', 't')
 
 # upload_private
 #upload_private('/Users/jeremymoreau/Desktop/testdir', 'this is not a good password')
