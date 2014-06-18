@@ -132,6 +132,7 @@ class SijaxHandler(object):
 			elif progress_file_text[0] == '0':
 				print('no progress')
 				obj_response.html('#progress_state', '')
+				obj_response.html('#d_progress_state', '')
 				progress_bar_value = ''	
 				obj_response.css('.progress-bar', 'width', progress_bar_value)
 				obj_response.html('.progress-bar-label', progress_bar_value)
@@ -142,7 +143,14 @@ class SijaxHandler(object):
 				"$('#upload_txt').html(' Upload');"
 				"$('#dir_to_upload_path').val('');"
 				"$('#passphrase_field').val('');"
-				"$('#upload_button').prop('disabled', false);")
+				"$('#upload_button').prop('disabled', false);"
+				"$('#download_button').removeClass('btn-success').addClass('btn-default');"
+				"$('#download_spinner').removeClass('fa-check').addClass('fa-cloud-download');"
+				"$('#download_txt').html(' Download');"
+				"$('#archive_id').val('');"
+				"$('#save_path').val('');"
+				"$('#decrypt_passphrase_field').val('');"
+				"$('#download_button').prop('disabled', false);")
 				
 				progress_file = open(os.path.join(local_path,'files','.progress_file.txt'), 'w+b')
 				progress_file.write('')
