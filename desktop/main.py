@@ -1,6 +1,7 @@
 import paramiko
 from scp import SCPClient
 import os
+import posixpath
 import shutil
 import tarfile
 import time
@@ -8,6 +9,7 @@ from Crypto import Hash
 from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Cipher import AES
 import struct
+import random
 
 ##### General variables
 local_path = os.path.realpath('.')
@@ -578,28 +580,103 @@ def download_files(archive_id, save_path, progress_log_path):
 	# close ssh client
 	ssh.close()
 
-def upload_private(dir_to_upload, passphrase):
-	tmp_upload_dir = os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload')
-	os.mkdir(tmp_upload_dir)
-	tmp_archive_path = os.path.join(tmp_upload_dir, 'tmp_archive.tar.gz')
-	progress_log_path = os.path.join(local_path,'files','.progress_file.txt')
+# def upload_private(dir_to_upload, passphrase):
+#     tmp_upload_dir = os.path.join(os.path.split(dir_to_upload)[0], 'tmp_upload')
+#     os.mkdir(tmp_upload_dir)
+#     tmp_archive_path = os.path.join(tmp_upload_dir, 'tmp_archive.tar.gz')
+#     progress_log_path = os.path.join(local_path,'files','.progress_file.txt')
+#     
+#     compress(dir_to_upload, tmp_archive_path, progress_log_path)
+#     archive_id = generate_ID(tmp_archive_path, progress_log_path)
+#     os.rename(tmp_archive_path, os.path.join(tmp_upload_dir, archive_id + '.tar.gz'))
+#     os.mkdir(os.path.join(tmp_upload_dir, archive_id))
+#     split_file(os.path.join(tmp_upload_dir, archive_id + '.tar.gz'), os.path.join(tmp_upload_dir, archive_id, archive_id), progress_log_path)
+#     encrypt(os.path.join(tmp_upload_dir, archive_id), passphrase, progress_log_path)
+#     
+#     upload_files(os.path.join(tmp_upload_dir, archive_id), progress_log_path)
+#     
+#     # remove tmp_upload dir
+#     shutil.rmtree(tmp_upload_dir)
+#     
+#     progress_file = open(progress_log_path, 'w+b')
+#     progress_file.write('f' + archive_id)
+#     progress_file.close()
+
+def upload_file(infile_path, outdir_remote_path, host, username, key, hostkey_file):
+	# create ssh object
+	ssh = paramiko.SSHClient()
 	
-	compress(dir_to_upload, tmp_archive_path, progress_log_path)
-	archive_id = generate_ID(tmp_archive_path, progress_log_path)
-	os.rename(tmp_archive_path, os.path.join(tmp_upload_dir, archive_id + '.tar.gz'))
-	os.mkdir(os.path.join(tmp_upload_dir, archive_id))
-	split_file(os.path.join(tmp_upload_dir, archive_id + '.tar.gz'), os.path.join(tmp_upload_dir, archive_id, archive_id), progress_log_path)
-	encrypt(os.path.join(tmp_upload_dir, archive_id), passphrase, progress_log_path)
+	# load hostkey_file
+	ssh.load_host_keys(hostkey_file)
 	
-	upload_files(os.path.join(tmp_upload_dir, archive_id), progress_log_path)
+	# establish an SSH connection to BDFS as user 'braindir'
+	ssh.connect(host, username=username, pkey=key)
 	
-	# remove tmp_upload dir
-	shutil.rmtree(tmp_upload_dir)
+	# create scp object from paramiko transport
+	scp = SCPClient(ssh.get_transport())
 	
-	progress_file = open(progress_log_path, 'w+b')
-	progress_file.write('f' + archive_id)
-	progress_file.close()
+	# try uploading file
+	try:
+		scp.put(infile_path, outdir_remote_path)
+		return True
+	except:
+		return False
 	
+	
+def upload_dir(dir_to_upload, host, username, key_file, hostkey_file, PSCID, DCCID, visit_label, acquisition_date, task, run):
+	# get name of remote dir where files are to be uploaded
+	remote_dir_name = PSCID + '_' + str(DCCID) + '_' + visit_label + '_' + str(acquisition_date)
+	
+	# create list of files to upload and directories to create
+	directories_to_create = []
+	files_to_upload = []
+	files_remote_path = []
+	
+	for dirname, dirnames, filenames in os.walk(dir_to_upload):
+		for subdirname in dirnames:
+			directories_to_create.append(posixpath.join(remote_dir_name, posixpath.relpath(posixpath.join(dirname, subdirname), dir_to_upload)))
+		for filename in filenames:
+			files_to_upload.append(os.path.join(dirname, filename))
+			files_remote_path.append(posixpath.join(remote_dir_name, posixpath.relpath(posixpath.join(dirname, filename), dir_to_upload)))
+			
+	print(directories_to_create)
+	print(files_to_upload)
+	print(files_remote_path)
+
+	
+	# load key_file
+	key = paramiko.RSAKey.from_private_key_file(key_file)
+	
+	## Create new remote directory
+	# create ssh object
+	ssh = paramiko.SSHClient()
+	
+	# load hostkey_file
+	ssh.load_host_keys(hostkey_file)
+	
+	# establish an SSH connection to BDFS as user 'braindir'
+	ssh.connect(host, username=username, pkey=key)
+	
+	# open an sftp session
+	sftp = ssh.open_sftp()
+	
+	# create remote directory
+	sftp.mkdir(remote_dir_name, mode=0750)
+	
+	# create remote subdirectories
+	for d in directories_to_create:
+		sftp.mkdir(d, mode=0750)
+	
+	# copy files to server
+	for i in range(0, len(files_to_upload)):
+		local_file_path =  files_to_upload[i]
+		remote_file_path = files_remote_path[i]
+		print(upload_file(local_file_path, remote_file_path, host, username, key, hostkey_file))
+		
+		
+	# close ssh client
+	ssh.close()
+		
 def download_private(archive_id, save_path, passphrase):
 	if not os.path.isdir(os.path.join(save_path,'tmp_download')):
 		os.mkdir(os.path.join(save_path,'tmp_download'))
@@ -631,6 +708,9 @@ def download_private(archive_id, save_path, passphrase):
 	progress_file.close()
 
 ##### Testing
+# upload_dir
+upload_dir('/Users/jeremymoreau/Desktop/brainzzzzzz', 'bdfs.braindir.com', 'braindir', os.path.join(local_path, 'keys','braindir_rsa'), os.path.join(local_path, 'keys','known_hosts'), 'DCC0001', random.randint(1,999999), 'V01', '20140701', 'empty_room', 'R001')
+
 #download_files('4ad7b11238b5c42123e02270f4749cc6e3f7beaa4c317a0fffa375dc6747673b_1402522758', '/Users/jeremymoreau/Desktop/tmp_download', os.path.join(local_path,'files','.progress_file.txt'))
 
 # upload_files
