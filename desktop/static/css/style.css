@@ -55,6 +55,63 @@
 }
 
 /* main_menu */
+.navbar-text {
+  color: #fff !important;
+}
+
+.navbar_wrapper {
+	position: absolute;
+	top: 0px;
+	width: 100%;
+}
+
+.navbar {
+	border-radius: 0px !important;
+}
+
+#settings_btn {
+	float: right;
+	margin-right: 20px;
+	height: 30px;
+}
+
+#settings_btn_txt {
+}
+
+#settings_icon {
+	font-size: 17px;
+}
+
+/*
+#header_nav {
+	position: absolute;
+}
+*/
+
+/*
+.header_bar {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 100%;
+	height: 40px;
+	background-color: #454545;
+}
+
+#settings_btn {
+	position: relative;
+	clear: both;
+}
+*/
+
+/*
+#settings_icon {
+	font-size: 20px;
+	vertical-align: middle;
+	text-align: center;
+}
+*/
+
 .main_menu {
 	width: 85%;
     position: relative;
