@@ -709,7 +709,7 @@ def download_private(archive_id, save_path, passphrase):
 
 ##### Testing
 # upload_dir
-upload_dir('/Users/jeremymoreau/Desktop/brainzzzzzz', 'bdfs.braindir.com', 'braindir', os.path.join(local_path, 'keys','braindir_rsa'), os.path.join(local_path, 'keys','known_hosts'), 'DCC0001', random.randint(1,999999), 'V01', '20140701', 'empty_room', 'R001')
+#upload_dir('/Users/jeremymoreau/Desktop/brainzzzzzz', 'bdfs.braindir.com', 'braindir', os.path.join(local_path, 'keys','braindir_rsa'), os.path.join(local_path, 'keys','known_hosts'), 'DCC0001', random.randint(1,999999), 'V01', '20140701', 'empty_room', 'R001')
 
 #download_files('4ad7b11238b5c42123e02270f4749cc6e3f7beaa4c317a0fffa375dc6747673b_1402522758', '/Users/jeremymoreau/Desktop/tmp_download', os.path.join(local_path,'files','.progress_file.txt'))
 
