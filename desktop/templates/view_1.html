@@ -16,6 +16,9 @@
 </head>
   
 <body>
+<div id="loading_page">
+	<span class="fa fa-spinner fa-spin" id="loading_page_spinner"></span>
+</div>
 <div id="fullpage">
 	<div class="section"><!-- ###################### upload_complete section ###################### -->
 		<div class="upload_complete">
@@ -145,7 +148,7 @@
 		</div>
 
 		<!-- Settings Modal Dialog -->
-		<div class="modal fade" id="settings_modal" tabindex="-1" role="dialog">
+		<div class="modal fade" id="settings_modal" tabindex="-1">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
 		      <div class="modal-header">
@@ -326,6 +329,9 @@
 	
 	<script type="text/javascript">
 		$(document).ready(function(){
+			
+			// display loading screen for 200 ms
+			$('#loading_page').fadeOut(200);
 		
 			// fullPage.js configuration
 			$('#fullpage').fullpage({
