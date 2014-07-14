@@ -9,7 +9,7 @@ class MainWindow(QMainWindow):
 
 		self.view = QWebView(self)
 		self.view.load(url)
-		self.view.setFixedSize(900,550)
+		self.view.setFixedSize(890,550)
 		self.view.setContextMenuPolicy(Qt.NoContextMenu)
 
 if __name__ == '__main__':
@@ -19,6 +19,6 @@ if __name__ == '__main__':
 
 	browser = MainWindow(url)
 	browser.show()
-	browser.setFixedSize(900,550)
+	browser.setFixedSize(890,550)
 
 	sys.exit(app.exec_())
