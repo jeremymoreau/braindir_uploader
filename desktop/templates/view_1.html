@@ -137,18 +137,32 @@
 		<div class="navbar_wrapper">
 		<nav class="navbar navbar-inverse" id="header_nav">
 			<h4 class="navbar-text">BrainDir Uploader</h4>
-			<button class="btn btn-default btn-sm navbar-btn" id="settings_btn">
-				<div>
+			<button class="btn btn-default btn-sm navbar-btn" id="settings_btn" data-toggle="modal" data-target="#settings_modal">
 				<span class="fa fa-cog" id="settings_icon"></span> 
 				<span id="settings_btn_txt"> Settings</span>
-				</div>
 			</button>
 		</nav>
 		</div>
-		<!--
-<div class="header_bar">
-			<button type="button" class="btn btn-default btn-default" id="settings_btn"><span class="fa fa-cog" id="settings_icon"></span></button>
-		</div> -->
+
+		<!-- Settings Modal Dialog -->
+		<div class="modal fade" id="settings_modal" tabindex="-1" role="dialog">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal"><span>&times;</span><span class="sr-only">Close</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Settings</h4>
+		      </div>
+		      <div class="modal-body">
+		        ...
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary">Save changes</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
 		<div class="main_menu">
 			<div class="btn-group main_menu_btn_group">
 				<button type="button" class="btn btn-default btn-xlg" id="main_menu_download_btn"><span class="fa fa-cloud-download"></span> Download</button>
@@ -351,6 +365,13 @@
 				//Prevent the form from being submitted
 				return false;
 			});
+			
+/*
+			// open file dialog  
+			$('#settings_btn').click(function() {
+				Sijax.request('file_dialog');
+			});
+*/
 			
 			// select text on focus
 			$("#upload_id").focus(
