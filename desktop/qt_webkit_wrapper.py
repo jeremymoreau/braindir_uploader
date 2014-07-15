@@ -19,9 +19,7 @@ class FileWindow(QFileDialog):
         self.dir_path = ''
 
     def get_dir_path(self):
-        self.dir_path = str(QFileDialog.getExistingDirectory(
-            self, "Select Directory")
-        )
+        self.dir_path = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         return self.dir_path
 
 

@@ -48,8 +48,7 @@ def upload_file(infile_path, outdir_remote_path, host, username, key,
 def upload_dir(dir_to_upload, host, username, key_file, hostkey_file, pscid,
                dccid, visit_label, acquisition_date, task, run):
     # get name of remote dir where files are to be uploaded
-    remote_dir_name = ''.join([pscid, '_', str(dccid), '_' + visit_label, '_',
-                               str(acquisition_date)])
+    remote_dir_name = ''.join([pscid, '_', str(dccid), '_' + visit_label, '_', str(acquisition_date)])
 
     # create list of files to upload and directories to create
     directories_to_create = []
@@ -59,20 +58,14 @@ def upload_dir(dir_to_upload, host, username, key_file, hostkey_file, pscid,
     for dirname, dirnames, filenames in os.walk(dir_to_upload):
         for subdirname in dirnames:
             directory = posixpath.join(
-                remote_dir_name, posixpath.relpath(
-                    posixpath.join(dirname, subdirname), dir_to_upload
-                )
-            )
+                remote_dir_name, posixpath.relpath(posixpath.join(dirname, subdirname), dir_to_upload))
             directories_to_create.append(directory)
         for filename in filenames:
             file_to_upload = os.path.join(dirname, filename)
             files_to_upload.append(file_to_upload)
 
             remote_file_path = posixpath.join(
-                remote_dir_name, posixpath.relpath(
-                    posixpath.join(dirname, filename), dir_to_upload
-                )
-            )
+                remote_dir_name, posixpath.relpath(posixpath.join(dirname, filename), dir_to_upload))
             files_remote_path.append(remote_file_path)
 
     print(directories_to_create)
@@ -108,8 +101,7 @@ def upload_dir(dir_to_upload, host, username, key_file, hostkey_file, pscid,
         remote_file_path = files_remote_path[i]
 
         # test if file was uploaded correctly
-        print(upload_file(local_file_path, remote_file_path, host, username,
-                          key, hostkey_file))
+        print(upload_file(local_file_path, remote_file_path, host, username, key, hostkey_file))
 
 
     # close ssh client
