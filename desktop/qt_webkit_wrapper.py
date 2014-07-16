@@ -26,8 +26,8 @@ class FileWindow(QFileDialog):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
-    url = QUrl('http://127.0.0.1:5000/')
-    browser = MainWindow(url)
+    url_to_display = QUrl('http://127.0.0.1:5000/')
+    browser = MainWindow(url_to_display)
     browser.show()
     browser.setFixedSize(890, 550)
 
