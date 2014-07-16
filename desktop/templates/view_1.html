@@ -58,7 +58,7 @@
 			<label for="dir_to_upload_path">Choose a directory  to Upload</label>
 			<div class="input-group">
 			  <span class="input-group-btn">
-				<button class="btn btn-default" type="button">Select</button>
+				<button class="btn btn-default" type="button" id="choose_dir_to_upload_btn">Select</button>
 			  </span>
 			  <input type="text" class="form-control" id="dir_to_upload_path">
 			</div>
@@ -370,12 +370,10 @@
 				return false;
 			});
 			
-/*
-			// open file dialog  
-			$('#settings_btn').click(function() {
-				Sijax.request('file_dialog');
+			// open file dialog to choose dir to upload  
+			$('#choose_dir_to_upload_btn').click(function() {
+				Sijax.request('choose_dir_to_upload');
 			});
-*/
 			
 			// select text on focus
 			$("#upload_id").focus(

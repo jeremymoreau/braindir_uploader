@@ -4,12 +4,14 @@ from scp import SCPClient
 import os
 import posixpath
 
+import qt_webkit_wrapper
 
-##### General variables
+
+######################### General variables #########################
 local_path = os.path.realpath('.')
 
 
-##### General Functions
+######################### General Functions #########################
 def get_size(dir_path):
     """get the size of dir at dir_path recursively"""
     total_size = 0
@@ -106,6 +108,11 @@ def upload_dir(dir_to_upload, host, username, key_file, hostkey_file, pscid,
         # test if file was uploaded correctly
         print(upload_file(local_file_path, remote_file_path, host, username, key, hostkey_file))
 
-
     # close ssh client
     ssh.close()
+
+
+######################### main #########################
+if __name__ == '__main__':
+   # print(qt_webkit_wrapper.display_dir_dialog())
+    qt_webkit_wrapper.display_webkit_window()

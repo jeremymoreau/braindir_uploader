@@ -23,17 +23,18 @@ class FileWindow(QFileDialog):
         return self.dir_path
 
 
-if __name__ == '__main__':
+def display_webkit_window():
     app = QApplication(sys.argv)
-
     url_to_display = QUrl('http://127.0.0.1:5000/')
     browser = MainWindow(url_to_display)
     browser.show()
     browser.setFixedSize(890, 550)
-
-    # testing of the file selection dialog
-    #get_dir = FileWindow()
-    #dir_path = get_dir.get_dir_path()
-    #print('path:' + dir_path)
-
     sys.exit(app.exec_())
+
+
+def display_dir_dialog():
+    app = QApplication(sys.argv)
+    get_dir = FileWindow()
+    dir_path = get_dir.get_dir_path()
+    return dir_path
+    #print('path:' + dir_path)

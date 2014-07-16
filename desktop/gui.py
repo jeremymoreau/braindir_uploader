@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import main
+import qt_webkit_wrapper
+
 import os
 from flask import Flask, g, render_template, request, redirect
 import flask_sijax
@@ -171,6 +173,11 @@ class SijaxHandler(object):
         tr = threading.Thread(target=main.download_private, args=(archive_id, save_path, passphrase,))
         tr.start()
 
+    @staticmethod
+    def choose_dir_to_upload(obj_response):
+        dir_path = qt_webkit_wrapper.display_dir_dialog()
+        obj_response.attr('#dir_to_upload_path', 'value', dir_path)
+
 
 @flask_sijax.route(app, '/')
 def index():
@@ -181,5 +188,8 @@ def index():
     return render_template('view_1.html')
 
 
+# def start_flask_server():
+#     app.run(debug=True)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
