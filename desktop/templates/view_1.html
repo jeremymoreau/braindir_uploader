@@ -158,7 +158,7 @@
 		      <div style="overflow: hidden;">
 		      	<h4>Step 1</h4>
 		      	<p>Select the public key file you downloaded from the server.</p>
-		        <button type="button" class="btn btn-default pull-right">Load storage server's public key</button>
+		        <button type="button" class="btn btn-default pull-right" id="server_public_key_btn">Load storage server's public key</button>
 		      </div>
 		        
 		      <div class="vertical_spacer"></div>
@@ -190,7 +190,7 @@
 		    </div>
 		  </div>
 		</div>
-		<!-- Settings Modal Dialog -->
+		<!-- End Settings Modal Dialog -->
 		
 		
 		<div class="main_menu">
@@ -410,6 +410,11 @@
 			// open file dialog to choose dir to upload  
 			$('#choose_dir_to_upload_btn').click(function() {
 				Sijax.request('choose_dir_to_upload');
+			});
+			
+			// open file dialog to choose server public key 
+			$('#server_public_key_btn').click(function() {
+				Sijax.request('load_server_public_key');
 			});
 			
 			// select text on focus

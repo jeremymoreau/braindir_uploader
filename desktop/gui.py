@@ -5,6 +5,7 @@ import main
 import os
 import sys
 import threading
+import shutil
 
 from flask import Flask, g, render_template
 import flask_sijax
@@ -187,6 +188,21 @@ class SijaxHandler(object):
             dir_path = ''
         obj_response.attr('#dir_to_upload_path', 'value', dir_path)
 
+    @staticmethod
+    def load_server_public_key(obj_response):
+        try:
+            file_path = MainWindow.display_file_dialog()
+        except:
+            file_path = ''
+
+        if not file_path == '':
+            shutil.copy(file_path[0], os.path.join(local_path, 'keys'))
+
+        obj_response.script(
+            "$('#server_public_key_btn').removeClass('btn-default').addClass('btn-success');"
+            "$('#server_public_key_btn').prepend('<span class=\"fa fa-check\"></span> ');"
+        )
+
 
 @flask_sijax.route(flask_app, '/')
 def index():
@@ -221,6 +237,12 @@ class MainWindow(QMainWindow):
         dialog = QFileDialog()
         dir_path = QFileDialog.getExistingDirectory(dialog, "Select Directory")
         return dir_path
+
+    @staticmethod
+    def display_file_dialog():
+        dialog = QFileDialog()
+        file_path = QFileDialog.getOpenFileName(dialog, "Select File")
+        return file_path
 
 
 def display_webkit_window():
