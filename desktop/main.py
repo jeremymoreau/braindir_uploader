@@ -107,3 +107,15 @@ def upload_dir(dir_to_upload, host, username, key_file, hostkey_file, pscid,
 
     # close ssh client
     ssh.close()
+
+
+def generate_keypair(public_key_save_path):
+    private_key = paramiko.RSAKey.generate(4096)
+    private_key.write_private_key_file('/Users/jeremymoreau/Desktop/braindir_rsa')
+    public_key = 'ssh-rsa ' + private_key.get_base64()
+    public_key_file = open(os.path.join(public_key_save_path, 'braindir_rsa.pub'), 'w+b')
+    public_key_file.write(public_key)
+    public_key_file.close()
+
+
+generate_keypair('/Users/jeremymoreau/Desktop/')
