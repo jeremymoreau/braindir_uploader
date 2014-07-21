@@ -417,6 +417,11 @@
 				Sijax.request('load_server_public_key');
 			});
 			
+			// open file dialog to choose save path for generated public key
+			$('#public_key_save_path_btn').click(function() {
+				Sijax.request('choose_public_key_save_path');
+			});
+			
 			// select text on focus
 			$("#upload_id").focus(
 			    function() { 

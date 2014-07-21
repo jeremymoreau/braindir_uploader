@@ -203,6 +203,14 @@ class SijaxHandler(object):
             "$('#server_public_key_btn').prepend('<span class=\"fa fa-check\"></span> ');"
         )
 
+    @staticmethod
+    def choose_public_key_save_path(obj_response):
+        try:
+            dir_path = MainWindow.display_dir_dialog()
+        except:
+            dir_path = ''
+        obj_response.attr('#public_key_save_path', 'value', dir_path)
+
 
 @flask_sijax.route(flask_app, '/')
 def index():
