@@ -1,10 +1,7 @@
 import paramiko
-
 from scp import SCPClient
 import os
 import posixpath
-
-import qt_webkit_wrapper
 
 
 ######################### General variables #########################
@@ -110,9 +107,3 @@ def upload_dir(dir_to_upload, host, username, key_file, hostkey_file, pscid,
 
     # close ssh client
     ssh.close()
-
-
-######################### main #########################
-if __name__ == '__main__':
-   # print(qt_webkit_wrapper.display_dir_dialog())
-    qt_webkit_wrapper.display_webkit_window()

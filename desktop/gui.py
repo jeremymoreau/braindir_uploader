@@ -1,27 +1,33 @@
 # -*- coding: utf-8 -*-
 
 import main
-import qt_webkit_wrapper
 
 import os
-from flask import Flask, g, render_template, request, redirect
-import flask_sijax
+import sys
 import threading
 
+from flask import Flask, g, render_template
+import flask_sijax
+from gevent.wsgi import WSGIServer
 
-##### General variables
+from PyQt5.QtCore import Qt, QUrl, QThread
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PyQt5.QtWebKitWidgets import QWebView
+
+
+######################### General variables #########################
 local_path = os.path.realpath('.')
-dir_to_upload = '/Users/jeremymoreau/Desktop/testdir'
-#progress_bar_value = str(90) + '%'
 
+
+######################### Flask code #########################
 # initialise app
-app = Flask(__name__)
+flask_app = Flask(__name__)
 
 # config for flask-sijax
-app.config["CACHE_TYPE"] = "null"
-app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-app.config["SIJAX_STATIC_PATH"] = os.path.join(main.local_path, 'static', 'js', 'sijax')
-flask_sijax.Sijax(app)
+flask_app.config["CACHE_TYPE"] = "null"
+flask_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
+flask_app.config["SIJAX_STATIC_PATH"] = os.path.join(main.local_path, 'static', 'js', 'sijax')
+flask_sijax.Sijax(flask_app)
 
 
 class SijaxHandler(object):
@@ -175,11 +181,14 @@ class SijaxHandler(object):
 
     @staticmethod
     def choose_dir_to_upload(obj_response):
-        dir_path = qt_webkit_wrapper.display_dir_dialog()
+        try:
+            dir_path = MainWindow.display_dir_dialog()
+        except:
+            dir_path = ''
         obj_response.attr('#dir_to_upload_path', 'value', dir_path)
 
 
-@flask_sijax.route(app, '/')
+@flask_sijax.route(flask_app, '/')
 def index():
     if g.sijax.is_sijax_request:
         g.sijax.register_object(SijaxHandler)
@@ -188,8 +197,42 @@ def index():
     return render_template('view_1.html')
 
 
-# def start_flask_server():
-#     app.run(debug=True)
+def start_server():
+    http_server = WSGIServer(('', 62494), flask_app)
+    http_server.serve_forever()
+
+
+######################### PyQt GUI code #########################
+class FlaskThread(QThread):
+    def run(self):
+        start_server()
+
+
+class MainWindow(QMainWindow):
+    def __init__(self, url):
+        super(MainWindow, self).__init__()
+        self.view = QWebView(self)
+        self.view.load(url)
+        self.view.setFixedSize(890, 550)
+        self.view.setContextMenuPolicy(Qt.NoContextMenu)
+
+    @staticmethod
+    def display_dir_dialog():
+        dialog = QFileDialog()
+        dir_path = QFileDialog.getExistingDirectory(dialog, "Select Directory")
+        return dir_path
+
+
+def display_webkit_window():
+    qt_app = QApplication(sys.argv)
+    thread = FlaskThread()
+    thread.start()
+    url_to_display = QUrl('http://127.0.0.1:62494/')
+    browser = MainWindow(url_to_display)
+    browser.show()
+    browser.setFixedSize(890, 550)
+    sys.exit(qt_app.exec_())
+
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    display_webkit_window()
