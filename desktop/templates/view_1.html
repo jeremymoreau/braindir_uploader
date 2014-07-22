@@ -187,15 +187,16 @@
 					</div>
 				</div><!-- form-group -->
 				
-		        <button type="button" class="btn btn-default pull-right">
+		        <button type="button" class="btn btn-default pull-right" id="generate_keys_btn">
                     Generate public/private key pair
                 </button>
 		        </div>
 		      </div>
 		      
 		      <div class="modal-footer">
-		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		        <button type="button" class="btn btn-primary">Save changes</button>
+		        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                    Save changes
+                </button>
 		      </div>
 		    </div>
 		  </div>
@@ -390,9 +391,9 @@
 			$.fn.fullpage.setAllowScrolling(false);
 			
 			// update progress bars in function of python backend progress
-			setInterval(function(){
-				Sijax.request('set_progress');
-			}, 3000);
+//			setInterval(function(){
+//				Sijax.request('set_progress');
+//			}, 3000);
 			
 			// start upload pipeline  
 			$('#upload_form').bind('submit', function() {
@@ -425,7 +426,9 @@
 			$('#choose_dir_to_upload_btn').click(function() {
 				Sijax.request('choose_dir_to_upload');
 			});
-			
+
+
+            ////////////////// Settings Dialog //////////////////
 			// open file dialog to choose server public key 
 			$('#server_public_key_btn').click(function() {
 				Sijax.request('load_server_public_key');
@@ -435,6 +438,16 @@
 			$('#public_key_save_path_btn').click(function() {
 				Sijax.request('choose_public_key_save_path');
 			});
+
+            // Generate public/private key pair
+            $('#generate_keys_btn').click(function() {
+				Sijax.request('generate_keys', [$('#public_key_save_path').val()]);
+
+                // modify #generate_keys_btn
+				$("#generate_keys_btn").prop("disabled", true).html(
+                        "<span class='fa fa-spinner fa-spin'></span> Generating Keys..."
+                );
+             });
 			
 			// select text on focus
 			$("#upload_id").focus(

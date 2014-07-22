@@ -200,7 +200,8 @@ class SijaxHandler(object):
 
         obj_response.script(
             "$('#server_public_key_btn').removeClass('btn-default').addClass('btn-success');"
-            "$('#server_public_key_btn').prepend('<span class=\"fa fa-check\"></span> ');"
+            "$('#server_public_key_btn')"
+            ".html('<span class=\"fa fa-check\"></span> Load new storage server public key');"
         )
 
     @staticmethod
@@ -210,6 +211,21 @@ class SijaxHandler(object):
         except:
             dir_path = ''
         obj_response.attr('#public_key_save_path', 'value', dir_path)
+
+    @staticmethod
+    def generate_keys(obj_response, save_path):
+        if save_path == '':
+            obj_response.script('alert("You must choose where to save your public key first!")')
+        else:
+            tr = threading.Thread(target=main.generate_keypair, args=(save_path,))
+            tr.start()
+            tr.join()
+            obj_response.script(
+                "$('#generate_keys_btn').removeClass('btn-default').addClass('btn-success');"
+                "$('#generate_keys_btn')"
+                ".html('<span class=\"fa fa-check\"></span> Generate new public/private key pair');"
+                "$('#generate_keys_btn').prop('disabled', false);"
+            )
 
 
 @flask_sijax.route(flask_app, '/')
@@ -238,7 +254,7 @@ class MainWindow(QMainWindow):
         self.view = QWebView(self)
         self.view.load(url)
         self.view.setFixedSize(890, 550)
-        self.view.setContextMenuPolicy(Qt.NoContextMenu)
+        #self.view.setContextMenuPolicy(Qt.NoContextMenu)
 
     @staticmethod
     def display_dir_dialog():

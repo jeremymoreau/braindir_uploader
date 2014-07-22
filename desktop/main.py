@@ -1,6 +1,7 @@
 import paramiko
 from scp import SCPClient
 import os
+import shutil
 import posixpath
 
 
@@ -110,12 +111,17 @@ def upload_dir(dir_to_upload, host, username, key_file, hostkey_file, pscid,
 
 
 def generate_keypair(public_key_save_path):
+    print(public_key_save_path)
     private_key = paramiko.RSAKey.generate(4096)
-    private_key.write_private_key_file('/Users/jeremymoreau/Desktop/braindir_rsa')
+    private_key.write_private_key_file(os.path.join(local_path, 'keys', 'braindir_rsa'))
     public_key = 'ssh-rsa ' + private_key.get_base64()
-    public_key_file = open(os.path.join(public_key_save_path, 'braindir_rsa.pub'), 'w+b')
+    public_key_tmp_path = os.path.join(local_path, 'keys', 'braindir_rsa.pub')
+    public_key_file = open(public_key_tmp_path, 'w+b')
     public_key_file.write(public_key)
     public_key_file.close()
+    print(public_key_tmp_path)
+    print(public_key_save_path)
+    shutil.copy(public_key_tmp_path, public_key_save_path)
 
 
-generate_keypair('/Users/jeremymoreau/Desktop/')
+#generate_keypair('/Users/jeremymoreau/Desktop/')
