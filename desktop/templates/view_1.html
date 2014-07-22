@@ -159,18 +159,36 @@
 		      </div>
 		      
 		      <div class="modal-body">
-		      <div style="overflow: hidden;">
+              <div style="overflow: hidden;">
 		      	<h4>Step 1</h4>
+		      	<p>Enter the storage server's host name or IP address and your username.</p>
+		        <div class="form-group">
+                    <label for="hostname_field">Storage server's host name or IP address</label>
+                    <input type="text" class="form-control" id="hostname_field">
+                </div>
+                <div class="form-group">
+                    <label for="username_field">Username</label>
+                    <input type="text" class="form-control" id="username_field">
+                </div>
+		      </div>
+
+              <hr>
+              <!--<div class="vertical_spacer"></div>-->
+
+		      <div class="vertical_spacer"></div>
+		      <div style="overflow: hidden;">
+		      	<h4>Step 2</h4>
 		      	<p>Select the public key file you downloaded from the server.</p>
 		        <button type="button" class="btn btn-default pull-right" id="server_public_key_btn">
                     Load storage server's public key
                 </button>
 		      </div>
-		        
-		      <div class="vertical_spacer"></div>
+
+              <hr>
+		      <!--<div class="vertical_spacer"></div>-->
 		        
 		        <div style="overflow: hidden;">
-		        <h4>Step 2</h4>
+		        <h4>Step 3</h4>
 		        <p>Generate a public/private key pair, then upload the generated public key file to the 
 			       server.
 		        </p>
@@ -194,7 +212,7 @@
 		      </div>
 		      
 		      <div class="modal-footer">
-		        <button type="button" class="btn btn-primary" data-dismiss="modal">
+		        <button type="button" class="btn btn-primary" data-dismiss="modal" id="save_settings">
                     Save changes
                 </button>
 		      </div>
@@ -430,6 +448,7 @@
 
             ////////////////// Settings Dialog //////////////////
             // Check if public/private keys are loaded on app startup
+            // Check if a settings.json file exists and loads settings
             // Adjust settings dialog accordingly
             Sijax.request('check_settings');
 
@@ -455,6 +474,13 @@
                     );
                 }
              });
+
+            // Save hostname and username
+            $("#save_settings").click(function() {
+                Sijax.request('save_settings', [$('#hostname_field').val(), $('#username_field').val()]);
+            });
+
+            ////////////////// End Settings Dialog //////////////////
 			
 			// select text on focus
 			$("#upload_id").focus(

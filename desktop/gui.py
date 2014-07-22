@@ -6,6 +6,7 @@ import os
 import sys
 import threading
 import shutil
+import json
 
 from flask import Flask, g, render_template
 import flask_sijax
@@ -190,6 +191,13 @@ class SijaxHandler(object):
 
     @staticmethod
     def check_settings(obj_response):
+        settings_file = os.path.join(local_path, 'files', 'settings.json')
+        if os.path.isfile(settings_file):
+            with open(settings_file, 'r+b') as sf:
+                settings = json.load(sf)
+            obj_response.attr('#hostname_field', 'value', settings['hostname'])
+            obj_response.attr('#username_field', 'value', settings['username'])
+
         if os.path.isfile(os.path.join(local_path, 'keys', 'braindir_server_rsa.pub')):
             obj_response.script(
                 "$('#server_public_key_btn').removeClass('btn-default').addClass('btn-success');"
@@ -204,6 +212,13 @@ class SijaxHandler(object):
                 ".html('<span class=\"fa fa-check\"></span> Generate new public/private key pair');"
                 "$('#generate_keys_btn').prop('disabled', false);"
             )
+
+    @staticmethod
+    def save_settings(obj_response, hostname, username):
+        settings = {'hostname': hostname, 'username': username}
+        settings_file = os.path.join(local_path, 'files', 'settings.json')
+        with open(settings_file, 'w+b') as sf:
+            json.dump(settings, sf)
 
     @staticmethod
     def load_server_public_key(obj_response):
