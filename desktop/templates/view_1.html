@@ -19,16 +19,14 @@
 <div id="loading_page"></div>
 <div id="fullpage">
 	<div class="section"><!-- ###################### upload_complete section ###################### -->
-		<div class="upload_complete">
+		<div class="transfer_complete">
 			<div id="upload_complete_info">
 				<div class="row">
-				<div id="upload_complete_cloud_wrapper">
-					<i class="fa fa-cloud-upload" id="upload_complete_cloud"></i>
-					<div id="upload_complete_cloud_label"><h3>Upload Complete!</h3></div>
+				<div class="complete_cloud_wrapper">
+					<i class="fa fa-cloud-upload complete_cloud"></i>
+					<div class="complete_cloud_label"><h3>Upload Complete!</h3></div>
 				</div>
 				</div><!-- row -->
-				
-<!-- 				<div class="vertical_spacer"></div> -->
 				
 				<div class="row">
 				<div class="form-group">
@@ -58,7 +56,9 @@
 			<label for="dir_to_upload_path">Choose a directory  to Upload</label>
 			<div class="input-group">
 			  <span class="input-group-btn">
-				<button class="btn btn-default" type="button" id="choose_dir_to_upload_btn">Select</button>
+				<button class="btn btn-default" type="button" id="choose_dir_to_upload_btn">
+                    Select
+                </button>
 			  </span>
 			  <input type="text" class="form-control" id="dir_to_upload_path">
 			</div>
@@ -76,7 +76,8 @@
 		<div class="row">
 		<!-- upload button -->
 		<button type="submit" class="btn btn-lg btn-default" id="upload_button">
-			<span class="fa fa-cloud-upload" id="upload_spinner"></span><span id="upload_txt"> Upload</span>
+			<span class="fa fa-cloud-upload" id="upload_spinner"></span>
+            <span id="upload_txt"> Upload</span>
 		</button>
 		</div><!-- row -->
 	</form>
@@ -87,42 +88,42 @@
 	<div class="pgb_wrapper">
 	<h4>Progress</h4>
 	<div id = "progress_state"></div>
-	<div id="pgb-container" style="position: relative">
-		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 1">
+	<div class="pgb-container" style="position: relative">
+		<div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1">
 		<div class="progress progress-striped active">
-			<div class="progress-bar progress-bar-primary" id="pgb1" style="width: 0%">
+			<div class="progress-bar progress-bar-primary" id="pgb1" style="width: 0">
 				<span class="progress-bar-label" id="pgb1-label"></span>
 			</div>
 		</div>
 		</div>
 		
-		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 2">
+		<div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 2">
 		<div class="progress progress-striped active" style="background-color: transparent">
-			<div class="progress-bar progress-bar-info" id="pgb2" style="width: 0%">
+			<div class="progress-bar progress-bar-info" id="pgb2" style="width: 0">
 				<span class="progress-bar-label" id="pgb2-label"></span>
 			</div>
 		</div>
 		</div>
 
-		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 3">
+		<div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 3">
 		<div class="progress progress-striped active" style="background-color: transparent">
-			<div class="progress-bar progress-bar-success" id="pgb3" style="width: 0%">
+			<div class="progress-bar progress-bar-success" id="pgb3" style="width: 0">
 				<span class="progress-bar-label" id="pgb3-label"></span>
 			</div>
 		</div>
 		</div>
 		
-		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 4">
+		<div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 4">
 		<div class="progress progress-striped active" style="background-color: transparent">
-			<div class="progress-bar progress-bar-warning" id="pgb4" style="width: 0%">
+			<div class="progress-bar progress-bar-warning" id="pgb4" style="width: 0">
 				<span class="progress-bar-label" id="pgb4-label"></span>
 			</div>
 		</div>
 		</div>
 
-		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 5">
+		<div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 5">
 		<div class="progress progress-striped active" style="background-color: transparent">
-			<div class="progress-bar progress-bar-danger" id="pgb5" style="width: 0%">
+			<div class="progress-bar progress-bar-danger" id="pgb5" style="width: 0">
 				<span class="progress-bar-label" id="pgb5-label"></span>
 			</div>
 		</div>
@@ -138,7 +139,8 @@
 		<div class="navbar_wrapper">
 		<nav class="navbar navbar-inverse" id="header_nav">
 			<h4 class="navbar-text">BrainDir Uploader</h4>
-			<button class="btn btn-default btn-sm navbar-btn" id="settings_btn" data-toggle="modal" data-target="#settings_modal">
+			<button class="btn btn-default btn-sm navbar-btn" id="settings_btn"
+                    data-toggle="modal" data-target="#settings_modal">
 				<span class="fa fa-cog" id="settings_icon"></span> 
 				<span id="settings_btn_txt"> Settings</span>
 			</button>
@@ -150,7 +152,9 @@
 		  <div class="modal-dialog">
 		    <div class="modal-content">
 		      <div class="modal-header">
-		        <button type="button" class="close" data-dismiss="modal"><span>&times;</span><span class="sr-only">Close</span></button>
+		        <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span><span class="sr-only">Close</span>
+                </button>
 		        <h4 class="modal-title" id="myModalLabel">Settings</h4>
 		      </div>
 		      
@@ -158,7 +162,9 @@
 		      <div style="overflow: hidden;">
 		      	<h4>Step 1</h4>
 		      	<p>Select the public key file you downloaded from the server.</p>
-		        <button type="button" class="btn btn-default pull-right" id="server_public_key_btn">Load storage server's public key</button>
+		        <button type="button" class="btn btn-default pull-right" id="server_public_key_btn">
+                    Load storage server's public key
+                </button>
 		      </div>
 		        
 		      <div class="vertical_spacer"></div>
@@ -173,13 +179,17 @@
 					<label for="public_key_save_path">Choose where to save your public key</label>
 					<div class="input-group">
 					  <span class="input-group-btn">
-						<button class="btn btn-default" type="button" id="public_key_save_path_btn">Select</button>
+						<button class="btn btn-default" type="button" id="public_key_save_path_btn">
+                            Select
+                        </button>
 					  </span>
 					  <input type="text" class="form-control" id="public_key_save_path">
 					</div>
 				</div><!-- form-group -->
 				
-		        <button type="button" class="btn btn-default pull-right">Generate public/private key pair</button>
+		        <button type="button" class="btn btn-default pull-right">
+                    Generate public/private key pair
+                </button>
 		        </div>
 		      </div>
 		      
@@ -198,7 +208,7 @@
 				<button type="button" class="btn btn-default btn-xlg" id="main_menu_download_btn">
 					<span class="fa fa-cloud-download"></span> Download
 				</button>
-				<button type="button" class="btn btn-default dropdown-toggle btn-xlg-drop" id="" data-toggle="dropdown">
+				<button type="button" class="btn btn-default dropdown-toggle btn-xlg-drop" data-toggle="dropdown">
 					<span class="glyphicon glyphicon-chevron-down"></span>
 				</button>
 				<ul class="dropdown-menu pull-right" role="menu">
@@ -209,7 +219,7 @@
 				<button type="button" class="btn btn-default btn-xlg" id="main_menu_upload_btn">
 					<span class="fa fa-cloud-upload"></span> Upload
 				</button>
-				<button type="button" class="btn btn-default dropdown-toggle btn-xlg-drop" id="" data-toggle="dropdown">
+				<button type="button" class="btn btn-default dropdown-toggle btn-xlg-drop" data-toggle="dropdown">
 					<span class="glyphicon glyphicon-chevron-down"></span>
 				</button>
 				<ul class="dropdown-menu pull-right main_menu_dropdown" role="menu">
@@ -247,7 +257,9 @@
 		<div class="row">
 		<!-- passphrase field -->
 		<div class="form-group">
-			<label for="decrypt_passphrase_field">Enter the passphrase to decrypt this private dataset</label>
+			<label for="decrypt_passphrase_field">
+                Enter the passphrase to decrypt this private dataset
+            </label>
 			<input type="password" class="form-control" id="decrypt_passphrase_field">
 		</div>
 		</div><!-- row -->
@@ -255,7 +267,8 @@
 		<div class="row">
 		<!-- download button -->
 		<button type="submit" class="btn btn-lg btn-default" id="download_button">
-			<span class="fa fa-cloud-download" id="download_spinner"></span><span id="download_txt"> Download</span>
+			<span class="fa fa-cloud-download" id="download_spinner"></span>
+            <span id="download_txt"> Download</span>
 		</button>
 		</div><!-- row -->
 	</form>
@@ -266,42 +279,42 @@
 	<div class="pgb_wrapper">
 	<h4>Progress</h4>
 	<div id = "d_progress_state"></div>
-	<div id="pgb-container" style="position: relative">
-		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 1">
+	<div class="pgb-container" style="position: relative">
+		<div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1">
 		<div class="progress progress-striped active">
-			<div class="progress-bar progress-bar-primary" id="d_pgb1" style="width: 0%">
+			<div class="progress-bar progress-bar-primary" id="d_pgb1" style="width: 0">
 				<span class="progress-bar-label" id="d_pgb1-label"></span>
 			</div>
 		</div>
 		</div>
 		
-		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 2">
+		<div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 2">
 		<div class="progress progress-striped active" style="background-color: transparent">
-			<div class="progress-bar progress-bar-info" id="d_pgb2" style="width: 0%">
+			<div class="progress-bar progress-bar-info" id="d_pgb2" style="width: 0">
 				<span class="progress-bar-label" id="d_pgb2-label"></span>
 			</div>
 		</div>
 		</div>
 
-		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 3">
+		<div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 3">
 		<div class="progress progress-striped active" style="background-color: transparent">
-			<div class="progress-bar progress-bar-success" id="d_pgb3" style="width: 0%">
+			<div class="progress-bar progress-bar-success" id="d_pgb3" style="width: 0">
 				<span class="progress-bar-label" id="d_pgb3-label"></span>
 			</div>
 		</div>
 		</div>
 		
-		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 4">
+		<div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 4">
 		<div class="progress progress-striped active" style="background-color: transparent">
-			<div class="progress-bar progress-bar-warning" id="d_pgb4" style="width: 0%">
+			<div class="progress-bar progress-bar-warning" id="d_pgb4" style="width: 0">
 				<span class="progress-bar-label" id="d_pgb4-label"></span>
 			</div>
 		</div>
 		</div>
 
-		<div style="position: absolute; width: 100%; height: 100%: top: 0; left: 0; z-index: 5">
+		<div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 5">
 		<div class="progress progress-striped active" style="background-color: transparent">
-			<div class="progress-bar progress-bar-danger" id="d_pgb5" style="width: 0%">
+			<div class="progress-bar progress-bar-danger" id="d_pgb5" style="width: 0">
 				<span class="progress-bar-label" id="d_pgb5-label"></span>
 			</div>
 		</div>
@@ -314,12 +327,12 @@
 	</div><!-- download_main section -->
 	
 	<div class="section"><!-- ###################### download_complete section ###################### -->
-		<div class="download_complete">
+		<div class="transfer_complete">
 			<div id="download_complete_info">
 				<div class="row">
-				<div id="download_complete_cloud_wrapper">
-					<i class="fa fa-cloud-download" id="upload_complete_cloud"></i>
-					<div id="download_complete_cloud_label"><h3>Download Complete!</h3></div>
+				<div class="complete_cloud_wrapper">
+					<i class="fa fa-cloud-download complete_cloud"></i>
+					<div class="complete_cloud_label"><h3>Download Complete!</h3></div>
 				</div>
 				</div><!-- row -->
 				
@@ -345,7 +358,7 @@
 	<!-- Start JavaScript Libraries -->
 		{% block javascript_lib %}
 		<!-- jQuery  -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
 		
 		<!-- Bootstrap -->
 		<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
@@ -372,7 +385,7 @@
 			$('#fullpage').fullpage({
 		        verticalCentered: true,
 		        resize : false,
-		        keyboardScrolling: true,
+		        keyboardScrolling: true
 			});
 			$.fn.fullpage.setAllowScrolling(false);
 			
@@ -396,7 +409,8 @@
 			
 			// start download pipeline  
 			$('#download_form').bind('submit', function() {
-				Sijax.request('start_download', [$('#archive_id').val(), $('#save_path').val(), $('#decrypt_passphrase_field').val()]);
+				Sijax.request('start_download', [$('#archive_id').val(), $('#save_path').val(),
+                    $('#decrypt_passphrase_field').val()]);
 				
 				// modify upload button
 				$("#download_button").prop("disabled", true);
