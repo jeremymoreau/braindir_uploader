@@ -189,6 +189,23 @@ class SijaxHandler(object):
         obj_response.attr('#dir_to_upload_path', 'value', dir_path)
 
     @staticmethod
+    def check_settings(obj_response):
+        if os.path.isfile(os.path.join(local_path, 'keys', 'braindir_server_rsa.pub')):
+            obj_response.script(
+                "$('#server_public_key_btn').removeClass('btn-default').addClass('btn-success');"
+                "$('#server_public_key_btn')"
+                ".html('<span class=\"fa fa-check\"></span> Load new storage server public key');"
+            )
+
+        if os.path.isfile(os.path.join(local_path, 'keys', 'braindir_rsa')):
+            obj_response.script(
+                "$('#generate_keys_btn').removeClass('btn-default').addClass('btn-success');"
+                "$('#generate_keys_btn')"
+                ".html('<span class=\"fa fa-check\"></span> Generate new public/private key pair');"
+                "$('#generate_keys_btn').prop('disabled', false);"
+            )
+
+    @staticmethod
     def load_server_public_key(obj_response):
         try:
             file_path = MainWindow.display_file_dialog()

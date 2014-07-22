@@ -429,6 +429,11 @@
 
 
             ////////////////// Settings Dialog //////////////////
+            // Check if public/private keys are loaded on app startup
+            // Adjust settings dialog accordingly
+            Sijax.request('check_settings');
+
+
 			// open file dialog to choose server public key 
 			$('#server_public_key_btn').click(function() {
 				Sijax.request('load_server_public_key');
@@ -443,10 +448,12 @@
             $('#generate_keys_btn').click(function() {
 				Sijax.request('generate_keys', [$('#public_key_save_path').val()]);
 
-                // modify #generate_keys_btn
-				$("#generate_keys_btn").prop("disabled", true).html(
-                        "<span class='fa fa-spinner fa-spin'></span> Generating Keys..."
-                );
+                // modify #generate_keys_btn if public_key_save_path field is not empty
+                if( $('#public_key_save_path').val().length != 0) {
+                    $("#generate_keys_btn").prop("disabled", true).html(
+                            "<span class='fa fa-spinner fa-spin'></span> Generating Keys..."
+                    );
+                }
              });
 			
 			// select text on focus
