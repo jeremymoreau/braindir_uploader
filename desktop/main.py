@@ -3,6 +3,7 @@ from scp import SCPClient
 import os
 import shutil
 import posixpath
+import json
 
 
 ######################### General variables #########################
@@ -28,10 +29,10 @@ def upload_file(infile_path, outdir_remote_path, host, username, key,
     # create ssh object
     ssh = paramiko.SSHClient()
 
-    # load hostkey_file
+    # load server's public key file
     ssh.load_host_keys(hostkey_file)
 
-    # establish an SSH connection to BDFS as user 'braindir'
+    # establish an SSH connection to storage server
     ssh.connect(host, username=username, pkey=key)
 
     # create scp object from paramiko transport
@@ -45,8 +46,18 @@ def upload_file(infile_path, outdir_remote_path, host, username, key,
         return False
 
 
-def upload_dir(dir_to_upload, host, username, key_file, hostkey_file, pscid,
-               dccid, visit_label, acquisition_date, task, run):
+def upload_dir(dir_to_upload, pscid, dccid, visit_label, acquisition_date):
+    # load hostname and username from settings.json
+    settings_file = os.path.join(local_path, 'files', 'settings.json')
+    with open(settings_file, 'r+b') as sf:
+        settings = json.load(sf)
+    host = settings['hostname']
+    username = settings['username']
+
+    # set path of client's private key file and server's public key file
+    client_prv_key_file_path = os.path.join(local_path, 'keys', 'braindir_rsa')
+    server_pub_key_file_path = os.path.join(local_path, 'keys', 'braindir_server_rsa.pub')
+
     # get name of remote dir where files are to be uploaded
     remote_dir_name = ''.join(
         [pscid, '_', str(dccid), '_' + visit_label, '_', str(acquisition_date)])
@@ -75,17 +86,17 @@ def upload_dir(dir_to_upload, host, username, key_file, hostkey_file, pscid,
     print(files_to_upload)
     print(files_remote_path)
 
-    # load key_file
-    key = paramiko.RSAKey.from_private_key_file(key_file)
+    # load client's private key file
+    key = paramiko.RSAKey.from_private_key_file(client_prv_key_file_path)
 
     ## Create new remote directory
     # create ssh object
     ssh = paramiko.SSHClient()
 
-    # load hostkey_file
-    ssh.load_host_keys(hostkey_file)
+    # load server's public key file
+    ssh.load_host_keys(server_pub_key_file_path)
 
-    # establish an SSH connection to BDFS as user 'braindir'
+    # establish an SSH connection to storage server
     ssh.connect(host, username=username, pkey=key)
 
     # open an sftp session
@@ -104,7 +115,7 @@ def upload_dir(dir_to_upload, host, username, key_file, hostkey_file, pscid,
         remote_file_path = files_remote_path[i]
 
         # test if file was uploaded correctly
-        print(upload_file(local_file_path, remote_file_path, host, username, key, hostkey_file))
+        print(upload_file(local_file_path, remote_file_path, host, username, key, server_pub_key_file_path))
 
     # close ssh client
     ssh.close()
