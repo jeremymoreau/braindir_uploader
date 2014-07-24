@@ -221,20 +221,10 @@ class SijaxHandler(object):
             json.dump(settings, sf)
 
     @staticmethod
-    def load_server_public_key(obj_response):
-        try:
-            file_path = MainWindow.display_file_dialog()
-        except:
-            file_path = ''
+    def get_hostkey_fingerprint(obj_response, host):
+        fingerprint = main.get_hostkey_fingerprint(host)
+        obj_response.alert(fingerprint)
 
-        if not file_path == '':
-            shutil.copy(file_path[0], os.path.join(local_path, 'keys'))
-
-        obj_response.script(
-            "$('#server_public_key_btn').removeClass('btn-default').addClass('btn-success');"
-            "$('#server_public_key_btn')"
-            ".html('<span class=\"fa fa-check\"></span> Load new storage server public key');"
-        )
 
     @staticmethod
     def choose_public_key_save_path(obj_response):

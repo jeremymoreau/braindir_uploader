@@ -4,6 +4,7 @@ import os
 import shutil
 import posixpath
 import json
+import binascii
 
 
 ######################### General variables #########################
@@ -121,6 +122,7 @@ def upload_dir(dir_to_upload, pscid, dccid, visit_label, acquisition_date):
     ssh.close()
 
 
+#### SSH Authentification functions
 def generate_keypair(public_key_save_path):
     print(public_key_save_path)
     private_key = paramiko.RSAKey.generate(4096)
@@ -135,4 +137,52 @@ def generate_keypair(public_key_save_path):
     shutil.copy(public_key_tmp_path, public_key_save_path)
 
 
+def get_hostkey_fingerprint(host):
+    transport = paramiko.Transport(host)
+    transport.start_client()
+    hostkey = transport.get_remote_server_key()
+    hostkey_md5 = hostkey.get_fingerprint()
+
+    # format fingerprint with colons every two characters
+    s = binascii.hexlify(hostkey_md5)
+    fingerprint = ":".join(s[i:i+2] for i in range(0, len(s), 2))
+
+    return fingerprint
+
+
 #generate_keypair('/Users/jeremymoreau/Desktop/')
+#upload_dir('/Users/jeremymoreau/Desktop/brainz', 'DCC9999', '123456', 'V01', '20140723')
+
+# # set path of client's private key file and server's public key file
+# client_prv_key_file_path = os.path.join(local_path, 'keys', 'braindir_rsa')
+# server_pub_key_file_path = os.path.join(local_path, 'keys', 'braindir_server_rsa.pub')
+# # load client's private key file
+# key = paramiko.RSAKey.from_private_key_file(client_prv_key_file_path)
+#
+# # create ssh object
+# ssh = paramiko.SSHClient()
+#
+# t = paramiko.Transport('192.168.201.101')
+# t.start_client()
+# import binascii
+# hostkey = t.get_remote_server_key()
+# print(hostkey.get_base64())
+# md5 = hostkey.get_fingerprint()
+# s = binascii.hexlify(md5)
+# print(":".join(s[i:i+2] for i in range(0, len(s), 2)))
+
+
+#paramiko.Transport.get_remote_server_key()
+# # load server's public key file
+# hostkey = paramiko.HostKeys()
+# hostkey.load(server_pub_key_file_path)
+# print(hostkey.has_key())
+#ssh.load_host_keys(server_pub_key_file_path)
+#ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+# establish an SSH connection to storage server
+#ssh.connect('192.168.201.101', username='testuser', pkey=key)
+
+# open an sftp session
+#sftp = ssh.open_sftp()
+#print(get_hostkey_fingerprint('192.168.201.101'))
