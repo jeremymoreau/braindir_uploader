@@ -161,7 +161,9 @@
 		      <div class="modal-body">
               <div style="overflow: hidden;">
 		      	<h4>Step 1</h4>
-		      	<p>Enter the storage server's host name or IP address and your username.</p>
+		      	<p>Enter the storage server's host name or IP address and your username, then
+                   click the "Load hostkey" button to download the server's hostkey.
+                </p>
 		        <div class="form-group">
                     <label for="hostname_field">Storage server's host name or IP address</label>
                     <input type="text" class="form-control" id="hostname_field">
@@ -170,25 +172,33 @@
                     <label for="username_field">Username</label>
                     <input type="text" class="form-control" id="username_field">
                 </div>
-		      </div>
 
-              <hr>
-              <!--<div class="vertical_spacer"></div>-->
-
-		      <div class="vertical_spacer"></div>
-		      <div style="overflow: hidden;">
-		      	<h4>Step 2</h4>
-		      	<p>Select the public key file you downloaded from the server.</p>
-		        <button type="button" class="btn btn-default pull-right" id="server_public_key_btn">
-                    Load storage server's public key
+                <div style="overflow: hidden;">
+                <button type="button" class="btn btn-default pull-right" id="load_hostkey_btn">
+                    Load hostkey
                 </button>
+                </div>
+
+                <div class="alert alert-warning fade in" id="hostkey_alert" style="overflow: hidden; display: none;">
+                  <h4>Please verify the authenticity of host&nbsp;</h4>
+                  <span>The authenticity of host&nbsp;</span><br>
+                  <span>RSA key fingerprint is&nbsp;</span><br>
+                  <span>Are you sure you want to load the hostkey?</span><br>
+                  <p style="float: right;">
+                    <button type="button" class="btn btn-danger" id="close_hostkey_alert_btn">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-default">
+                        Load hostkey
+                    </button>
+                  </p>
+                </div>
 		      </div>
 
               <hr>
-		      <!--<div class="vertical_spacer"></div>-->
 		        
 		        <div style="overflow: hidden;">
-		        <h4>Step 3</h4>
+		        <h4>Step 2</h4>
 		        <p>Generate a public/private key pair, then upload the generated public key file to the 
 			       server.
 		        </p>
@@ -453,10 +463,19 @@
             Sijax.request('check_settings');
 
 
-			// open file dialog to choose server public key 
-			$('#server_public_key_btn').click(function() {
+			// Load hostkey
+			$('#load_hostkey_btn').click(function() {
 				Sijax.request('get_hostkey_fingerprint', [$('#hostname_field').val()]);
 			});
+
+            // Close hostkey alert
+            $('#close_hostkey_alert_btn').click(function() {
+                    $('#hostkey_alert').hide();
+                    $('#load_hostkey_btn').show();
+                    $('#hostkey_alert > h4').html('Please verify the authenticity of host&nbsp;');
+                    $('#hostkey_alert > span:eq(0)').html('The authenticity of host&nbsp;');
+                    $('#hostkey_alert > span:eq(1)').html('RSA key fingerprint is&nbsp;');
+                    });
 			
 			// open file dialog to choose save path for generated public key
 			$('#public_key_save_path_btn').click(function() {

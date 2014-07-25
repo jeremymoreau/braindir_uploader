@@ -223,7 +223,14 @@ class SijaxHandler(object):
     @staticmethod
     def get_hostkey_fingerprint(obj_response, host):
         fingerprint = main.get_hostkey_fingerprint(host)
-        obj_response.alert(fingerprint)
+        obj_response.script(
+            "$('#load_hostkey_btn').hide();"
+            "$('#hostkey_alert').show();"
+            "$('#hostkey_alert > h4').append($('#hostname_field').val());"
+            "$('#hostkey_alert > span:eq(0)').append($('#hostname_field').val())"
+            ".append(\" can't be established.\");"
+            "$('#hostkey_alert > span:eq(1)').append('<strong>" + fingerprint + "</strong>');"
+        )
 
 
     @staticmethod
