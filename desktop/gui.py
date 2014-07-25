@@ -276,7 +276,7 @@ def index():
         g.sijax.register_object(SijaxHandler)
         return g.sijax.process_request()
 
-    return render_template('view_1.html')
+    return render_template('gui.html')
 
 
 def start_server():
