@@ -188,7 +188,7 @@
                     <button type="button" class="btn btn-danger" id="close_hostkey_alert_btn">
                         Cancel
                     </button>
-                    <button type="button" class="btn btn-default">
+                    <button type="button" class="btn btn-default" id="save_hostkey_btn">
                         Load hostkey
                     </button>
                   </p>
@@ -199,8 +199,9 @@
 		        
 		        <div style="overflow: hidden;">
 		        <h4>Step 2</h4>
-		        <p>Generate a public/private key pair, then upload the generated public key file to the 
-			       server.
+		        <p>Generate a public/private key pair, and save it to the location selected below.
+                   Once you have generated a key pair, upload the public key file to your server
+                   and add it to the "authorized_keys" file of your jailed ssh user under "~/.ssh".
 		        </p>
 		        
 		        <div class="form-group">

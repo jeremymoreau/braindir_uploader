@@ -56,9 +56,14 @@ $(document).ready(function () {
     Sijax.request('check_settings');
 
 
-    // Load hostkey
+    // Display alert dialog showing the hostkey's fingerprint
     $('#load_hostkey_btn').click(function () {
         Sijax.request('get_hostkey_fingerprint', [$('#hostname_field').val()]);
+    });
+
+    // Load the hostkey
+    $('#save_hostkey_btn').click(function () {
+        Sijax.request('load_hostkey', [$('#hostname_field').val()]);
     });
 
     // Close hostkey alert

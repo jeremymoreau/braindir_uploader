@@ -198,11 +198,11 @@ class SijaxHandler(object):
             obj_response.attr('#hostname_field', 'value', settings['hostname'])
             obj_response.attr('#username_field', 'value', settings['username'])
 
-        if os.path.isfile(os.path.join(local_path, 'keys', 'braindir_server_rsa.pub')):
+        if os.path.isfile(os.path.join(local_path, 'keys', 'ssh_host_rsa_key.pub')):
             obj_response.script(
-                "$('#server_public_key_btn').removeClass('btn-default').addClass('btn-success');"
-                "$('#server_public_key_btn')"
-                ".html('<span class=\"fa fa-check\"></span> Load new storage server public key');"
+                "$('#load_hostkey_btn').removeClass('btn-default').addClass('btn-success');"
+                "$('#load_hostkey_btn')"
+                ".html('<span class=\"fa fa-check\"></span> Load new hostkey');"
             )
 
         if os.path.isfile(os.path.join(local_path, 'keys', 'braindir_rsa')):
@@ -232,6 +232,19 @@ class SijaxHandler(object):
             "$('#hostkey_alert > span:eq(1)').append('<strong>" + fingerprint + "</strong>');"
         )
 
+    @staticmethod
+    def load_hostkey(obj_response, host):
+        main.load_hostkey(host)
+        obj_response.script(
+            "$('#hostkey_alert').hide();"
+            "$('#load_hostkey_btn').show();"
+            "$('#hostkey_alert > h4').html('Please verify the authenticity of host&nbsp;');"
+            "$('#hostkey_alert > span:eq(0)').html('The authenticity of host&nbsp;');"
+            "$('#hostkey_alert > span:eq(1)').html('RSA key fingerprint is&nbsp;');"
+            "$('#load_hostkey_btn').removeClass('btn-default').addClass('btn-success');"
+            "$('#load_hostkey_btn')"
+            ".html('<span class=\"fa fa-check\"></span> Load new hostkey');"
+        )
 
     @staticmethod
     def choose_public_key_save_path(obj_response):
