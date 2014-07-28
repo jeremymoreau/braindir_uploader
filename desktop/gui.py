@@ -197,6 +197,7 @@ class SijaxHandler(object):
                 settings = json.load(sf)
             obj_response.attr('#hostname_field', 'value', settings['hostname'])
             obj_response.attr('#username_field', 'value', settings['username'])
+            obj_response.attr('#host_save_path_field', 'value', settings['upload_save_path'])
 
         if os.path.isfile(os.path.join(local_path, 'keys', 'ssh_host_rsa_key.pub')):
             obj_response.script(
@@ -214,8 +215,10 @@ class SijaxHandler(object):
             )
 
     @staticmethod
-    def save_settings(obj_response, hostname, username):
-        settings = {'hostname': hostname, 'username': username}
+    def save_settings(obj_response, hostname, username, upload_save_path):
+        settings = {'hostname': hostname,
+                    'username': username,
+                    'upload_save_path': upload_save_path}
         settings_file = os.path.join(local_path, 'files', 'settings.json')
         with open(settings_file, 'w+b') as sf:
             json.dump(settings, sf)

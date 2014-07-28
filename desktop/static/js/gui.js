@@ -92,9 +92,10 @@ $(document).ready(function () {
         }
     });
 
-    // Save hostname and username
+    // Save hostname, username, and upload save path to settings file
     $("#save_settings").click(function () {
-        Sijax.request('save_settings', [$('#hostname_field').val(), $('#username_field').val()]);
+        Sijax.request('save_settings', [$('#hostname_field').val(), $('#username_field').val(),
+            $('#host_save_path_field').val()]);
     });
 
     ////////////////// End Settings Dialog //////////////////
