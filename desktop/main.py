@@ -47,79 +47,119 @@ def upload_file(infile_path, outdir_remote_path, host, username, key,
         return False
 
 
-def upload_dir(dir_to_upload, pscid, dccid, visit_label, acquisition_date):
-    # load hostname and username from settings.json
-    settings_file = os.path.join(local_path, 'files', 'settings.json')
-    with open(settings_file, 'r+b') as sf:
-        settings = json.load(sf)
-    host = settings['hostname']
-    username = settings['username']
-
-    # set path of client's private key file and server's public key file
-    client_prv_key_file_path = os.path.join(local_path, 'keys', 'braindir_rsa')
-    server_pub_key_file_path = os.path.join(local_path, 'keys', 'braindir_server_rsa.pub')
-
-    # get name of remote dir where files are to be uploaded
-    remote_dir_name = ''.join(
-        [pscid, '_', str(dccid), '_' + visit_label, '_', str(acquisition_date)])
-
-    # create list of files to upload and directories to create
+def generate_upload_list(dir_to_upload, pscid, dccid, visit_label, acquisition_date):
     directories_to_create = []
     files_to_upload = []
+    files_to_upload_size = []
     files_remote_path = []
 
+    # check for settings.json file and load it if it exists
+    settings_file = os.path.join(local_path, 'files', 'settings.json')
+    if os.path.isfile(settings_file):
+            with open(settings_file, 'r+b') as sf:
+                settings = json.load(sf)
+    else:
+        settings = {}
+
+    # set the upload root directory
+    if not settings == {}:
+        root_dir = settings['upload_save_path']
+    else:
+        root_dir = '.'
+
+    # construct the path of the remote dir where files are to be uploaded
+    remote_dir_path = ''.join(
+        [root_dir,  pscid, '_', str(dccid), '_' + visit_label, '_', str(acquisition_date)])
+
+    # generate lists of directories to create, files to upload, and corresponding remote file paths
     for dirname, dirnames, filenames in os.walk(dir_to_upload):
         for subdirname in dirnames:
             directory = posixpath.join(
-                remote_dir_name, posixpath.relpath(
+                remote_dir_path, posixpath.relpath(
                     posixpath.join(dirname, subdirname), dir_to_upload))
             directories_to_create.append(directory)
         for filename in filenames:
             file_to_upload = os.path.join(dirname, filename)
             files_to_upload.append(file_to_upload)
 
+            file_to_upload_size = os.path.getsize(file_to_upload)
+            files_to_upload_size.append(file_to_upload_size)
+
             remote_file_path = posixpath.join(
-                remote_dir_name, posixpath.relpath(
+                remote_dir_path, posixpath.relpath(
                     posixpath.join(dirname, filename), dir_to_upload))
             files_remote_path.append(remote_file_path)
 
-    print(directories_to_create)
-    print(files_to_upload)
-    print(files_remote_path)
+    # calculate total bytes to upload
+    total_bytes_to_upload = sum(files_to_upload_size)
 
-    # load client's private key file
-    key = paramiko.RSAKey.from_private_key_file(client_prv_key_file_path)
+    # store all above information in a dictionary
+    upload_list = {
+        'remote_dir_path': remote_dir_path,
+        'directories_to_create': directories_to_create,
+        'files_to_upload': files_to_upload,
+        'files_to_upload_size': files_to_upload_size,
+        'files_remote_path': files_remote_path,
+        'total_bytes_to_upload': total_bytes_to_upload,
+        'bytes_uploaded': 0
+    }
 
-    ## Create new remote directory
-    # create ssh object
-    ssh = paramiko.SSHClient()
+    # save the dictionary in a json file
+    upload_filename = os.path.basename(os.path.normpath(remote_dir_path)) + '.uploadprog.json'
+    upload_progress_file = os.path.join(local_path, 'files', upload_filename)
+    with open(upload_progress_file, 'w+b') as upf:
+            json.dump(upload_list, upf)
 
-    # load server's public key file
-    ssh.load_host_keys(server_pub_key_file_path)
+#generate_upload_list('/Users/jeremymoreau/Desktop/brainz', 'DCC9999', '123456', 'V01', '20140728')
 
-    # establish an SSH connection to storage server
-    ssh.connect(host, username=username, pkey=key)
 
-    # open an sftp session
-    sftp = ssh.open_sftp()
-
-    # create remote directory
-    sftp.mkdir(remote_dir_name, mode=0750)
-
-    # create remote subdirectories
-    for d in directories_to_create:
-        sftp.mkdir(d, mode=0750)
-
-    # copy files to server
-    for i in range(0, len(files_to_upload)):
-        local_file_path = files_to_upload[i]
-        remote_file_path = files_remote_path[i]
-
-        # test if file was uploaded correctly
-        print(upload_file(local_file_path, remote_file_path, host, username, key, server_pub_key_file_path))
-
-    # close ssh client
-    ssh.close()
+# def upload_dir(dir_to_upload, pscid, dccid, visit_label, acquisition_date):
+#     # load hostname and username from settings.json
+#     settings_file = os.path.join(local_path, 'files', 'settings.json')
+#     with open(settings_file, 'r+b') as sf:
+#         settings = json.load(sf)
+#     host = settings['hostname']
+#     username = settings['username']
+#
+#     # set path of client's private key file and server's public key file
+#     client_prv_key_file_path = os.path.join(local_path, 'keys', 'braindir_rsa')
+#     server_pub_key_file_path = os.path.join(local_path, 'keys', 'braindir_server_rsa.pub')
+#
+#
+#
+#     # load client's private key file
+#     key = paramiko.RSAKey.from_private_key_file(client_prv_key_file_path)
+#
+#     ## Create new remote directory
+#     # create ssh object
+#     ssh = paramiko.SSHClient()
+#
+#     # load server's public key file
+#     ssh.load_host_keys(server_pub_key_file_path)
+#
+#     # establish an SSH connection to storage server
+#     ssh.connect(host, username=username, pkey=key)
+#
+#     # open an sftp session
+#     sftp = ssh.open_sftp()
+#
+#     # create remote directory
+#     sftp.mkdir(remote_dir_name, mode=0750)
+#
+#     # create remote subdirectories
+#     for d in directories_to_create:
+#         sftp.mkdir(d, mode=0750)
+#
+#     # copy files to server
+#     for i in range(0, len(files_to_upload)):
+#         local_file_path = files_to_upload[i]
+#         remote_file_path = files_remote_path[i]
+#
+#         # test if file was uploaded correctly
+#         print(upload_file(local_file_path, remote_file_path, host, username, key, server_pub_key_file_path))
+#
+#     # close ssh client
+#     ssh.close()
 
 
 #### SSH Authentification functions
