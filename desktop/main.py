@@ -113,53 +113,32 @@ def generate_upload_list(dir_to_upload, pscid, dccid, visit_label, acquisition_d
 #generate_upload_list('/Users/jeremymoreau/Desktop/brainz', 'DCC9999', '123456', 'V01', '20140728')
 
 
-# def upload_dir(dir_to_upload, pscid, dccid, visit_label, acquisition_date):
-#     # load hostname and username from settings.json
-#     settings_file = os.path.join(local_path, 'files', 'settings.json')
-#     with open(settings_file, 'r+b') as sf:
-#         settings = json.load(sf)
-#     host = settings['hostname']
-#     username = settings['username']
-#
-#     # set path of client's private key file and server's public key file
-#     client_prv_key_file_path = os.path.join(local_path, 'keys', 'braindir_rsa')
-#     server_pub_key_file_path = os.path.join(local_path, 'keys', 'braindir_server_rsa.pub')
-#
-#
-#
-#     # load client's private key file
-#     key = paramiko.RSAKey.from_private_key_file(client_prv_key_file_path)
-#
-#     ## Create new remote directory
-#     # create ssh object
-#     ssh = paramiko.SSHClient()
-#
-#     # load server's public key file
-#     ssh.load_host_keys(server_pub_key_file_path)
-#
-#     # establish an SSH connection to storage server
-#     ssh.connect(host, username=username, pkey=key)
-#
-#     # open an sftp session
-#     sftp = ssh.open_sftp()
-#
-#     # create remote directory
-#     sftp.mkdir(remote_dir_name, mode=0750)
-#
-#     # create remote subdirectories
-#     for d in directories_to_create:
-#         sftp.mkdir(d, mode=0750)
-#
-#     # copy files to server
-#     for i in range(0, len(files_to_upload)):
-#         local_file_path = files_to_upload[i]
-#         remote_file_path = files_remote_path[i]
-#
-#         # test if file was uploaded correctly
-#         print(upload_file(local_file_path, remote_file_path, host, username, key, server_pub_key_file_path))
-#
-#     # close ssh client
-#     ssh.close()
+def connect_to_host():
+    # load hostname and username from settings.json
+    settings_file = os.path.join(local_path, 'files', 'settings.json')
+    with open(settings_file, 'r+b') as sf:
+        settings = json.load(sf)
+    host = settings['hostname']
+    username = settings['username']
+
+    # set path of client's private key file and the hostkey
+    client_prv_key_file_path = os.path.join(local_path, 'keys', 'braindir_rsa')
+    hostkey_file_path = os.path.join(local_path, 'keys', 'ssh_host_rsa_key.pub')
+
+    # load client's private key file
+    key = paramiko.RSAKey.from_private_key_file(client_prv_key_file_path)
+
+     # create ssh object
+    ssh = paramiko.SSHClient()
+
+    # load hostkey
+    ssh.load_host_keys(hostkey_file_path)
+
+    # establish an SSH connection to storage server
+    ssh.connect(host, username=username, pkey=key)
+
+    return ssh
+
 
 
 #### SSH Authentification functions
