@@ -5,6 +5,7 @@ import shutil
 import posixpath
 import json
 import binascii
+import copy
 
 
 ######################### General variables #########################
@@ -23,28 +24,6 @@ def get_size(dir_path):
             if os.path.exists(fp):
                 total_size += os.path.getsize(fp)
     return total_size
-
-
-def upload_file(infile_path, outdir_remote_path, host, username, key,
-                hostkey_file):
-    # create ssh object
-    ssh = paramiko.SSHClient()
-
-    # load server's public key file
-    ssh.load_host_keys(hostkey_file)
-
-    # establish an SSH connection to storage server
-    ssh.connect(host, username=username, pkey=key)
-
-    # create scp object from paramiko transport
-    scp = SCPClient(ssh.get_transport())
-
-    # try uploading file
-    try:
-        scp.put(infile_path, outdir_remote_path)
-        return True
-    except:
-        return False
 
 
 def generate_upload_list(dir_to_upload, pscid, dccid, visit_label, acquisition_date):
@@ -94,7 +73,7 @@ def generate_upload_list(dir_to_upload, pscid, dccid, visit_label, acquisition_d
     total_bytes_to_upload = sum(files_to_upload_size)
 
     # store all above information in a dictionary
-    upload_list = {
+    upload_prog_dict = {
         'remote_dir_path': remote_dir_path,
         'directories_to_create': directories_to_create,
         'files_to_upload': files_to_upload,
@@ -105,12 +84,12 @@ def generate_upload_list(dir_to_upload, pscid, dccid, visit_label, acquisition_d
     }
 
     # save the dictionary in a json file
-    upload_filename = os.path.basename(os.path.normpath(remote_dir_path)) + '.uploadprog.json'
-    upload_progress_file = os.path.join(local_path, 'files', upload_filename)
-    with open(upload_progress_file, 'w+b') as upf:
-            json.dump(upload_list, upf)
+    upload_filename = os.path.basename(os.path.normpath(remote_dir_path)) + '.up_prog.json'
+    upload_progress_file_path = os.path.join(local_path, 'files', upload_filename)
+    with open(upload_progress_file_path, 'w+b') as upf:
+            json.dump(upload_prog_dict, upf)
 
-#generate_upload_list('/Users/jeremymoreau/Desktop/brainz', 'DCC9999', '123456', 'V01', '20140728')
+    return upload_progress_file_path
 
 
 def connect_to_host():
@@ -139,6 +118,92 @@ def connect_to_host():
 
     return ssh
 
+
+def upload_dir(upload_prog_file_path):
+    # load upload progress file and make a copy
+    with open(upload_prog_file_path, 'r+b') as upf:
+        upload_prog_dict = json.load(upf)
+    upload_prog_dict_copy = copy.deepcopy(upload_prog_dict)
+
+    # connect to host
+    ssh = connect_to_host()
+
+    # open an sftp session
+    sftp = ssh.open_sftp()
+
+    # create remote root directory if it hasn't been created yet
+    remote_dir = upload_prog_dict_copy['remote_dir_path']
+    if not remote_dir == '':
+        sftp.mkdir(remote_dir, mode=0750)
+
+        # update progress log
+        upload_prog_dict['remote_dir_path'] = ''
+        with open(upload_prog_file_path, 'w+b') as upf:
+            json.dump(upload_prog_dict, upf)
+
+    #create remote subdirectories if they haven't been created yet
+    directories_to_create = upload_prog_dict_copy['directories_to_create']
+    if not directories_to_create == []:
+        print(directories_to_create)
+        for directory in directories_to_create:
+            print('creating: ' + directory)
+            print(directories_to_create)
+            sftp.mkdir(directory, mode=0750)
+
+            # update progress log
+            upload_prog_dict['directories_to_create'].remove(directory)
+            with open(upload_prog_file_path, 'w+b') as upf:
+                json.dump(upload_prog_dict, upf)
+
+    # upload files to server if they haven't been uploaded yet
+    files_to_upload = upload_prog_dict_copy['files_to_upload']
+    print(files_to_upload)
+    files_remote_path = upload_prog_dict_copy['files_remote_path']
+    files_to_upload_size = upload_prog_dict_copy['files_to_upload_size']
+    for i in range(0, len(files_to_upload)):
+        local_file_path = files_to_upload[i]
+        print('a: ' + local_file_path)
+        remote_file_path = files_remote_path[i]
+        #print('a: ' + remote_file_path)
+        file_size = files_to_upload_size[i]
+
+        # upload individual files (try three times)
+        for attempt in range(3):
+            try:
+                print(local_file_path)
+                print(remote_file_path)
+                file_uploaded = upload_file(local_file_path, remote_file_path)
+                if file_uploaded:
+                    upload_prog_dict['files_to_upload'].remove(local_file_path)
+                    upload_prog_dict['files_remote_path'].remove(remote_file_path)
+                    upload_prog_dict['files_to_upload_size'].remove(file_size)
+                    with open(upload_prog_file_path, 'w+b') as upf:
+                        json.dump(upload_prog_dict, upf)
+                    break
+            except Exception, e:
+                print(e)
+
+            if attempt == 2:
+                print('Download Interrupted!')
+
+    # close ssh client
+    ssh.close()
+
+
+def upload_file(local_file_path, remote_file_path):
+    # connect to host
+    ssh = connect_to_host()
+
+    # create scp object from paramiko transport
+    scp = SCPClient(ssh.get_transport())
+
+    # try uploading file
+    try:
+        scp.put(local_file_path, remote_file_path)
+        return True
+    except Exception, e:
+        print(e)
+        return False
 
 
 #### SSH Authentification functions
@@ -178,6 +243,11 @@ def load_hostkey(host):
     hostkey_file = os.path.join(local_path, 'keys', 'ssh_host_rsa_key.pub')
     with open(hostkey_file, 'w+b') as hf:
         hf.write(hostkey_txt)
+
+
+#### testing
+#generate_upload_list('/Users/jeremymoreau/Desktop/brainz', 'DCC9999', '123456', 'V01', '20140728')
+upload_dir('/Users/jeremymoreau/bitbucket/braindir/desktop/files/DCC9999_123456_V01_20140728.up_prog.json')
 
 #load_hostkey('192.168.201.101')
 
