@@ -131,6 +131,9 @@ def upload_dir(upload_prog_file_path):
     # open an sftp session
     sftp = ssh.open_sftp()
 
+    # create scp object from paramiko transport
+    scp = SCPClient(ssh.get_transport())
+
     # create remote root directory if it hasn't been created yet
     remote_dir = upload_prog_dict_copy['remote_dir_path']
     if not remote_dir == '':
@@ -172,7 +175,7 @@ def upload_dir(upload_prog_file_path):
             try:
                 print(local_file_path)
                 print(remote_file_path)
-                file_uploaded = upload_file(local_file_path, remote_file_path)
+                file_uploaded = upload_file(local_file_path, remote_file_path, scp)
                 if file_uploaded:
                     upload_prog_dict['files_to_upload'].remove(local_file_path)
                     upload_prog_dict['files_remote_path'].remove(remote_file_path)
@@ -190,12 +193,7 @@ def upload_dir(upload_prog_file_path):
     ssh.close()
 
 
-def upload_file(local_file_path, remote_file_path):
-    # connect to host
-    ssh = connect_to_host()
-
-    # create scp object from paramiko transport
-    scp = SCPClient(ssh.get_transport())
+def upload_file(local_file_path, remote_file_path, scp):
 
     # try uploading file
     try:
