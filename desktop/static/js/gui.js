@@ -11,14 +11,23 @@ $(document).ready(function () {
     });
     $.fn.fullpage.setAllowScrolling(false);
 
-    // update progress bars in function of python backend progress
-//			setInterval(function(){
-//				Sijax.request('set_progress');
-//			}, 3000);
 
-    // start upload pipeline
+
+    ////////////////// upload_main section //////////////////
+     // open file dialog to choose dir to upload
+    $('#choose_dir_to_upload_btn').click(function () {
+        Sijax.request('choose_dir_to_upload');
+    });
+
+    // start upload
     $('#upload_form').bind('submit', function () {
-        Sijax.request('start_upload', [$('#dir_to_upload_path').val(), $('#passphrase_field').val()]);
+        Sijax.request('start_upload', [
+            $('#dir_to_upload_path_field').val(),
+            $('#pscid_field').val(),
+            $('#dccid_field').val(),
+            $('#visit_label_field').val(),
+            $('#acquisition_date_field').val()
+        ]);
 
         // modify upload button
         $("#upload_button").prop("disabled", true);
@@ -29,11 +38,7 @@ $(document).ready(function () {
         return false;
     });
 
-    // open file dialog to choose dir to upload
-    $('#choose_dir_to_upload_btn').click(function () {
-        Sijax.request('choose_dir_to_upload');
-    });
-
+    ////////////////// End upload_main section //////////////////
 
     ////////////////// Settings Dialog //////////////////
     // Check if public/private keys are loaded on app startup

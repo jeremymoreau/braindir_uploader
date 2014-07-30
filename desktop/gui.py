@@ -38,10 +38,12 @@ class SijaxHandler(object):
         pass
 
     @staticmethod
-    def start_upload(obj_response, dir_to_upload_path, passphrase):
-        #t = threading.Thread(target=main.upload_private, args=(dir_to_upload_path, passphrase,))
-        #t.start()
-        pass
+    def start_upload(obj_response, dir_to_upload_path, pscid, dccid, visit_label, acquisition_date):
+        t = threading.Thread(target=main.start_upload, args=(dir_to_upload_path,
+                                                             pscid, dccid,
+                                                             visit_label,
+                                                             acquisition_date,))
+        t.start()
 
     @staticmethod
     def choose_dir_to_upload(obj_response):
@@ -49,7 +51,7 @@ class SijaxHandler(object):
             dir_path = MainWindow.display_dir_dialog()
         except:
             dir_path = ''
-        obj_response.attr('#dir_to_upload_path', 'value', dir_path)
+        obj_response.attr('#dir_to_upload_path_field', 'value', dir_path)
 
     @staticmethod
     def check_settings(obj_response):

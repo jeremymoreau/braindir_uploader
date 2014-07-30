@@ -243,6 +243,10 @@ def load_hostkey(host):
         hf.write(hostkey_txt)
 
 
+def start_upload(dir_to_upload_path, pscid, dccid, visit_label, acquisition_date):
+    log_file = generate_upload_log(dir_to_upload_path, pscid, dccid, visit_label, acquisition_date)
+    upload_dir(log_file)
+
 #### testing
 #generate_upload_log('/Users/jeremymoreau/Desktop/brainz', 'DCC9999', '123456', 'V01', '20140728')
 #upload_dir('/Users/jeremymoreau/bitbucket/braindir/desktop/files/DCC9999_123456_V01_20140728.up_prog.json')
