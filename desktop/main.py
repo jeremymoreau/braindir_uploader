@@ -187,7 +187,7 @@ def upload_dir(upload_prog_file_path):
                 print(e)
 
             if attempt == 2:
-                print('Download Interrupted!')
+                print('Upload Interrupted!')
 
     # close ssh client
     ssh.close()

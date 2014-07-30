@@ -23,7 +23,7 @@
   float: right;
 }
 
-/* ========= upload_complete & download_complete ========= */
+/* ========= upload_complete ========= */
 .transfer_complete {
 	width: 85%;
     position: relative;
@@ -100,14 +100,14 @@ body .modal-dialog {
     margin-left: auto;
     margin-right: auto;
     clear: both;
-    top: -30px;
+    top: 0;
     text-align: center;
 }
 
 .btn-xlg {
     padding: 18px 28px;
-    font-size: 30px;
-    width: 250px;
+    font-size: 40px;
+    width: 300px;
     line-height: normal;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
@@ -118,7 +118,7 @@ body .modal-dialog {
     padding: 18px 28px;
     font-size: 15px;
     text-align: center;
-    height: 74px;
+    height: 86px;
     width: 35px;
     line-height: normal;
     -webkit-border-radius: 8px;
@@ -128,19 +128,4 @@ body .modal-dialog {
 
 .main_menu_btn_group {
 	margin: 5px 5px 5px 5px;
-}
-
-/* ================= download_main ================= */
-.download_main {
-    width: 85%;
-    position: relative;
-    margin-left: auto;
-    margin-right: auto;
-    clear: both;
-    top: -30px;
-}
-
-#download_button {
-  clear: both;
-  float: right;
 }

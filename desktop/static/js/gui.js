@@ -29,20 +29,6 @@ $(document).ready(function () {
         return false;
     });
 
-    // start download pipeline
-    $('#download_form').bind('submit', function () {
-        Sijax.request('start_download', [$('#archive_id').val(), $('#save_path').val(),
-            $('#decrypt_passphrase_field').val()]);
-
-        // modify upload button
-        $("#download_button").prop("disabled", true);
-        $("#download_spinner").removeClass("fa-cloud-download").addClass("fa-spinner fa-spin");
-        $("#download_txt").html(" Downloading…");
-
-        //Prevent the form from being submitted
-        return false;
-    });
-
     // open file dialog to choose dir to upload
     $('#choose_dir_to_upload_btn').click(function () {
         Sijax.request('choose_dir_to_upload');
@@ -112,16 +98,11 @@ $(document).ready(function () {
         }
     );
 
-    // main_menu navigation buttons control
-    $("#main_menu_download_btn").click(function () {
-        $.fn.fullpage.moveSectionDown();
-    });
-
     $("#main_menu_upload_btn").click(function () {
         $.fn.fullpage.moveSectionUp();
     });
 
-    // return to main_menu buttons control
+    // return to main_menu button control
     $(".return_to_main_menu_btn").click(function () {
         $.fn.fullpage.moveTo(3);
     });
