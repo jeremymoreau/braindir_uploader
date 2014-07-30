@@ -1,6 +1,6 @@
 /* ================= General ================= */
 .vertical_spacer {
-	margin-top: 30px;
+	margin-top: 10px;
 }
 
 .btn:focus {
@@ -21,6 +21,17 @@
 #upload_button {
   clear: both;
   float: right;
+}
+
+.double_field_row {
+    float: left;
+    width: 385px;
+    margin-right: 16px;
+}
+
+.double_field_row_second {
+    float: left;
+    width: 385px;
 }
 
 /* ========= upload_complete ========= */

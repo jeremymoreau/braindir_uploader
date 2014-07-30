@@ -245,7 +245,7 @@ def load_hostkey(host):
 
 #### testing
 #generate_upload_log('/Users/jeremymoreau/Desktop/brainz', 'DCC9999', '123456', 'V01', '20140728')
-upload_dir('/Users/jeremymoreau/bitbucket/braindir/desktop/files/DCC9999_123456_V01_20140728.up_prog.json')
+#upload_dir('/Users/jeremymoreau/bitbucket/braindir/desktop/files/DCC9999_123456_V01_20140728.up_prog.json')
 
 #load_hostkey('192.168.201.101')
 

@@ -46,9 +46,18 @@
 		</div>
 	</div><!-- upload_complete section -->
 	
-	<div class="section"><!-- ###################### upload_main section ###################### -->
-		<div class="upload_main">
-	<!-- Start dir chooser and passphrase fields + upload button -->
+	<div class="section active"><!-- ###################### upload_main section ###################### -->
+	<div class="upload_main">
+    <div class="row">
+        <h4>Select Participant to Upload</h4>
+        <p>
+            Choose the directory containing the participant data you wish to upload to LORIS
+            and enter the required information in the fields below. Make sure you have created the
+            participant in LORIS before trying to upload any data.
+        </p>
+    </div>
+    <div class="vertical_spacer"></div>
+	<!-- start form fields -->
 	<form id="upload_form" name="upload_form">
 		<div class="row">
 		<!-- field for dir to upload -->
@@ -64,15 +73,35 @@
 			</div>
 		</div><!-- form-group -->
 		</div><!-- row -->
-		
+
 		<div class="row">
-		<!-- passphrase field -->
-		<div class="form-group">
-			<label for="passphrase_field">Enter a passphrase to encrypt</label>
-			<input type="password" class="form-control" id="passphrase_field">
+		<!-- PSCID field -->
+		<div class="form-group double_field_row">
+			<label for="pscid_field">PSCID</label>
+			<input type="text" class="form-control" id="pscid_field">
+		</div>
+
+		<!-- DCCID field -->
+		<div class="form-group double_field_row_second">
+			<label for="dccid_field">DCCID</label>
+			<input type="text" class="form-control" id="dccid_field">
 		</div>
 		</div><!-- row -->
-		
+
+        <div class="row">
+		<!-- visit label field -->
+		<div class="form-group  double_field_row">
+			<label for="visit_label_field">Visit Label</label>
+			<input type="text" class="form-control" id="visit_label_field">
+		</div>
+
+        <!-- acquisition date field -->
+		<div class="form-group double_field_row_second">
+			<label for="acquisition_date_field">Acquisition Date</label>
+			<input type="text" class="form-control" id="acquisition_date_field">
+		</div>
+		</div><!-- row -->
+
 		<div class="row">
 		<!-- upload button -->
 		<button type="submit" class="btn btn-lg btn-default" id="upload_button">
@@ -81,7 +110,7 @@
 		</button>
 		</div><!-- row -->
 	</form>
-	<!-- End dir chooser and passphrase fields + upload button -->
+	<!-- end form fields -->
 	
 	<!-- Start Progress Bar -->
 	<div class="row">
@@ -135,7 +164,7 @@
 	</div><!-- upload_main -->
 	</div><!-- upload_main section -->
 	
-	<div class="section active"><!-- ###################### main_menu section ###################### -->
+	<div class="section"><!-- ###################### main_menu section ###################### -->
 		<div class="navbar_wrapper">
 		<nav class="navbar navbar-inverse" id="header_nav">
 			<h4 class="navbar-text">BrainDir Uploader</h4>
