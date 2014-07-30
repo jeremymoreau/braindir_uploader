@@ -26,7 +26,7 @@ def get_size(dir_path):
     return total_size
 
 
-def generate_upload_list(dir_to_upload, pscid, dccid, visit_label, acquisition_date):
+def generate_upload_log(dir_to_upload, pscid, dccid, visit_label, acquisition_date):
     directories_to_create = []
     files_to_upload = []
     files_to_upload_size = []
@@ -165,9 +165,7 @@ def upload_dir(upload_prog_file_path):
     files_to_upload_size = upload_prog_dict_copy['files_to_upload_size']
     for i in range(0, len(files_to_upload)):
         local_file_path = files_to_upload[i]
-        print('a: ' + local_file_path)
         remote_file_path = files_remote_path[i]
-        #print('a: ' + remote_file_path)
         file_size = files_to_upload_size[i]
 
         # upload individual files (try three times)
@@ -177,6 +175,8 @@ def upload_dir(upload_prog_file_path):
                 print(remote_file_path)
                 file_uploaded = upload_file(local_file_path, remote_file_path, scp)
                 if file_uploaded:
+                    upload_prog_dict['bytes_uploaded'] += file_size
+                    print(upload_prog_dict['bytes_uploaded'])
                     upload_prog_dict['files_to_upload'].remove(local_file_path)
                     upload_prog_dict['files_remote_path'].remove(remote_file_path)
                     upload_prog_dict['files_to_upload_size'].remove(file_size)
@@ -244,7 +244,7 @@ def load_hostkey(host):
 
 
 #### testing
-#generate_upload_list('/Users/jeremymoreau/Desktop/brainz', 'DCC9999', '123456', 'V01', '20140728')
+#generate_upload_log('/Users/jeremymoreau/Desktop/brainz', 'DCC9999', '123456', 'V01', '20140728')
 upload_dir('/Users/jeremymoreau/bitbucket/braindir/desktop/files/DCC9999_123456_V01_20140728.up_prog.json')
 
 #load_hostkey('192.168.201.101')
