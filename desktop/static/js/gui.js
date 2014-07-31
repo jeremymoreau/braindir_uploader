@@ -55,26 +55,23 @@ $(document).ready(function () {
         return false;
     });
 
-        // update progress bars in function of python backend progress
-        (function updatePGB() {
-            if ($('#upload_button').prop('disabled')) {
-                Sijax.request('update_pgb', [window.up_prog_filename]);
-            }
+    // update progress bars in function of python backend progress
+    var start_pgb_update = function updatePGB() {
+        if ($('#upload_button').prop('disabled')) {
+            Sijax.request('update_pgb', [window.up_prog_filename]);
+        }
 
-            if ($('#pgb1-label').html() === '100%' ) {
-                Sijax.request('upload_complete', [window.up_prog_filename]);
-                $.fn.fullpage.moveSectionUp();
-                return true;
-            } else {
-                setTimeout(updatePGB, 3000);
-            }
-        }());
+        if ($('#pgb1-label').html() === '100%' ) {
+            Sijax.request('upload_complete', [window.up_prog_filename]);
+            $.fn.fullpage.moveSectionUp();
+            return true;
+        } else {
+            setTimeout(updatePGB, 3000);
+        }
+    };
+    start_pgb_update();
 
-            // update progress bars in function of python backend progress
-//        (function updatePGB() {
-//            console.log(window.up_prog_filename);
-//            setTimeout(updatePGB, 3000);
-//        }());
+
     ////////////////// End upload_main section //////////////////
 
     ////////////////// Settings Dialog //////////////////
@@ -128,6 +125,7 @@ $(document).ready(function () {
 
     ////////////////// End Settings Dialog //////////////////
 
+    ////////////////// upload_complete section //////////////////
     // select text on focus
     $("#upload_location_field").focus(
         function () {
@@ -140,15 +138,34 @@ $(document).ready(function () {
         }
     );
 
-    $("#main_menu_upload_btn").click(function () {
-        $.fn.fullpage.moveSectionUp();
-    });
-
     // return to main_menu button control
     $(".return_to_main_menu_btn").click(function () {
+        // reset all fields on upload_main page
+        $('#dir_to_upload_path_field').val('');
+        $('#pscid_field').val('');
+        $('#dccid_field').val('');
+        $('#visit_label_field').val('');
+        $('#acquisition_date_field').val('');
+
+        // reset Upload button to default state
+        $("#upload_button").prop("disabled", false);
+        $("#upload_spinner").removeClass("fa-spinner fa-spin").addClass("fa-cloud-upload");
+        $("#upload_txt").html(" Upload");
+
+        // reset progress bar to 0 and restart progress bar update function
+        $('#pgb1').width('0');
+        $('#pgb1-label').html('');
+        start_pgb_update();
+
+        // move back to main_menu page
         $.fn.fullpage.moveTo(3);
     });
 
+    ////////////////// upload_complete section //////////////////
+
+     $("#main_menu_upload_btn").click(function () {
+        $.fn.fullpage.moveSectionUp();
+    });
 
     // // modify upload icon when clicked
     // $("#upload_button").click(function() {
