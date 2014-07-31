@@ -65,6 +65,8 @@ $(document).ready(function () {
             }
 
             if ($('#pgb1-label').html() === '100%' ) {
+                Sijax.request('upload_complete', [window.up_prog_filename]);
+                $.fn.fullpage.moveSectionUp();
                 return true;
             } else {
                 setTimeout(updatePGB, 3000);
@@ -130,7 +132,7 @@ $(document).ready(function () {
     ////////////////// End Settings Dialog //////////////////
 
     // select text on focus
-    $("#upload_id").focus(
+    $("#upload_location_field").focus(
         function () {
             $(this).select();
         }

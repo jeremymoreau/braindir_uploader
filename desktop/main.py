@@ -32,19 +32,20 @@ def generate_upload_log(dir_to_upload, pscid, dccid, visit_label, acquisition_da
     files_to_upload_size = []
     files_remote_path = []
 
-    # check for settings.json file and load it if it exists
+    # Get the value of upload_save_path from settings.json if the file exists
     settings_file = os.path.join(local_path, 'files', 'settings.json')
     if os.path.isfile(settings_file):
             with open(settings_file, 'r+b') as sf:
                 settings = json.load(sf)
+            upload_save_path = settings['upload_save_path']
     else:
-        settings = {}
+        upload_save_path = ''
 
     # set the upload root directory
-    if not settings == {}:
-        root_dir = settings['upload_save_path']
+    if not upload_save_path == '':
+        root_dir = upload_save_path
     else:
-        root_dir = '.'
+        root_dir = './'
 
     # construct the path of the remote dir where files are to be uploaded
     remote_dir_path = ''.join(
@@ -75,6 +76,7 @@ def generate_upload_log(dir_to_upload, pscid, dccid, visit_label, acquisition_da
     # store all above information in a dictionary
     upload_prog_dict = {
         'remote_dir_path': remote_dir_path,
+        'remote_dir_path_copy': remote_dir_path,
         'directories_to_create': directories_to_create,
         'files_to_upload': files_to_upload,
         'files_to_upload_size': files_to_upload_size,

@@ -36,7 +36,6 @@ class SijaxHandler(object):
     @staticmethod
     def update_pgb(obj_response, up_prog_filename):
         upload_progress_file_path = os.path.join(local_path, 'files', up_prog_filename)
-        print(upload_progress_file_path)
         with open(upload_progress_file_path, 'r+b') as upf:
                 upload_prog_dict = json.load(upf)
 
@@ -58,6 +57,16 @@ class SijaxHandler(object):
                                                              visit_label,
                                                              acquisition_date,))
         t.start()
+
+    @staticmethod
+    def upload_complete(obj_response, up_prog_filename):
+        upload_progress_file_path = os.path.join(local_path, 'files', up_prog_filename)
+        with open(upload_progress_file_path, 'r+b') as upf:
+                upload_prog_dict = json.load(upf)
+
+        remote_dir_path = upload_prog_dict['remote_dir_path_copy']
+        obj_response.attr('#upload_location_field', 'value', remote_dir_path)
+
 
     @staticmethod
     def choose_dir_to_upload(obj_response):
