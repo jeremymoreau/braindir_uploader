@@ -19,6 +19,13 @@ $(document).ready(function () {
         Sijax.request('choose_dir_to_upload');
     });
 
+    // date picker for acquisition date field
+    $('#acquisition_date_field').datepicker({
+        format: "yyyymmdd",
+        orientation: "bottom left",
+        autoclose: true
+    });
+
     // start upload
     $('#upload_form').bind('submit', function () {
         // Get progress log file name
