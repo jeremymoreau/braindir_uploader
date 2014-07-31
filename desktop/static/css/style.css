@@ -25,13 +25,13 @@
 
 .double_field_row {
     float: left;
-    width: 385px;
-    margin-right: 16px;
+    width: 49%;
+    margin-right: 2%;
 }
 
 .double_field_row_second {
     float: left;
-    width: 385px;
+    width: 49%;
 }
 
 /* ========= upload_complete ========= */
