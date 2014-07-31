@@ -62,6 +62,9 @@ class SijaxHandler(object):
         with open(upload_progress_file_path, 'r+b') as upf:
                 upload_prog_dict = json.load(upf)
 
+        # remove upload progress log
+        os.remove(upload_progress_file_path)
+
         remote_dir_path = upload_prog_dict['remote_dir_path_copy']
         obj_response.attr('#upload_location_field', 'value', remote_dir_path)
 
