@@ -51,11 +51,9 @@ class SijaxHandler(object):
         )
 
     @staticmethod
-    def start_upload(obj_response, dir_to_upload_path, pscid, dccid, visit_label, acquisition_date):
+    def start_upload(obj_response, dir_to_upload_path, up_prog_filename):
         t = threading.Thread(target=main.start_upload, args=(dir_to_upload_path,
-                                                             pscid, dccid,
-                                                             visit_label,
-                                                             acquisition_date,))
+                                                             up_prog_filename,))
         t.start()
 
     @staticmethod

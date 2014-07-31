@@ -26,7 +26,7 @@ def get_size(dir_path):
     return total_size
 
 
-def generate_upload_log(dir_to_upload, pscid, dccid, visit_label, acquisition_date):
+def generate_upload_log(dir_to_upload, up_prog_filename):
     directories_to_create = []
     files_to_upload = []
     files_to_upload_size = []
@@ -48,8 +48,9 @@ def generate_upload_log(dir_to_upload, pscid, dccid, visit_label, acquisition_da
         root_dir = './'
 
     # construct the path of the remote dir where files are to be uploaded
-    remote_dir_path = ''.join(
-        [root_dir,  pscid, '_', str(dccid), '_' + visit_label, '_', str(acquisition_date)])
+    remote_dir_name = up_prog_filename.split('.', 1)[0]
+    remote_dir_path = posixpath.join(root_dir, remote_dir_name)
+    print('remote_dir_path: ' + remote_dir_path)
 
     # generate lists of directories to create, files to upload, and corresponding remote file paths
     for dirname, dirnames, filenames in os.walk(dir_to_upload):
@@ -245,8 +246,8 @@ def load_hostkey(host):
         hf.write(hostkey_txt)
 
 
-def start_upload(dir_to_upload_path, pscid, dccid, visit_label, acquisition_date):
-    log_file = generate_upload_log(dir_to_upload_path, pscid, dccid, visit_label, acquisition_date)
+def start_upload(dir_to_upload_path, up_prog_filename):
+    log_file = generate_upload_log(dir_to_upload_path, up_prog_filename)
     upload_dir(log_file)
 
 #### testing

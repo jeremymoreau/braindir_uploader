@@ -43,10 +43,7 @@ $(document).ready(function () {
 
         Sijax.request('start_upload', [
             $('#dir_to_upload_path_field').val(),
-            $('#pscid_field').val(),
-            $('#dccid_field').val(),
-            $('#visit_label_field').val(),
-            $('#acquisition_date_field').val()
+            window.up_prog_filename
         ]);
 
         // modify upload button
