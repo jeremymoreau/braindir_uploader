@@ -14,13 +14,26 @@ $(document).ready(function () {
 
 
     ////////////////// upload_main section //////////////////
-     // open file dialog to choose dir to upload
+    // open file dialog to choose dir to upload
     $('#choose_dir_to_upload_btn').click(function () {
         Sijax.request('choose_dir_to_upload');
     });
 
     // start upload
     $('#upload_form').bind('submit', function () {
+        // Get progress log file name
+        window.up_prog_filename = ''.concat(
+            $('#pscid_field').val(),
+            '_',
+            $('#dccid_field').val(),
+            '_',
+            $('#visit_label_field').val(),
+            '_',
+            $('#acquisition_date_field').val(),
+            '.up_prog.json'
+        );
+        //console.log(up_prog_filename);
+
         Sijax.request('start_upload', [
             $('#dir_to_upload_path_field').val(),
             $('#pscid_field').val(),
@@ -38,6 +51,24 @@ $(document).ready(function () {
         return false;
     });
 
+        // update progress bars in function of python backend progress
+        (function updatePGB() {
+            if ($('#upload_button').prop('disabled')) {
+                Sijax.request('update_pgb', [window.up_prog_filename]);
+            }
+
+            if ($('#pgb1-label').html() === '100%' ) {
+                return true;
+            } else {
+                setTimeout(updatePGB, 3000);
+            }
+        }());
+
+            // update progress bars in function of python backend progress
+//        (function updatePGB() {
+//            console.log(window.up_prog_filename);
+//            setTimeout(updatePGB, 3000);
+//        }());
     ////////////////// End upload_main section //////////////////
 
     ////////////////// Settings Dialog //////////////////

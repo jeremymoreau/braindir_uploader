@@ -34,8 +34,22 @@ flask_sijax.Sijax(flask_app)
 
 class SijaxHandler(object):
     @staticmethod
-    def set_progress(obj_response):
-        pass
+    def update_pgb(obj_response, up_prog_filename):
+        upload_progress_file_path = os.path.join(local_path, 'files', up_prog_filename)
+        print(upload_progress_file_path)
+        with open(upload_progress_file_path, 'r+b') as upf:
+                upload_prog_dict = json.load(upf)
+
+        total_bytes = upload_prog_dict['total_bytes_to_upload']
+        current_bytes = upload_prog_dict['bytes_uploaded']
+        progress = current_bytes * 100 / total_bytes
+        progress_str = str(progress) + '%'
+        print(progress_str)
+
+        obj_response.script(
+            "$('#pgb1').width('" + progress_str + "');"
+            "$('#pgb1-label').html('" + progress_str + "');"
+        )
 
     @staticmethod
     def start_upload(obj_response, dir_to_upload_path, pscid, dccid, visit_label, acquisition_date):

@@ -147,10 +147,10 @@ def upload_dir(upload_prog_file_path):
     #create remote subdirectories if they haven't been created yet
     directories_to_create = upload_prog_dict_copy['directories_to_create']
     if not directories_to_create == []:
-        print(directories_to_create)
+        #print(directories_to_create)
         for directory in directories_to_create:
-            print('creating: ' + directory)
-            print(directories_to_create)
+            #print('creating: ' + directory)
+            #print(directories_to_create)
             sftp.mkdir(directory, mode=0750)
 
             # update progress log
@@ -160,7 +160,7 @@ def upload_dir(upload_prog_file_path):
 
     # upload files to server if they haven't been uploaded yet
     files_to_upload = upload_prog_dict_copy['files_to_upload']
-    print(files_to_upload)
+    #print(files_to_upload)
     files_remote_path = upload_prog_dict_copy['files_remote_path']
     files_to_upload_size = upload_prog_dict_copy['files_to_upload_size']
     for i in range(0, len(files_to_upload)):
@@ -171,12 +171,12 @@ def upload_dir(upload_prog_file_path):
         # upload individual files (try three times)
         for attempt in range(3):
             try:
-                print(local_file_path)
-                print(remote_file_path)
+                #print(local_file_path)
+                #print(remote_file_path)
                 file_uploaded = upload_file(local_file_path, remote_file_path, scp)
                 if file_uploaded:
                     upload_prog_dict['bytes_uploaded'] += file_size
-                    print(upload_prog_dict['bytes_uploaded'])
+                    #print(upload_prog_dict['bytes_uploaded'])
                     upload_prog_dict['files_to_upload'].remove(local_file_path)
                     upload_prog_dict['files_remote_path'].remove(remote_file_path)
                     upload_prog_dict['files_to_upload_size'].remove(file_size)
@@ -206,7 +206,7 @@ def upload_file(local_file_path, remote_file_path, scp):
 
 #### SSH Authentification functions
 def generate_keypair(public_key_save_path):
-    print(public_key_save_path)
+    #print(public_key_save_path)
     private_key = paramiko.RSAKey.generate(4096)
     private_key.write_private_key_file(os.path.join(local_path, 'keys', 'braindir_rsa'))
     public_key = 'ssh-rsa ' + private_key.get_base64()
@@ -214,8 +214,8 @@ def generate_keypair(public_key_save_path):
     public_key_file = open(public_key_tmp_path, 'w+b')
     public_key_file.write(public_key)
     public_key_file.close()
-    print(public_key_tmp_path)
-    print(public_key_save_path)
+    #print(public_key_tmp_path)
+    #print(public_key_save_path)
     shutil.copy(public_key_tmp_path, public_key_save_path)
 
 
