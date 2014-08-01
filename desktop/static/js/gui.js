@@ -125,6 +125,12 @@ $(document).ready(function () {
 
     ////////////////// End Settings Dialog //////////////////
 
+    ////////////////// Resume Upload Modal //////////////////
+    $("#resume_btn").click(function() {
+        Sijax.request('display_resume_modal');
+    });
+    ////////////////// End Resume Upload Modal //////////////////
+
     ////////////////// upload_complete section //////////////////
     // select text on focus
     $("#upload_location_field").focus(

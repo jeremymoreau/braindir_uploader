@@ -160,6 +160,57 @@ class SijaxHandler(object):
                 "$('#generate_keys_btn').prop('disabled', false);"
             )
 
+    @staticmethod
+    def display_resume_modal(obj_response):
+        # generate list of interrupted uploads
+        files_dir = os.path.join(local_path, 'files')
+        files = os.listdir(files_dir)
+        interrupted_uploads = [i for i in files if i.endswith('.up_prog.json')]
+
+        # Hide nothing to resume message and show resume table if there are interrupted uploads
+        if not interrupted_uploads == []:
+            obj_response.script(
+                "$('#nothing_to_resume').addClass('hidden');"
+                "$('#resume_up_table').removeClass('hidden');"
+            )
+
+        for i, interrupted_upload in enumerate(interrupted_uploads):
+            # get the pscid, dccid, visit label, and acquisition date of an interrupted upload
+            basename = interrupted_upload.split('.', 1)[0]
+            name_elements = basename.split('_')
+            pscid = name_elements[0]
+            dccid = name_elements[1]
+            visit_label = name_elements[2]
+            acquisition_date = name_elements[3]
+
+            # get the percentage complete of an interrupted upload
+            upload_progress_file_path = os.path.join(local_path, 'files', interrupted_upload)
+            with open(upload_progress_file_path, 'r+b') as upf:
+                upload_prog_dict = json.load(upf)
+            total_bytes = upload_prog_dict['total_bytes_to_upload']
+            current_bytes = upload_prog_dict['bytes_uploaded']
+            progress = current_bytes * 100 / total_bytes
+            progress_str = str(progress) + '%'
+
+            # add a row to resume table with the above info
+            obj_response.script(
+                # add a row to the table
+                "$('.resume_up_table_row').first().clone().removeClass('hidden')"
+                ".attr('id', 'interrupted_up_" + str(i) + "').appendTo('#resume_up_table>tbody');"
+                # enter pscid
+                "$('#interrupted_up_" + str(i) + ">td:eq(0)').html('" + pscid + "');"
+                # enter dccid
+                "$('#interrupted_up_" + str(i) + ">td:eq(1)').html('" + dccid + "');"
+                # enter visit label
+                "$('#interrupted_up_" + str(i) + ">td:eq(2)').html('" + visit_label + "');"
+                # enter acquisition date
+                "$('#interrupted_up_" + str(i) + ">td:eq(3)').html('" + acquisition_date + "');"
+                # set progress bar value
+                "$('#interrupted_up_" + str(i) + " .progress-bar').width('" + progress_str + "');"
+                "$('#interrupted_up_" + str(i) + " .progress-bar').html('" + progress_str + "');"
+            )
+
+
 
 @flask_sijax.route(flask_app, '/')
 def index():
