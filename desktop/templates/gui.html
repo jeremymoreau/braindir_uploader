@@ -154,7 +154,7 @@
 		        <button type="button" class="close" data-dismiss="modal">
                     <span>&times;</span><span class="sr-only">Close</span>
                 </button>
-		        <h4 class="modal-title" id="myModalLabel">Settings</h4>
+		        <h4 class="modal-title">Settings</h4>
 		      </div>
 		      
 		      <div class="modal-body">
@@ -261,10 +261,73 @@
 					<span class="glyphicon glyphicon-chevron-down"></span>
 				</button>
 				<ul class="dropdown-menu pull-right main_menu_dropdown" role="menu">
-					<li><a href="#">Resume interrupted upload</a></li>
+					<li>
+                        <a href="#" data-toggle="modal" data-target="#resume_up_modal">
+                            Resume interrupted upload
+                        </a>
+                    </li>
 				</ul>
 			</div>
 		</div>
+
+        <!-- Resume Upload Modal Dialog -->
+        <div class="modal fade" id="resume_up_modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span
+                                aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title">Interrupted Uploads</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info hidden" id="nothing_to_resume">
+                            There are currently no interrupted uploads to resume.
+                        </div>
+                        <table class="table table-hover" id="resume_up_table">
+                            <thead>
+                            <tr>
+                                <th>PSCID</th>
+                                <th>DCCID</th>
+                                <th>Visit Label</th>
+                                <th>Acquistion Date</th>
+                                <th>Percent Complete</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="vert-align">DCC9999</td>
+                                    <td class="vert-align">123456</td>
+                                    <td class="vert-align">V01</td>
+                                    <td class="vert-align">20140801</td>
+                                    <td class="vert-align">
+                                        <div class="resume_pgb_container">
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-primary"
+                                                 style="width: 90%">
+                                                 90%
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </td>
+                                    <td class="vert-align">
+                                        <button class="btn btn-xs btn-success resume_btns">Resume</button>
+                                        <button class="btn btn-xs btn-danger resume_btns">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Resume Upload Modal Dialog -->
 	</div><!-- main_menu section -->
 </div>
 
