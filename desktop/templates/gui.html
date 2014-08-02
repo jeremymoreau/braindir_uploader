@@ -13,6 +13,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.fullPage.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/datepicker3.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrapValidator.css') }}">
 	{% endblock %}
 </head>
   
@@ -79,13 +80,13 @@
 		<!-- PSCID field -->
 		<div class="form-group double_field_row">
 			<label for="pscid_field">PSCID</label>
-			<input type="text" class="form-control" id="pscid_field">
+			<input type="text" class="form-control" id="pscid_field" name="pscid">
 		</div>
 
 		<!-- DCCID field -->
 		<div class="form-group double_field_row_second">
 			<label for="dccid_field">DCCID</label>
-			<input type="text" class="form-control" id="dccid_field">
+			<input type="text" class="form-control" id="dccid_field" name="dccid">
 		</div>
 		</div><!-- row -->
 
@@ -93,13 +94,13 @@
 		<!-- visit label field -->
 		<div class="form-group  double_field_row">
 			<label for="visit_label_field">Visit Label</label>
-			<input type="text" class="form-control" id="visit_label_field">
+			<input type="text" class="form-control" id="visit_label_field" name="visit_label">
 		</div>
 
         <!-- acquisition date field -->
 		<div class="form-group double_field_row_second">
 			<label for="acquisition_date_field">Acquisition Date</label>
-			<input type="text" class="form-control" id="acquisition_date_field">
+			<input type="text" class="form-control" id="acquisition_date_field" name="acquisition_date">
 		</div>
 		</div><!-- row -->
 
@@ -343,6 +344,7 @@
 		<!-- Bootstrap -->
 		<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrapValidator.min.js') }}"></script>
 		
 		<!-- sijax -->
 		<script type="text/javascript" src="{{ url_for('static', filename='js/sijax/sijax.js') }}"></script>

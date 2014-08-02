@@ -39,7 +39,6 @@ $(document).ready(function () {
             $('#acquisition_date_field').val(),
             '.up_prog.json'
         );
-        //console.log(up_prog_filename);
 
         Sijax.request('start_upload', [
             $('#dir_to_upload_path_field').val(),
@@ -57,7 +56,7 @@ $(document).ready(function () {
 
     // update progress bars in function of python backend progress
     var start_pgb_update = function updatePGB() {
-        if ($('#upload_button').prop('disabled')) {
+        if ($('#upload_button').hasClass('fa-spinner')) {
             Sijax.request('update_pgb', [window.up_prog_filename]);
         }
 
@@ -71,7 +70,55 @@ $(document).ready(function () {
     };
     start_pgb_update();
 
+    // Validator for pscid, dccid, visit label, and acqusition date fields
+    $('#upload_form').bootstrapValidator({
+        container: 'tooltip',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            pscid: {
+                validators: {
+                    regexp: {
+                        regexp: /^[A-Z]{3}\d{4}$/,
+                        message: 'The PSCID should be composed of 3 uppercase letters followed by 4 digits'
+                    }
+                }
+            },
+            dccid: {
+                validators: {
+                    regexp: {
+                        regexp: /^\d{6}$/,
+                        message: 'The DCCID should be composed of 6 digits'
+                    }
+                }
+            },
+            visit_label: {
+                validators: {
+                    regexp: {
+                        regexp: /^V\d{2}$/,
+                        message: 'The visit label should be composed of the uppercase letter "V" followed by 2 digits'
+                    }
+                }
+            },
+            acquisition_date: {
+                validators: {
+                    regexp: {
+                        regexp: /^(19|20|21)\d{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])$/,
+                        message: 'The acquisition date should be formatted as yyyymmdd'
+                    }
+                }
+            }
+        }
+    });
 
+    // validate acquisition date on datepicker hide
+    $('#acquisition_date_field').datepicker()
+        .on('hide', function(e){
+            $('#upload_form').bootstrapValidator('revalidateField', 'acquisition_date');
+    });
     ////////////////// End upload_main section //////////////////
 
     ////////////////// Settings Dialog //////////////////
