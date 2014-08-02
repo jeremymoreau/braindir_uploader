@@ -126,8 +126,16 @@ $(document).ready(function () {
     ////////////////// End Settings Dialog //////////////////
 
     ////////////////// Resume Upload Modal //////////////////
+    // populate resume upload modal with table of interrupted uploads
     $("#resume_btn").click(function() {
         Sijax.request('display_resume_modal');
+    });
+
+    // clear resume upload modal on close
+    $('#resume_up_modal').on('hidden.bs.modal', function () {
+        $("[id^='interrupted_up_']").remove();
+        $('#resume_up_table').addClass('hidden');
+        $('#nothing_to_resume').removeClass('hidden');
     });
     ////////////////// End Resume Upload Modal //////////////////
 
