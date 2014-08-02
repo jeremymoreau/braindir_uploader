@@ -56,7 +56,7 @@ $(document).ready(function () {
 
     // update progress bars in function of python backend progress
     var start_pgb_update = function updatePGB() {
-        if ($('#upload_button').hasClass('fa-spinner')) {
+        if ($('#upload_spinner').hasClass('fa-spinner')) {
             Sijax.request('update_pgb', [window.up_prog_filename]);
         }
 
@@ -257,6 +257,9 @@ $(document).ready(function () {
         $('#pgb1').width('0');
         $('#pgb1-label').html('');
         start_pgb_update();
+
+        // reset form validation
+        $('#upload_form').data('bootstrapValidator').resetForm();
 
         // move back to main_menu page
         $.fn.fullpage.moveTo(3);
