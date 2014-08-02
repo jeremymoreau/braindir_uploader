@@ -132,10 +132,21 @@ $(document).ready(function () {
     });
 
     // clear resume upload modal on close
-    $('#resume_up_modal').on('hidden.bs.modal', function () {
+    $("#resume_up_modal").on('hidden.bs.modal', function () {
         $("[id^='interrupted_up_']").remove();
         $('#resume_up_table').addClass('hidden');
         $('#nothing_to_resume').removeClass('hidden');
+    });
+
+    // delete an interrupted upload log file when corresponding Delete button is clicked
+    $("body").delegate('.resume_btn_delete', 'click', function() {
+        var pscid = $(this).parent().siblings('.pscid').html();
+        var dccid = $(this).parent().siblings('.dccid').html();
+        var visit_label = $(this).parent().siblings('.visit_label').html();
+        var acquisition_date = $(this).parent().siblings('.acquisition_date').html();
+
+        Sijax.request('delete_interrupted_up_log', [pscid, dccid, visit_label, acquisition_date]);
+        $(this).parent().parent().remove()
     });
     ////////////////// End Resume Upload Modal //////////////////
 

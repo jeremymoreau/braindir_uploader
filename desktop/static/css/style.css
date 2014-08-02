@@ -145,7 +145,6 @@ body .modal-dialog {
 .resume_btns {
     float: right;
     margin-left: 8px;
-    /*margin-right: -8px;*/
 }
 
 .table tbody>tr>td.vert-align {
@@ -154,9 +153,13 @@ body .modal-dialog {
     display: table-cell;
 }
 
-.resume_pgb_container{
+.resume_pgb_container {
     position: relative;
     top: 1px;
     height: 22px;
     width: 200px;
+}
+
+#resume_up_table {
+    margin-bottom: 0;
 }

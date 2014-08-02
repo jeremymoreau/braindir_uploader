@@ -210,6 +210,14 @@ class SijaxHandler(object):
                 "$('#interrupted_up_" + str(i) + " .progress-bar').html('" + progress_str + "');"
             )
 
+    @staticmethod
+    def delete_interrupted_up_log(obj_response, pscid, dccid, visit_label, acquisition_date):
+        filename = ''.join(
+            [pscid, '_', dccid, '_', visit_label, '_', acquisition_date, '.up_prog.json'])
+        file_to_delete = os.path.join(local_path, 'files', filename)
+        print(file_to_delete)
+        os.remove(file_to_delete)
+
 
 
 @flask_sijax.route(flask_app, '/')
