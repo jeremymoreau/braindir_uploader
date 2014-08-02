@@ -68,7 +68,6 @@ class SijaxHandler(object):
         remote_dir_path = upload_prog_dict['remote_dir_path_copy']
         obj_response.attr('#upload_location_field', 'value', remote_dir_path)
 
-
     @staticmethod
     def choose_dir_to_upload(obj_response):
         try:
@@ -219,6 +218,25 @@ class SijaxHandler(object):
         print(file_to_delete)
         os.remove(file_to_delete)
 
+    @staticmethod
+    def resume_upload(obj_response, pscid, dccid, visit_label, acquisition_date):
+        filename = ''.join(
+            [pscid, '_', dccid, '_', visit_label, '_', acquisition_date, '.up_prog.json'])
+        upload_logfile = os.path.join(local_path, 'files', filename)
+
+        # dir to upload path
+        with open(upload_logfile, 'r+b') as upf:
+                upload_prog_dict = json.load(upf)
+        dir_to_upload_path = upload_prog_dict['local_dir_path']
+
+        t = threading.Thread(target=main.upload_dir, args=(upload_logfile,))
+        t.start()
+
+        obj_response.attr('#dir_to_upload_path_field', 'value', dir_to_upload_path)
+        obj_response.attr('#pscid_field', 'value', pscid)
+        obj_response.attr('#dccid_field', 'value', dccid)
+        obj_response.attr('#visit_label_field', 'value', visit_label)
+        obj_response.attr('#acquisition_date_field', 'value', acquisition_date)
 
 
 @flask_sijax.route(flask_app, '/')

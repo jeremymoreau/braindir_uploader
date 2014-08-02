@@ -138,15 +138,44 @@ $(document).ready(function () {
         $('#nothing_to_resume').removeClass('hidden');
     });
 
+    var $body = $("body");
     // delete an interrupted upload log file when corresponding Delete button is clicked
-    $("body").delegate('.resume_btn_delete', 'click', function() {
+    $body.delegate('.resume_btn_delete', 'click', function() {
         var pscid = $(this).parent().siblings('.pscid').html();
         var dccid = $(this).parent().siblings('.dccid').html();
         var visit_label = $(this).parent().siblings('.visit_label').html();
         var acquisition_date = $(this).parent().siblings('.acquisition_date').html();
 
         Sijax.request('delete_interrupted_up_log', [pscid, dccid, visit_label, acquisition_date]);
-        $(this).parent().parent().remove()
+        $(this).parent().parent().remove();
+    });
+
+    // resume an interrupted upload when corresponding Resume button is clicked
+    $body.delegate('.resume_btn_resume', 'click', function() {
+        var pscid = $(this).parent().siblings('.pscid').html();
+        var dccid = $(this).parent().siblings('.dccid').html();
+        var visit_label = $(this).parent().siblings('.visit_label').html();
+        var acquisition_date = $(this).parent().siblings('.acquisition_date').html();
+
+        Sijax.request('resume_upload', [pscid, dccid, visit_label, acquisition_date]);
+        $(this).parent().parent().remove();
+
+        // Set progress log file name (for start_pgb_update() to work)
+        window.up_prog_filename = ''.concat(
+            pscid, '_',
+            dccid, '_',
+            visit_label, '_',
+            acquisition_date, '.up_prog.json'
+        );
+
+        // modify upload button
+        $("#upload_button").prop("disabled", true);
+        $("#upload_spinner").removeClass("fa-cloud-upload").addClass("fa-spinner fa-spin");
+        $("#upload_txt").html(" Uploading…");
+
+        // close modal dialog and move up to upload_main page
+        $('#resume_up_modal').modal('hide');
+        $.fn.fullpage.moveSectionUp();
     });
     ////////////////// End Resume Upload Modal //////////////////
 

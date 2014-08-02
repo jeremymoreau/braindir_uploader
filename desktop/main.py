@@ -78,6 +78,7 @@ def generate_upload_log(dir_to_upload, up_prog_filename):
     upload_prog_dict = {
         'remote_dir_path': remote_dir_path,
         'remote_dir_path_copy': remote_dir_path,
+        'local_dir_path': dir_to_upload,
         'directories_to_create': directories_to_create,
         'files_to_upload': files_to_upload,
         'files_to_upload_size': files_to_upload_size,
