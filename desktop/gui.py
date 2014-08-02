@@ -198,13 +198,14 @@ class SijaxHandler(object):
                 "$('.resume_up_table_row').first().clone().removeClass('hidden')"
                 ".attr('id', 'interrupted_up_" + str(i) + "').appendTo('#resume_up_table>tbody');"
                 # enter pscid
-                "$('#interrupted_up_" + str(i) + ">td:eq(0)').html('" + pscid + "');"
+                "$('#interrupted_up_" + str(i) + " .pscid').html('" + pscid + "');"
                 # enter dccid
-                "$('#interrupted_up_" + str(i) + ">td:eq(1)').html('" + dccid + "');"
+                "$('#interrupted_up_" + str(i) + " .dccid').html('" + dccid + "');"
                 # enter visit label
-                "$('#interrupted_up_" + str(i) + ">td:eq(2)').html('" + visit_label + "');"
+                "$('#interrupted_up_" + str(i) + " .visit_label').html('" + visit_label + "');"
                 # enter acquisition date
-                "$('#interrupted_up_" + str(i) + ">td:eq(3)').html('" + acquisition_date + "');"
+                "$('#interrupted_up_" + str(i) +
+                " .acquisition_date').html('" + acquisition_date + "');"
                 # set progress bar value
                 "$('#interrupted_up_" + str(i) + " .progress-bar').width('" + progress_str + "');"
                 "$('#interrupted_up_" + str(i) + " .progress-bar').html('" + progress_str + "');"
