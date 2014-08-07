@@ -1,5 +1,4 @@
 import paramiko
-from scp import SCPClient
 import os
 import shutil
 import posixpath
@@ -135,13 +134,10 @@ def upload_dir(upload_prog_file_path):
     # open an sftp session
     sftp = ssh.open_sftp()
 
-    # create scp object from paramiko transport
-    scp = SCPClient(ssh.get_transport())
-
     # create remote root directory if it hasn't been created yet
     remote_dir = upload_prog_dict_copy['remote_dir_path']
     if not remote_dir == '':
-        sftp.mkdir(remote_dir, mode=0750)
+        sftp.mkdir(remote_dir)
 
         # update progress log
         upload_prog_dict['remote_dir_path'] = ''
@@ -155,7 +151,7 @@ def upload_dir(upload_prog_file_path):
         for directory in directories_to_create:
             #print('creating: ' + directory)
             #print(directories_to_create)
-            sftp.mkdir(directory, mode=0750)
+            sftp.mkdir(directory)
 
             # update progress log
             upload_prog_dict['directories_to_create'].remove(directory)
@@ -177,7 +173,7 @@ def upload_dir(upload_prog_file_path):
             try:
                 #print(local_file_path)
                 #print(remote_file_path)
-                file_uploaded = upload_file(local_file_path, remote_file_path, scp)
+                file_uploaded = upload_file(local_file_path, remote_file_path, sftp)
                 if file_uploaded:
                     upload_prog_dict['bytes_uploaded'] += file_size
                     #print(upload_prog_dict['bytes_uploaded'])
@@ -193,15 +189,19 @@ def upload_dir(upload_prog_file_path):
             if attempt == 2:
                 print('Upload Interrupted!')
 
+    # create "_complete" dir on host to signal that upload is complete
+    complete_dir_name = upload_prog_dict_copy['remote_dir_path_copy'] + '_complete'
+    sftp.mkdir(complete_dir_name)
+
     # close ssh client
     ssh.close()
 
 
-def upload_file(local_file_path, remote_file_path, scp):
+def upload_file(local_file_path, remote_file_path, sftp):
 
     # try uploading file
     try:
-        scp.put(local_file_path, remote_file_path)
+        sftp.put(local_file_path, remote_file_path)
         return True
     except Exception, e:
         print(e)
