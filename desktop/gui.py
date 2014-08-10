@@ -5,7 +5,6 @@ import main
 import os
 import sys
 import threading
-import shutil
 import json
 
 from flask import Flask, g, render_template
@@ -15,6 +14,10 @@ from gevent.wsgi import WSGIServer
 from PyQt5.QtCore import Qt, QUrl, QThread
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PyQt5.QtWebKitWidgets import QWebView
+
+# not used, but cx_freeze build fails if not included
+from PyQt5 import QtNetwork, QtWebKit, QtPrintSupport
+import jinja2.ext
 
 
 ######################### General variables #########################
