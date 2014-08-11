@@ -20,8 +20,8 @@ from PyQt5 import QtNetwork, QtWebKit, QtPrintSupport
 import jinja2.ext
 
 
-######################### General variables #########################
-local_path = os.path.realpath('.')
+######################### Set up data directories #########################
+local_path = main.local_path
 
 
 ######################### Flask code #########################
@@ -31,7 +31,7 @@ flask_app = Flask(__name__)
 # config for flask-sijax
 flask_app.config["CACHE_TYPE"] = "null"
 flask_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-flask_app.config["SIJAX_STATIC_PATH"] = os.path.join(main.local_path, 'static', 'js', 'sijax')
+flask_app.config["SIJAX_STATIC_PATH"] = os.path.join(os.path.realpath('.'), 'static', 'js', 'sijax')
 flask_sijax.Sijax(flask_app)
 
 

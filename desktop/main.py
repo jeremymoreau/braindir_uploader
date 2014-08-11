@@ -5,10 +5,31 @@ import posixpath
 import json
 import binascii
 import copy
+import sys
 
 
-######################### General variables #########################
-local_path = os.path.realpath('.')
+######################### Set up data directories #########################
+# create data directories if they don't yet exist
+def check_for_datadirs(path):
+    if not os.path.isdir(path):
+        os.mkdir(path, 0755)
+
+    files_dir = os.path.join(path, 'files')
+    if not os.path.isdir(files_dir):
+        os.mkdir(files_dir, 0755)
+
+    keys_dir = os.path.join(path, 'keys')
+    if not os.path.isdir(keys_dir):
+        os.mkdir(keys_dir, 0755)
+
+# Set data directory root for each platform
+if sys.platform.startswith('linux'):
+    local_path = os.path.join(os.path.expanduser('~'), '.braindir_uploader')
+    check_for_datadirs(local_path)
+elif sys.platform == "darwin":
+    local_path = os.path.join(os.path.expanduser('~'), 'Library', 'Application Support',
+                              'braindir_uploader')
+    check_for_datadirs(local_path)
 
 
 ######################### General Functions #########################
