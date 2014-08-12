@@ -6,6 +6,7 @@ import os
 import sys
 import threading
 import json
+import socket
 
 from flask import Flask, g, render_template
 import flask_sijax
@@ -32,6 +33,13 @@ else:
 # set templates and static folders path
 templates_path = os.path.join(local_path, 'templates')
 static_path = os.path.join(local_path, 'static')
+
+######################### Get an unused port #########################
+flask_socket = socket.socket()
+flask_socket.bind(('', 0))
+flask_port = flask_socket.getsockname()[1]
+flask_socket.close()
+print('BrainDir Uploader is running on port: ' + str(flask_port))
 
 
 ######################### Flask code #########################
@@ -262,7 +270,7 @@ def index():
 
 
 def start_server():
-    http_server = WSGIServer(('', 62494), flask_app)
+    http_server = WSGIServer(('', flask_port), flask_app)
     http_server.serve_forever()
 
 
@@ -297,7 +305,7 @@ def display_webkit_window():
     qt_app = QApplication(sys.argv)
     thread = FlaskThread()
     thread.start()
-    url_to_display = QUrl('http://127.0.0.1:62494/')
+    url_to_display = QUrl('http://127.0.0.1:' + str(flask_port))
     browser = MainWindow(url_to_display)
     browser.show()
     browser.setFixedSize(890, 550)
