@@ -286,7 +286,8 @@ class MainWindow(QMainWindow):
         self.view = QWebView(self)
         self.view.load(url)
         self.view.setFixedSize(890, 550)
-        #self.view.setContextMenuPolicy(Qt.NoContextMenu)
+        # comment out the following line to allow refresh for debugging
+        self.view.setContextMenuPolicy(Qt.NoContextMenu)
 
     @staticmethod
     def display_dir_dialog():

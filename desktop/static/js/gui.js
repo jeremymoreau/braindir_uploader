@@ -7,7 +7,8 @@ $(document).ready(function () {
     $('#fullpage').fullpage({
         verticalCentered: true,
         resize: false,
-        keyboardScrolling: true
+        // set the following option to true to allow keyboard navigation for debugging
+        keyboardScrolling: false
     });
     $.fn.fullpage.setAllowScrolling(false);
 
@@ -270,11 +271,4 @@ $(document).ready(function () {
      $("#main_menu_upload_btn").click(function () {
         $.fn.fullpage.moveSectionUp();
     });
-
-    // // modify upload icon when clicked
-    // $("#upload_button").click(function() {
-    // 	//$("#upload_button").removeClass("btn-default").addClass("btn-success").prop("disabled", true);
-    // 	$("#upload_spinner").removeClass("fa-cloud-upload").addClass("fa-spinner fa-spin");
-    // 	$("#upload_txt").html(" Uploading…");
-    // });
 });
