@@ -19,26 +19,36 @@ from PyQt5.QtWebKitWidgets import QWebView
 from PyQt5 import QtNetwork, QtWebKit, QtPrintSupport
 import jinja2.ext
 
-
 ######################### Set up data directories #########################
-local_path = main.local_path
+# get appdata directory root
+appdata_path = main.appdata_path
+
+# set local path root depending on whether app is packaged or not
+if hasattr(sys, 'frozen'):
+    local_path = os.path.dirname(sys.executable)
+else:
+    local_path = os.path.dirname(sys.argv[0])
+
+# set templates and static folders path
+templates_path = os.path.join(local_path, 'templates')
+static_path = os.path.join(local_path, 'static')
 
 
 ######################### Flask code #########################
 # initialise app
-flask_app = Flask(__name__)
+flask_app = Flask(__name__, template_folder=templates_path, static_folder=static_path)
 
 # config for flask-sijax
 flask_app.config["CACHE_TYPE"] = "null"
 flask_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-flask_app.config["SIJAX_STATIC_PATH"] = os.path.join(os.path.realpath('.'), 'static', 'js', 'sijax')
+flask_app.config["SIJAX_STATIC_PATH"] = os.path.join(local_path, 'static', 'js', 'sijax')
 flask_sijax.Sijax(flask_app)
 
 
 class SijaxHandler(object):
     @staticmethod
     def update_pgb(obj_response, up_prog_filename):
-        upload_progress_file_path = os.path.join(local_path, 'files', up_prog_filename)
+        upload_progress_file_path = os.path.join(appdata_path, 'files', up_prog_filename)
         with open(upload_progress_file_path, 'r+b') as upf:
                 upload_prog_dict = json.load(upf)
 
@@ -61,7 +71,7 @@ class SijaxHandler(object):
 
     @staticmethod
     def upload_complete(obj_response, up_prog_filename):
-        upload_progress_file_path = os.path.join(local_path, 'files', up_prog_filename)
+        upload_progress_file_path = os.path.join(appdata_path, 'files', up_prog_filename)
         with open(upload_progress_file_path, 'r+b') as upf:
                 upload_prog_dict = json.load(upf)
 
@@ -81,7 +91,7 @@ class SijaxHandler(object):
 
     @staticmethod
     def check_settings(obj_response):
-        settings_file = os.path.join(local_path, 'files', 'settings.json')
+        settings_file = os.path.join(appdata_path, 'files', 'settings.json')
         if os.path.isfile(settings_file):
             with open(settings_file, 'r+b') as sf:
                 settings = json.load(sf)
@@ -89,14 +99,14 @@ class SijaxHandler(object):
             obj_response.attr('#username_field', 'value', settings['username'])
             obj_response.attr('#host_save_path_field', 'value', settings['upload_save_path'])
 
-        if os.path.isfile(os.path.join(local_path, 'keys', 'ssh_host_rsa_key.pub')):
+        if os.path.isfile(os.path.join(appdata_path, 'keys', 'ssh_host_rsa_key.pub')):
             obj_response.script(
                 "$('#load_hostkey_btn').removeClass('btn-default').addClass('btn-success');"
                 "$('#load_hostkey_btn')"
                 ".html('<span class=\"fa fa-check\"></span> Load new hostkey');"
             )
 
-        if os.path.isfile(os.path.join(local_path, 'keys', 'braindir_rsa')):
+        if os.path.isfile(os.path.join(appdata_path, 'keys', 'braindir_rsa')):
             obj_response.script(
                 "$('#generate_keys_btn').removeClass('btn-default').addClass('btn-success');"
                 "$('#generate_keys_btn')"
@@ -109,7 +119,7 @@ class SijaxHandler(object):
         settings = {'hostname': hostname,
                     'username': username,
                     'upload_save_path': upload_save_path}
-        settings_file = os.path.join(local_path, 'files', 'settings.json')
+        settings_file = os.path.join(appdata_path, 'files', 'settings.json')
         with open(settings_file, 'w+b') as sf:
             json.dump(settings, sf)
 
@@ -165,7 +175,7 @@ class SijaxHandler(object):
     @staticmethod
     def display_resume_modal(obj_response):
         # generate list of interrupted uploads
-        files_dir = os.path.join(local_path, 'files')
+        files_dir = os.path.join(appdata_path, 'files')
         files = os.listdir(files_dir)
         interrupted_uploads = [i for i in files if i.endswith('.up_prog.json')]
 
@@ -186,7 +196,7 @@ class SijaxHandler(object):
             acquisition_date = name_elements[3]
 
             # get the percentage complete of an interrupted upload
-            upload_progress_file_path = os.path.join(local_path, 'files', interrupted_upload)
+            upload_progress_file_path = os.path.join(appdata_path, 'files', interrupted_upload)
             with open(upload_progress_file_path, 'r+b') as upf:
                 upload_prog_dict = json.load(upf)
             total_bytes = upload_prog_dict['total_bytes_to_upload']
@@ -217,7 +227,7 @@ class SijaxHandler(object):
     def delete_interrupted_up_log(obj_response, pscid, dccid, visit_label, acquisition_date):
         filename = ''.join(
             [pscid, '_', dccid, '_', visit_label, '_', acquisition_date, '.up_prog.json'])
-        file_to_delete = os.path.join(local_path, 'files', filename)
+        file_to_delete = os.path.join(appdata_path, 'files', filename)
         print(file_to_delete)
         os.remove(file_to_delete)
 
@@ -225,7 +235,7 @@ class SijaxHandler(object):
     def resume_upload(obj_response, pscid, dccid, visit_label, acquisition_date):
         filename = ''.join(
             [pscid, '_', dccid, '_', visit_label, '_', acquisition_date, '.up_prog.json'])
-        upload_logfile = os.path.join(local_path, 'files', filename)
+        upload_logfile = os.path.join(appdata_path, 'files', filename)
 
         # dir to upload path
         with open(upload_logfile, 'r+b') as upf:

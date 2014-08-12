@@ -9,7 +9,7 @@ import sys
 
 
 ######################### Set up data directories #########################
-# create data directories if they don't yet exist
+# create appdata directories if they don't yet exist
 def check_for_datadirs(path):
     if not os.path.isdir(path):
         os.mkdir(path, 0755)
@@ -22,15 +22,14 @@ def check_for_datadirs(path):
     if not os.path.isdir(keys_dir):
         os.mkdir(keys_dir, 0755)
 
-# Set data directory root for each platform
+# Set appdata directory root for each platform
 if sys.platform.startswith('linux'):
-    local_path = os.path.join(os.path.expanduser('~'), '.braindir_uploader')
-    check_for_datadirs(local_path)
+    appdata_path = os.path.join(os.path.expanduser('~'), '.braindir_uploader')
+    check_for_datadirs(appdata_path)
 elif sys.platform == "darwin":
-    local_path = os.path.join(os.path.expanduser('~'), 'Library', 'Application Support',
-                              'braindir_uploader')
-    check_for_datadirs(local_path)
-
+    appdata_path = os.path.join(os.path.expanduser('~'), 'Library', 'Application Support',
+                                'braindir_uploader')
+    check_for_datadirs(appdata_path)
 
 ######################### General Functions #########################
 def get_size(dir_path):
@@ -53,7 +52,7 @@ def generate_upload_log(dir_to_upload, up_prog_filename):
     files_remote_path = []
 
     # Get the value of upload_save_path from settings.json if the file exists
-    settings_file = os.path.join(local_path, 'files', 'settings.json')
+    settings_file = os.path.join(appdata_path, 'files', 'settings.json')
     if os.path.isfile(settings_file):
             with open(settings_file, 'r+b') as sf:
                 settings = json.load(sf)
@@ -109,7 +108,7 @@ def generate_upload_log(dir_to_upload, up_prog_filename):
 
     # save the dictionary in a json file
     upload_filename = os.path.basename(os.path.normpath(remote_dir_path)) + '.up_prog.json'
-    upload_progress_file_path = os.path.join(local_path, 'files', upload_filename)
+    upload_progress_file_path = os.path.join(appdata_path, 'files', upload_filename)
     with open(upload_progress_file_path, 'w+b') as upf:
             json.dump(upload_prog_dict, upf)
 
@@ -118,15 +117,15 @@ def generate_upload_log(dir_to_upload, up_prog_filename):
 
 def connect_to_host():
     # load hostname and username from settings.json
-    settings_file = os.path.join(local_path, 'files', 'settings.json')
+    settings_file = os.path.join(appdata_path, 'files', 'settings.json')
     with open(settings_file, 'r+b') as sf:
         settings = json.load(sf)
     host = settings['hostname']
     username = settings['username']
 
     # set path of client's private key file and the hostkey
-    client_prv_key_file_path = os.path.join(local_path, 'keys', 'braindir_rsa')
-    hostkey_file_path = os.path.join(local_path, 'keys', 'ssh_host_rsa_key.pub')
+    client_prv_key_file_path = os.path.join(appdata_path, 'keys', 'braindir_rsa')
+    hostkey_file_path = os.path.join(appdata_path, 'keys', 'ssh_host_rsa_key.pub')
 
     # load client's private key file
     key = paramiko.RSAKey.from_private_key_file(client_prv_key_file_path)
@@ -233,9 +232,9 @@ def upload_file(local_file_path, remote_file_path, sftp):
 def generate_keypair(public_key_save_path):
     #print(public_key_save_path)
     private_key = paramiko.RSAKey.generate(4096)
-    private_key.write_private_key_file(os.path.join(local_path, 'keys', 'braindir_rsa'))
+    private_key.write_private_key_file(os.path.join(appdata_path, 'keys', 'braindir_rsa'))
     public_key = 'ssh-rsa ' + private_key.get_base64()
-    public_key_tmp_path = os.path.join(local_path, 'keys', 'braindir_rsa.pub')
+    public_key_tmp_path = os.path.join(appdata_path, 'keys', 'braindir_rsa.pub')
     public_key_file = open(public_key_tmp_path, 'w+b')
     public_key_file.write(public_key)
     public_key_file.close()
@@ -263,7 +262,7 @@ def load_hostkey(host):
     hostkey = transport.get_remote_server_key()
     hostkey_txt = host + ' ' + hostkey.get_name() + ' ' + hostkey.get_base64()
 
-    hostkey_file = os.path.join(local_path, 'keys', 'ssh_host_rsa_key.pub')
+    hostkey_file = os.path.join(appdata_path, 'keys', 'ssh_host_rsa_key.pub')
     with open(hostkey_file, 'w+b') as hf:
         hf.write(hostkey_txt)
 
