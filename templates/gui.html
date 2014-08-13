@@ -1,364 +1,427 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% block head %}
-	<title>BrainDir Desktop Uploader</title>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block head %}
+    <title>BrainDir Desktop Uploader</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<!-- CSS -->
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.fullPage.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/datepicker3.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrapValidator.css') }}">
-	{% endblock %}
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='css/jquery.fullPage.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='css/datepicker3.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='css/bootstrapValidator.css') }}">
+    {% endblock %}
 </head>
-  
+
 <body>
 <div id="loading_page"></div>
 <div id="fullpage">
-	<div class="section"><!-- ###################### upload_complete section ###################### -->
-		<div class="transfer_complete">
-			<div id="upload_complete_info">
-				<div class="row">
-				<div class="complete_cloud_wrapper">
-					<i class="fa fa-cloud-upload complete_cloud"></i>
-					<div class="complete_cloud_label"><h3>Upload Complete!</h3></div>
-				</div>
-				</div><!-- row -->
-				
-				<div class="row">
-				<div class="form-group">
-					<label for="upload_location_field">Your dataset has successfully been uploaded to:</label>
-					<input type="text" class="form-control" id="upload_location_field" value="">
-				</div><!-- form-group -->
-				</div><!-- row -->
-				
-				<div class="row">
-				<div class="main_menu_btn_align">
-					<button type="submit" class="btn btn-lg btn-default return_to_main_menu_btn pull-right">
-						<span class="fa fa-home" ></span><span> Return to main menu</span>
-					</button>
-				</div>
-				</div><!-- row -->
-			</div>
-		</div>
-	</div><!-- upload_complete section -->
-	
-	<div class="section"><!-- ###################### upload_main section ###################### -->
-	<div class="upload_main">
-    <div class="row">
-        <h4>Select Participant to Upload</h4>
-        <p>
-            Choose the directory containing the dataset you wish to upload to LORIS
-            and enter the required information in the fields below. Make sure you have created the
-            participant in LORIS before trying to upload any data.
-        </p>
+<div class="section"><!-- ###################### upload_complete section ###################### -->
+    <div class="transfer_complete">
+        <div id="upload_complete_info">
+            <div class="row">
+                <div class="complete_cloud_wrapper">
+                    <i class="fa fa-cloud-upload complete_cloud"></i>
+
+                    <div class="complete_cloud_label"><h3>Upload Complete!</h3></div>
+                </div>
+            </div>
+            <!-- row -->
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="upload_location_field">Your dataset has successfully been uploaded
+                        to:</label>
+                    <input type="text" class="form-control" id="upload_location_field" value="">
+                </div>
+                <!-- form-group -->
+            </div>
+            <!-- row -->
+
+            <div class="row">
+                <div class="main_menu_btn_align">
+                    <button type="submit"
+                            class="btn btn-lg btn-default return_to_main_menu_btn pull-right">
+                        <span class="fa fa-home"></span><span> Return to main menu</span>
+                    </button>
+                </div>
+            </div>
+            <!-- row -->
+        </div>
     </div>
-    <div class="vertical_spacer"></div>
-	<!-- start form fields -->
-	<form id="upload_form" name="upload_form">
-		<div class="row">
-		<!-- field for dir to upload -->
-		<div class="form-group">
-			<label for="dir_to_upload_path_field">Choose a directory  to Upload</label>
-			<div class="input-group">
+</div>
+<!-- upload_complete section -->
+
+<div class="section"><!-- ###################### upload_main section ###################### -->
+    <div class="upload_main">
+        <div class="row">
+            <h4>Select Participant to Upload</h4>
+
+            <p>
+                Choose the directory containing the dataset you wish to upload to LORIS
+                and enter the required information in the fields below. Make sure you have created
+                the
+                participant in LORIS before trying to upload any data.
+            </p>
+        </div>
+        <div class="vertical_spacer"></div>
+        <!-- start form fields -->
+        <form id="upload_form" name="upload_form">
+            <div class="row">
+                <!-- field for dir to upload -->
+                <div class="form-group">
+                    <label for="dir_to_upload_path_field">Choose a directory to Upload</label>
+
+                    <div class="input-group">
 			  <span class="input-group-btn">
 				<button class="btn btn-default" type="button" id="choose_dir_to_upload_btn">
                     Select
                 </button>
 			  </span>
-			  <input type="text" class="form-control" id="dir_to_upload_path_field">
-			</div>
-		</div><!-- form-group -->
-		</div><!-- row -->
+                        <input type="text" class="form-control" id="dir_to_upload_path_field">
+                    </div>
+                </div>
+                <!-- form-group -->
+            </div>
+            <!-- row -->
 
-		<div class="row">
-		<!-- PSCID field -->
-		<div class="form-group double_field_row">
-			<label for="pscid_field">PSCID</label>
-			<input type="text" class="form-control" id="pscid_field" name="pscid">
-		</div>
+            <div class="row">
+                <!-- PSCID field -->
+                <div class="form-group double_field_row">
+                    <label for="pscid_field">PSCID</label>
+                    <input type="text" class="form-control" id="pscid_field" name="pscid">
+                </div>
 
-		<!-- DCCID field -->
-		<div class="form-group double_field_row_second">
-			<label for="dccid_field">DCCID</label>
-			<input type="text" class="form-control" id="dccid_field" name="dccid">
-		</div>
-		</div><!-- row -->
+                <!-- DCCID field -->
+                <div class="form-group double_field_row_second">
+                    <label for="dccid_field">DCCID</label>
+                    <input type="text" class="form-control" id="dccid_field" name="dccid">
+                </div>
+            </div>
+            <!-- row -->
 
+            <div class="row">
+                <!-- visit label field -->
+                <div class="form-group  double_field_row">
+                    <label for="visit_label_field">Visit Label</label>
+                    <input type="text" class="form-control" id="visit_label_field"
+                           name="visit_label">
+                </div>
+
+                <!-- acquisition date field -->
+                <div class="form-group double_field_row_second">
+                    <label for="acquisition_date_field">Acquisition Date</label>
+                    <input type="text" class="form-control" id="acquisition_date_field"
+                           name="acquisition_date">
+                </div>
+            </div>
+            <!-- row -->
+
+            <div class="row">
+                <!-- upload button -->
+                <button type="submit" class="btn btn-lg btn-default" id="upload_button">
+                    <span class="fa fa-cloud-upload" id="upload_spinner"></span>
+                    <span id="upload_txt"> Upload</span>
+                </button>
+            </div>
+            <!-- row -->
+        </form>
+        <!-- end form fields -->
+
+        <!-- Start Progress Bar -->
         <div class="row">
-		<!-- visit label field -->
-		<div class="form-group  double_field_row">
-			<label for="visit_label_field">Visit Label</label>
-			<input type="text" class="form-control" id="visit_label_field" name="visit_label">
-		</div>
+            <div class="pgb_wrapper">
+                <h4>Progress</h4>
 
-        <!-- acquisition date field -->
-		<div class="form-group double_field_row_second">
-			<label for="acquisition_date_field">Acquisition Date</label>
-			<input type="text" class="form-control" id="acquisition_date_field" name="acquisition_date">
-		</div>
-		</div><!-- row -->
+                <div id="progress_state"></div>
+                <div class="pgb-container" style="position: relative">
+                    <div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1">
+                        <div class="progress progress-striped active">
+                            <div class="progress-bar progress-bar-primary" id="pgb1"
+                                 style="width: 0">
+                                <span class="progress-bar-label" id="pgb1-label"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- pgb-container -->
+            </div>
+            <!-- pgb_wrapper -->
+        </div>
+        <!-- row -->
+        <!-- End Progress Bar -->
 
-		<div class="row">
-		<!-- upload button -->
-		<button type="submit" class="btn btn-lg btn-default" id="upload_button">
-			<span class="fa fa-cloud-upload" id="upload_spinner"></span>
-            <span id="upload_txt"> Upload</span>
-		</button>
-		</div><!-- row -->
-	</form>
-	<!-- end form fields -->
-	
-	<!-- Start Progress Bar -->
-	<div class="row">
-	<div class="pgb_wrapper">
-	<h4>Progress</h4>
-	<div id = "progress_state"></div>
-	<div class="pgb-container" style="position: relative">
-		<div style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1">
-		<div class="progress progress-striped active">
-			<div class="progress-bar progress-bar-primary" id="pgb1" style="width: 0">
-				<span class="progress-bar-label" id="pgb1-label"></span>
-			</div>
-		</div>
-		</div>
-	</div><!-- pgb-container -->
-	</div><!-- pgb_wrapper -->
-	</div><!-- row -->
-	<!-- End Progress Bar -->
+    </div>
+    <!-- upload_main -->
+</div>
+<!-- upload_main section -->
 
-	</div><!-- upload_main -->
-	</div><!-- upload_main section -->
-	
-	<div class="section active"><!-- ###################### main_menu section ###################### -->
-		<div class="navbar_wrapper">
-		<nav class="navbar navbar-inverse" id="header_nav">
-			<h4 class="navbar-text">BrainDir Uploader</h4>
-			<button class="btn btn-default btn-sm navbar-btn" id="settings_btn"
+<div class="section active"><!-- ###################### main_menu section ###################### -->
+    <div class="navbar_wrapper">
+        <nav class="navbar navbar-inverse" id="header_nav">
+            <h4 class="navbar-text">BrainDir Uploader</h4>
+            <button class="btn btn-default btn-sm navbar-btn" id="settings_btn"
                     data-toggle="modal" data-target="#settings_modal">
-				<span class="fa fa-cog" id="settings_icon"></span> 
-				<span id="settings_btn_txt"> Settings</span>
-			</button>
-		</nav>
-		</div>
+                <span class="fa fa-cog" id="settings_icon"></span>
+                <span id="settings_btn_txt"> Settings</span>
+            </button>
+        </nav>
+    </div>
 
-		<!-- Settings Modal Dialog -->
-		<div class="modal fade" id="settings_modal" tabindex="-1">
-		  <div class="modal-dialog">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		        <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span><span class="sr-only">Close</span>
-                </button>
-		        <h4 class="modal-title">Settings</h4>
-		      </div>
-		      
-		      <div class="modal-body">
-              <div style="overflow: hidden;">
-		      	<h4>Step 1</h4>
-		      	<p>Enter the storage server's host name or IP address and your username, then
-                   click the "Load hostkey" button to download the server's hostkey.
-                </p>
-		        <div class="form-group">
-                    <label for="hostname_field">Storage server's host name or IP address</label>
-                    <input type="text" class="form-control" id="hostname_field">
-                </div>
-                <div class="form-group">
-                    <label for="username_field">Username</label>
-                    <input type="text" class="form-control" id="username_field">
-                </div>
-
-                <div style="overflow: hidden;">
-                <button type="button" class="btn btn-default pull-right" id="load_hostkey_btn">
-                    Load hostkey
-                </button>
-                </div>
-
-                <div class="alert alert-warning fade in" id="hostkey_alert" style="overflow: hidden; display: none;">
-                  <h4>Please verify the authenticity of host&nbsp;</h4>
-                  <span>The authenticity of host&nbsp;</span><br>
-                  <span>RSA key fingerprint is&nbsp;</span><br>
-                  <span>Are you sure you want to load the hostkey?</span><br>
-                  <p style="float: right;">
-                    <button type="button" class="btn btn-danger" id="close_hostkey_alert_btn">
-                        Cancel
+    <!-- Settings Modal Dialog -->
+    <div class="modal fade" id="settings_modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span><span class="sr-only">Close</span>
                     </button>
-                    <button type="button" class="btn btn-default" id="save_hostkey_btn">
-                        Load hostkey
-                    </button>
-                  </p>
+                    <h4 class="modal-title">Settings</h4>
                 </div>
-		      </div>
 
-              <hr>
-		        
-		        <div style="overflow: hidden;">
-		        <h4>Step 2</h4>
-		        <p>Generate a public/private key pair, and save it to the location selected below.
-                   Once you have generated a key pair, upload the public key file to your server
-                   and add it to the "authorized_keys" file of your jailed ssh user under "~/.ssh".
-		        </p>
-		        
-		        <div class="form-group">
-					<label for="public_key_save_path">Choose where to save your public key</label>
-					<div class="input-group">
+                <div class="modal-body">
+                    <div style="overflow: hidden;">
+                        <h4>Step 1</h4>
+
+                        <p>Enter the storage server's host name or IP address and your username,
+                            then
+                            click the "Load hostkey" button to download the server's hostkey.
+                        </p>
+
+                        <div class="form-group">
+                            <label for="hostname_field">Storage server's host name or IP
+                                address</label>
+                            <input type="text" class="form-control" id="hostname_field">
+                        </div>
+                        <div class="form-group">
+                            <label for="username_field">Username</label>
+                            <input type="text" class="form-control" id="username_field">
+                        </div>
+
+                        <div style="overflow: hidden;">
+                            <button type="button" class="btn btn-default pull-right"
+                                    id="load_hostkey_btn">
+                                Load hostkey
+                            </button>
+                        </div>
+
+                        <div class="alert alert-warning fade in" id="hostkey_alert"
+                             style="overflow: hidden; display: none;">
+                            <h4>Please verify the authenticity of host&nbsp;</h4>
+                            <span>The authenticity of host&nbsp;</span><br>
+                            <span>RSA key fingerprint is&nbsp;</span><br>
+                            <span>Are you sure you want to load the hostkey?</span><br>
+
+                            <p style="float: right;">
+                                <button type="button" class="btn btn-danger"
+                                        id="close_hostkey_alert_btn">
+                                    Cancel
+                                </button>
+                                <button type="button" class="btn btn-default" id="save_hostkey_btn">
+                                    Load hostkey
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div style="overflow: hidden;">
+                        <h4>Step 2</h4>
+
+                        <p>Generate a public/private key pair, and save it to the location selected
+                            below.
+                            Once you have generated a key pair, upload the public key file to your
+                            server
+                            and add it to the "authorized_keys" file of your jailed ssh user under
+                            "~/.ssh".
+                        </p>
+
+                        <div class="form-group">
+                            <label for="public_key_save_path">Choose where to save your public
+                                key</label>
+
+                            <div class="input-group">
 					  <span class="input-group-btn">
 						<button class="btn btn-default" type="button" id="public_key_save_path_btn">
                             Select
                         </button>
 					  </span>
-					  <input type="text" class="form-control" id="public_key_save_path">
-					</div>
-				</div><!-- form-group -->
-				
-		        <button type="button" class="btn btn-default pull-right" id="generate_keys_btn">
-                    Generate public/private key pair
-                </button>
-		        </div>
-
-              <hr>
-
-              <div style="overflow: hidden;">
-		      	<h4>Step 3</h4>
-		      	<p>
-                    Enter the path you want BrainDir Uploader to upload files to (Default is home
-                    directory). Make sure your user has the permission to write to the chosen
-                    directory.
-                </p>
-		        <div class="form-group">
-                    <label for="host_save_path_field">
-                        Path of storage server directory in which to upload files
-                    </label>
-                    <input type="text" class="form-control" id="host_save_path_field">
-                </div>
-                <div style="overflow: hidden;">
-                </div>
-		      </div>
-
-		      </div>
-		      
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-primary" data-dismiss="modal" id="save_settings">
-                    Save changes
-                </button>
-		      </div>
-		    </div>
-		  </div>
-		</div>
-		<!-- End Settings Modal Dialog -->
-		
-		
-		<div class="main_menu">
-			<div class="btn-group main_menu_btn_group" id="upload_btn_group">
-				<button type="button" class="btn btn-default btn-xlg" id="main_menu_upload_btn">
-					<span class="fa fa-cloud-upload"></span> Upload
-				</button>
-				<button type="button" class="btn btn-default dropdown-toggle btn-xlg-drop" data-toggle="dropdown">
-					<span class="glyphicon glyphicon-chevron-down"></span>
-				</button>
-				<ul class="dropdown-menu pull-right main_menu_dropdown" role="menu">
-					<li>
-                        <a href="#" id="resume_btn" data-toggle="modal" data-target="#resume_up_modal">
-                            Resume interrupted upload
-                        </a>
-                    </li>
-				</ul>
-			</div>
-		</div>
-
-        <!-- Resume Upload Modal Dialog -->
-        <div class="modal fade" id="resume_up_modal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span
-                                aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-                        </button>
-                        <h4 class="modal-title">Interrupted Uploads</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert alert-info" id="nothing_to_resume">
-                            There are currently no interrupted uploads to resume.
+                                <input type="text" class="form-control" id="public_key_save_path">
+                            </div>
                         </div>
-                        <table class="table table-hover hidden" id="resume_up_table">
-                            <thead>
-                            <tr>
-                                <th>PSCID</th>
-                                <th>DCCID</th>
-                                <th>Visit Label</th>
-                                <th>Acquistion Date</th>
-                                <th>Percent Complete</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="resume_up_table_row hidden">
-                                    <td class="vert-align pscid"></td>
-                                    <td class="vert-align dccid"></td>
-                                    <td class="vert-align visit_label"></td>
-                                    <td class="vert-align acquisition_date"></td>
-                                    <td class="vert-align">
-                                        <div class="resume_pgb_container">
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-primary"
-                                                 style="width: 0">
-                                                 0%
-                                            </div>
-                                        </div>
-                                        </div>
-                                    </td>
-                                    <td class="vert-align">
-                                        <button class="btn btn-xs btn-success resume_btns resume_btn_resume">
-                                            Resume
-                                        </button>
-                                        <button class="btn btn-xs btn-danger resume_btns resume_btn_delete">
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                            Close
+                        <!-- form-group -->
+
+                        <button type="button" class="btn btn-default pull-right"
+                                id="generate_keys_btn">
+                            Generate public/private key pair
                         </button>
                     </div>
+
+                    <hr>
+
+                    <div style="overflow: hidden;">
+                        <h4>Step 3</h4>
+
+                        <p>
+                            Enter the path you want BrainDir Uploader to upload files to (Default is
+                            home
+                            directory). Make sure your user has the permission to write to the
+                            chosen
+                            directory.
+                        </p>
+
+                        <div class="form-group">
+                            <label for="host_save_path_field">
+                                Path of storage server directory in which to upload files
+                            </label>
+                            <input type="text" class="form-control" id="host_save_path_field">
+                        </div>
+                        <div style="overflow: hidden;">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                            id="save_settings">
+                        Save changes
+                    </button>
                 </div>
             </div>
         </div>
-        <!-- End Resume Upload Modal Dialog -->
-	</div><!-- main_menu section -->
+    </div>
+    <!-- End Settings Modal Dialog -->
+
+
+    <div class="main_menu">
+        <div class="btn-group main_menu_btn_group" id="upload_btn_group">
+            <button type="button" class="btn btn-default btn-xlg" id="main_menu_upload_btn">
+                <span class="fa fa-cloud-upload"></span> Upload
+            </button>
+            <button type="button" class="btn btn-default dropdown-toggle btn-xlg-drop"
+                    data-toggle="dropdown">
+                <span class="glyphicon glyphicon-chevron-down"></span>
+            </button>
+            <ul class="dropdown-menu pull-right main_menu_dropdown" role="menu">
+                <li>
+                    <a href="#" id="resume_btn" data-toggle="modal" data-target="#resume_up_modal">
+                        Resume interrupted upload
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Resume Upload Modal Dialog -->
+    <div class="modal fade" id="resume_up_modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title">Interrupted Uploads</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info" id="nothing_to_resume">
+                        There are currently no interrupted uploads to resume.
+                    </div>
+                    <table class="table table-hover hidden" id="resume_up_table">
+                        <thead>
+                        <tr>
+                            <th>PSCID</th>
+                            <th>DCCID</th>
+                            <th>Visit Label</th>
+                            <th>Acquistion Date</th>
+                            <th>Percent Complete</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="resume_up_table_row hidden">
+                            <td class="vert-align pscid"></td>
+                            <td class="vert-align dccid"></td>
+                            <td class="vert-align visit_label"></td>
+                            <td class="vert-align acquisition_date"></td>
+                            <td class="vert-align">
+                                <div class="resume_pgb_container">
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-primary"
+                                             style="width: 0">
+                                            0%
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="vert-align">
+                                <button class="btn btn-xs btn-success resume_btns resume_btn_resume">
+                                    Resume
+                                </button>
+                                <button class="btn btn-xs btn-danger resume_btns resume_btn_delete">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Resume Upload Modal Dialog -->
+</div>
+<!-- main_menu section -->
 </div>
 
-	<!-- Start JavaScript Libraries -->
-		{% block javascript_lib %}
-		<!-- jQuery  -->
-		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
-		
-		<!-- Bootstrap -->
-		<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrapValidator.min.js') }}"></script>
-		
-		<!-- sijax -->
-		<script type="text/javascript" src="{{ url_for('static', filename='js/sijax/sijax.js') }}"></script>
-		<script type="text/javascript">
-			{{ g.sijax.get_js()|safe }}
-		</script>
-		
-		<!-- fullPage.js -->
-		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.fullPage.min.js') }}"></script>
-		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.easings.min.js') }}"></script>
+<!-- Start JavaScript Libraries -->
+{% block javascript_lib %}
+<!-- jQuery  -->
+<script type="text/javascript"
+        src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
 
-        <!-- gui.js -->
-        <script type="text/javascript" src="{{ url_for('static', filename='js/gui.js') }}"></script>
-		{% endblock %}
-	<!-- End JavaScript Libraries -->
+<!-- Bootstrap -->
+<script type="text/javascript"
+        src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script type="text/javascript"
+        src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
+<script type="text/javascript"
+        src="{{ url_for('static', filename='js/bootstrapValidator.min.js') }}"></script>
+
+<!-- sijax -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/sijax/sijax.js') }}"></script>
+<script type="text/javascript">
+    {
+        {
+            g.sijax.get_js() | safe
+        }
+    }
+</script>
+
+<!-- fullPage.js -->
+<script type="text/javascript"
+        src="{{ url_for('static', filename='js/jquery.fullPage.min.js') }}"></script>
+<script type="text/javascript"
+        src="{{ url_for('static', filename='js/jquery.easings.min.js') }}"></script>
+
+<!-- gui.js -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/gui.js') }}"></script>
+{% endblock %}
+<!-- End JavaScript Libraries -->
 </body>
 </html>
