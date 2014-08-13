@@ -1,0 +1,5 @@
+keys/
+files/
+build/
+.idea/
+*.pyc
