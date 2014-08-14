@@ -138,6 +138,9 @@ $(document).ready(function () {
     $('#gevent_license_link').one("click", function () {
         $('#gevent_license').find('.license_text').load("../static/licenses/gevent.html");
     });
+    $('#cx_freeze_license_link').one("click", function () {
+        $('#cx_freeze_license').find('.license_text').load("../static/licenses/cx_freeze.html");
+    });
     $('#python_license_link').one("click", function () {
         $('#python_license').find('.license_text').load("../static/licenses/python.html");
     });
