@@ -3,8 +3,20 @@
 	margin-top: 10px;
 }
 
-.btn:focus {
-  outline: none;
+.vertical_spacer2 {
+	margin-top: 30px;
+}
+
+:focus {
+   outline: 0 !important;
+}
+
+h5 {
+    font-size: 15px;
+    text-decoration: underline;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 /* ================= upload_main ================= */
@@ -95,14 +107,25 @@
 	height: 30px;
 }
 
-body .modal-dialog {
-	width: 800px;
+#about_btn {
+	float: right;
+	margin-right: 12px;
+	height: 30px;
 }
 
-#settings_icon {
+.header_icon {
 	position: relative;
 	top: 1px;
-	font-size: 17px;
+	font-size: 16px;
+    margin-right: 2px;
+}
+
+.collapse-title {
+    font-size: 14px;
+}
+
+body .modal-dialog {
+	width: 800px;
 }
 
 .main_menu {

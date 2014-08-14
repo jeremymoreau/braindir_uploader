@@ -122,6 +122,45 @@ $(document).ready(function () {
     });
     ////////////////// End upload_main section //////////////////
 
+    ////////////////// About Dialog //////////////////
+    $('#braindir_uploader_license_link').one("click", function () {
+        $('#braindir_uploader_license').find('.license_text').load("../static/licenses/braindir_uploader.html");
+    });
+    $('#paramiko_license_link').one("click", function () {
+        $('#paramiko_license').find('.license_text').load("../static/licenses/paramiko.html");
+    });
+    $('#flask_license_link').one("click", function () {
+        $('#flask_license').find('.license_text').load("../static/licenses/flask.html");
+    });
+    $('#flask-sijax_license_link').one("click", function () {
+        $('#flask-sijax_license').find('.license_text').load("../static/licenses/flask-sijax.html");
+    });
+    $('#gevent_license_link').one("click", function () {
+        $('#gevent_license').find('.license_text').load("../static/licenses/gevent.html");
+    });
+    $('#python_license_link').one("click", function () {
+        $('#python_license').find('.license_text').load("../static/licenses/python.html");
+    });
+    $('#bootstrap_license_link').one("click", function () {
+        $('#bootstrap_license').find('.license_text').load("../static/licenses/bootstrap.html");
+    });
+    $('#bootstrap_validator_license_link').one("click", function () {
+        $('#bootstrap_validator_license').find('.license_text').load("../static/licenses/bootstrap_validator.html");
+    });
+    $('#bootstrap-datepicker_license_link').one("click", function () {
+        $('#bootstrap-datepicker_license').find('.license_text').load("../static/licenses/bootstrap-datepicker.html");
+    });
+    $('#jQuery_license_link').one("click", function () {
+        $('#jQuery_license').find('.license_text').load("../static/licenses/jQuery.html");
+    });
+    $('#fullPage_license_link').one("click", function () {
+        $('#fullPage_license').find('.license_text').load("../static/licenses/fullPage.html");
+    });
+    $('#font-awesome_license_link').one("click", function () {
+        $('#font-awesome_license').find('.license_text').load("../static/licenses/font-awesome.html");
+    });
+    ////////////////// End About Dialog //////////////////
+
     ////////////////// Settings Dialog //////////////////
     // Check if public/private keys are loaded on app startup
     // Check if a settings.json file exists and loads settings

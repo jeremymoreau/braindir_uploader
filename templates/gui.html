@@ -171,11 +171,341 @@
             <h4 class="navbar-text">BrainDir Uploader</h4>
             <button class="btn btn-default btn-sm navbar-btn" id="settings_btn"
                     data-toggle="modal" data-target="#settings_modal">
-                <span class="fa fa-cog" id="settings_icon"></span>
-                <span id="settings_btn_txt"> Settings</span>
+                <span class="fa fa-cog header_icon"></span>
+                <span>Settings</span>
+            </button>
+            <button class="btn btn-default btn-sm navbar-btn" id="about_btn"
+                    data-toggle="modal" data-target="#about_modal">
+                <span class="fa fa-info-circle header_icon"></span>
+                <span>About</span>
             </button>
         </nav>
     </div>
+
+    <!-- About Modal Dialog -->
+    <div class="modal fade" id="about_modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span><span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title">About</h4>
+                </div>
+
+                <div class="modal-body">
+                    <h4>BrainDir Uploader</h4>
+                    <p>Copyright &copy; 2014 Jeremy Moreau (jeremy.moreau@mail.mcgill.ca)</p>
+                    <p>
+                        <strong>Version: </strong>0.1.0<br>
+                        <strong>Website: </strong><br>
+                        <strong>Issues and Feature Suggestions: </strong><br>
+                    </p>
+                    <p>
+                        Note: Packaged binaries provided with each release redistribute a copy of
+                        PyQt5 and are licensed under the terms of the GNU GPL v3.0. Some of the
+                        source code of used in this app is made available under the terms of the BSD
+                        License. See the project website above for more details. Third-party
+                        libraries used in this project are also available under separate terms as
+                        listed below.
+                    </p>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" href="#braindir_uploader_license"
+                                   class="collapse-title" id="braindir_uploader_license_link">
+                                    License
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="braindir_uploader_license" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <span class="license_text"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vertical_spacer2"></div>
+
+                    <h4>Third-Party Licenses</h4>
+
+                    <!--paramiko-->
+                    <div>
+                        <h5>Paramiko</h5>
+                        <p>
+                            <strong>Website: </strong>http://www.paramiko.org/<br>
+                            <strong>Copyright: </strong><br>
+                            Copyright &copy; 2003-2009 Robey Pointer (robeypointer@gmail.com)<br>
+                            Copyright &copy; 2013-2014 Jeff Forcier (jeff@bitprophet.org)<br>
+                        </p>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#paramiko_license"
+                                       class="collapse-title" id="paramiko_license_link">
+                                        License
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="paramiko_license" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <span class="license_text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Flask-->
+                    <div>
+                        <h5>Flask</h5>
+                        <p>
+                            <strong>Website: </strong>http://flask.pocoo.org/<br>
+                            <strong>Copyright: </strong>Copyright &copy; 2014 by Armin Ronacher and contributors.<br>
+                        </p>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#flask_license"
+                                       class="collapse-title" id="flask_license_link">
+                                        License
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="flask_license" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <span class="license_text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Flask-Sijax-->
+                    <div>
+                        <h5>Flask-Sijax</h5>
+                        <p>
+                            <strong>Website: </strong>https://pythonhosted.org/Flask-Sijax/<br>
+                            <strong>Copyright: </strong>Copyright &copy; 2011, Slavi Pantaleev<br>
+                        </p>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#flask-sijax_license"
+                                       class="collapse-title" id="flask-sijax_license_link">
+                                        License
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="flask-sijax_license" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <span class="license_text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--gevent-->
+                    <div>
+                        <h5>gevent</h5>
+                        <p>
+                            <strong>Website: </strong>http://www.gevent.org/<br>
+                            <strong>Copyright: </strong>Copyright &copy; Denis Bilenko and the contributors<br>
+                        </p>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#gevent_license"
+                                       class="collapse-title" id="gevent_license_link">
+                                        License
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="gevent_license" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <span class="license_text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Python-->
+                    <div>
+                        <h5>Python</h5>
+                        <p>
+                            <strong>Website: </strong>https://www.python.org/<br>
+                            <strong>Copyright: </strong>Copyright &copy; 2001-2014 Python Software Foundation.<br>
+                        </p>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#python_license"
+                                       class="collapse-title" id="python_license_link">
+                                        License
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="python_license" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <span class="license_text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--bootstrap-->
+                    <div>
+                        <h5>Bootstrap</h5>
+                        <p>
+                            <strong>Website: </strong>http://getbootstrap.com/<br>
+                            <strong>Copyright: </strong>Copyright &copy; 2011-2014 Twitter, Inc<br>
+                        </p>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#bootstrap_license"
+                                       class="collapse-title" id="bootstrap_license_link">
+                                        License
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="bootstrap_license" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <span class="license_text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--BootstrapValidator-->
+                    <div>
+                        <h5>BootstrapValidator</h5>
+                        <p>
+                            <strong>Website: </strong>http://bootstrapvalidator.com/<br>
+                            <strong>Copyright: </strong>Copyright &copy; 2013 - 2014 Nguyen Huu Phuoc<br>
+                        </p>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#bootstrap_validator_license"
+                                       class="collapse-title" id="bootstrap_validator_license_link">
+                                        License
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="bootstrap_validator_license" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <span class="license_text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--bootstrap-datepicker-->
+                    <div>
+                        <h5>bootstrap-datepicker</h5>
+                        <p>
+                            <strong>Website: </strong>https://github.com/eternicode/bootstrap-datepicker<br>
+                            <strong>Copyright: </strong>Copyright &copy; Stefan Petre, Andrew Rowls, and contributors<br>
+                        </p>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#bootstrap-datepicker_license"
+                                       class="collapse-title" id="bootstrap-datepicker_license_link">
+                                        License
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="bootstrap-datepicker_license" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <span class="license_text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--jQuery-->
+                    <div>
+                        <h5>jQuery</h5>
+                        <p>
+                            <strong>Website: </strong>http://jquery.com/<br>
+                            <strong>Copyright: </strong>Copyright 2005, 2014 jQuery Foundation, Inc. and other contributors<br>
+                        </p>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#jQuery_license"
+                                       class="collapse-title" id="jQuery_license_link">
+                                        License
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="jQuery_license" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <span class="license_text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--fullPage.js-->
+                    <div>
+                        <h5>fullPage.js</h5>
+                        <p>
+                            <strong>Website: </strong>http://alvarotrigo.com/fullPage/<br>
+                            <strong>Copyright: </strong>Copyright &copy; 2013 Alvaro Trigo (alvaro@alvarotrigo.com)<br>
+                        </p>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#fullPage_license"
+                                       class="collapse-title" id="fullPage_license_link">
+                                        License
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="fullPage_license" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <span class="license_text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Font Awesome-->
+                    <div>
+                        <h5>Font Awesome</h5>
+                        <p>
+                            <strong>Website: </strong>http://fontawesome.io/<br>
+                            <strong>Copyright: </strong>Copyright &copy; Dave Gandy<br>
+                        </p>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" href="#font-awesome_license"
+                                       class="collapse-title" id="font-awesome_license_link">
+                                        License
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="font-awesome_license" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <span class="license_text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End About Modal Dialog -->
 
     <!-- Settings Modal Dialog -->
     <div class="modal fade" id="settings_modal" tabindex="-1">
