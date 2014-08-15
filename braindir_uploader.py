@@ -26,9 +26,9 @@ appdata_path = main.appdata_path
 
 # set local path root depending on whether app is packaged or not
 if hasattr(sys, 'frozen'):
-    local_path = os.path.dirname(sys.executable)
+    local_path = os.path.dirname(os.path.realpath(sys.executable))
 else:
-    local_path = os.path.dirname(sys.argv[0])
+    local_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 
 # set templates and static folders path
 templates_path = os.path.join(local_path, 'templates')
@@ -49,7 +49,6 @@ flask_app = Flask(__name__, template_folder=templates_path, static_folder=static
 # config for flask-sijax
 flask_app.config["CACHE_TYPE"] = "null"
 flask_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-flask_app.config["SIJAX_STATIC_PATH"] = os.path.join(appdata_path, 'sijax')
 flask_sijax.Sijax(flask_app)
 
 
