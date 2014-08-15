@@ -22,17 +22,17 @@ includefiles = generate_include_list(build_dir)
 packages = ['flask', 'flask_sijax', 'jinja2', 'gevent', 'paramiko']
 qt_menu_nib_path = os.path.join(os.path.expanduser('~'), 'Qt', '5.3', 'Src', 'qtbase', 'src',
                                 'plugins', 'platforms', 'cocoa')
-exe = Executable(
-    script='braindir_uploader.py'
-)
 
 setup(
 name = 'braindir_uploader',
 version = '0.1.0',
 description = 'A neuroimaging data upload client for LORIS',
 author = 'Jeremy Moreau',
+author_email = 'mail@jeremymoreau.com',
 options = {'build_exe': {'include_files':includefiles, 'packages':packages, 'excludes':['tkinter']},
-           'bdist_mac': {'qt_menu_nib':qt_menu_nib_path, 'iconfile':'icons/braindir_uploader_icon.icns'}},
+           'bdist_mac': {'qt_menu_nib':qt_menu_nib_path,
+                         'iconfile':'icons/braindir_uploader_icon.icns',
+                         'bundle_name':'BrainDir Uploader'}},
 py_modules=['main', 'braindir_uploader'],
-executables = [exe]
+executables = [Executable(script='braindir_uploader.py')]
 )

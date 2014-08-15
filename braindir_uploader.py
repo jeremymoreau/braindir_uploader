@@ -49,7 +49,7 @@ flask_app = Flask(__name__, template_folder=templates_path, static_folder=static
 # config for flask-sijax
 flask_app.config["CACHE_TYPE"] = "null"
 flask_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-flask_app.config["SIJAX_STATIC_PATH"] = os.path.join(local_path, 'static', 'js', 'sijax')
+flask_app.config["SIJAX_STATIC_PATH"] = os.path.join(appdata_path, 'sijax')
 flask_sijax.Sijax(flask_app)
 
 
