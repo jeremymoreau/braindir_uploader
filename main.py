@@ -1,3 +1,13 @@
+"""
+    main
+    ----
+
+    Implements the main, non-GUI related, application logic.
+
+    Copyright (c) 2014 Jeremy Moreau.
+    See LICENSE.txt for license information.
+
+"""
 import paramiko
 import os
 import shutil
@@ -11,6 +21,15 @@ import sys
 ######################### Set up data directories #########################
 # create appdata directories if they don't yet exist
 def check_for_datadirs(path):
+    """Creates appdata directories if they don't yet exist.
+
+    Args:
+        path (str): Absolute path of directory where BrainDir Uploader should save appdata to. User
+            must have permissions to read/write to this directory.
+
+    :param path: str
+    :return: none
+    """
     if not os.path.isdir(path):
         os.mkdir(path, 0755)
 
@@ -31,9 +50,20 @@ elif sys.platform == "darwin":
                                 'braindir_uploader')
     check_for_datadirs(appdata_path)
 
+
 ######################### General Functions #########################
 def get_size(dir_path):
-    """get the size of dir at dir_path recursively"""
+    """get the size of dir at dir_path recursively
+
+    Args:
+        dir_path (str): Absolute path of a directory
+
+    Returns:
+        int: The size in bytes of the directory and its contents.
+
+    :param dir_path: str
+    :return: int
+    """
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(dir_path):
         for f in filenames:
@@ -46,6 +76,46 @@ def get_size(dir_path):
 
 
 def generate_upload_log(dir_to_upload, up_prog_filename):
+    """Generate a JSON logfile describing files to upload.
+
+    For a given directory to upload, generates a logfile which stores a number of variables
+    describing the files to be uploaded into a dictionary which is then converted to JSON and saved
+    in a file within the appdata/files/ directory of the appdata directory. The dictionary
+    stores the following information:
+    {
+        'remote_dir_path': (str) Absolute path of the root directory where files will be uploaded to
+            on the server. Once this directory has been created, the value is deleted.
+        'remote_dir_path_copy': (str) A copy of the above variable.
+        'local_dir_path': (str) Absolute path of the directory containing the files to be uploaded.
+        'directories_to_create': (list) A list of the (str) absolute paths of the directories to be
+            created on the server. Once a directory has been created, the value is deleted from the
+            list.
+        'files_to_upload': (list) A list of the (str) absolute paths of the files to be uploaded to
+            the server. Once a file has been uploaded successfully, the value is deleted from the
+            list.
+        'files_to_upload_size': (list) A list of the (int) size in bytes ofe each file to be
+            uploaded. The order of the list elements is the same as for the files_to_upload
+            variable.
+        'files_remote_path': (list) A list of the (str) absolute paths where the files to be
+            uploaded should be uploaded to. The order of the list elements is the same as for the
+            files_to_upload variable.
+        'total_bytes_to_upload': (int) Total size in bytes of all the files to be uploaded.
+        'bytes_uploaded': (int) Number of bytes uploaded up till now. This value is updated every
+            time a file is successfully uploaded.
+    }
+
+    Args:
+        dir_to_upload (str): Absolute path of the directory containing the files to upload.
+        up_prog_filename (str): Filename to give to the JSON logfile. Basename will also be used as
+            the name of the directory where the files will be uploaded to on the server.
+
+    Returns:
+        str: Absolute path of the JSON logfile.
+
+    :param dir_to_upload: str
+    :param up_prog_filename: str
+    :return: str
+    """
     directories_to_create = []
     files_to_upload = []
     files_to_upload_size = []
@@ -116,6 +186,19 @@ def generate_upload_log(dir_to_upload, up_prog_filename):
 
 
 def connect_to_host():
+    """Connect to host listed in settings file.
+
+    Opens settings.json file in appdata/files/ and reads the hostname of the server to connect to
+    and the username of the user authenticating the connection. Loads the server's hostkey and the
+    user's private key from within the appdata/keys/ directory. Once these data are loaded, attempts
+    to connect to the server and returns a paramiko ssh object if the connection is established
+    successfully.
+
+    Returns:
+        paramiko.client.SSHClient: A paramiko ssh object.
+
+    :return: paramiko.client.SSHClient
+    """
     # load hostname and username from settings.json
     settings_file = os.path.join(appdata_path, 'files', 'settings.json')
     with open(settings_file, 'r+b') as sf:
@@ -143,6 +226,24 @@ def connect_to_host():
 
 
 def upload_dir(upload_prog_file_path):
+    """Upload a directory specified in an upload logfile.
+
+    Establishes an SSH connection to the server specified in the settings file (appdata/
+    settings.json), then opens an SFTP session and starts uploading a directory based on the
+    information stored in an upload logfile. Starts by recreating the local directory hierarchy
+    of the directory to upload on the server, then uploads each individual file. Once a directory
+    is created or a file uploaded, its value is removed from the dictionary stored in the upload
+    logfile to indicate that the creation/upload is complete. Once all directories and files have
+    been created/uploaded, creates a directory on the server with the same name as the root upload
+    directory, but with "_complete" appended at the end.
+
+    Args:
+        upload_prog_file_path (str): Absolute path of a JSON upload logfile describing a directory
+            of data to be uploaded.
+
+    :param upload_prog_file_path: str
+    :return: none
+    """
     # load upload progress file and make a copy
     with open(upload_prog_file_path, 'r+b') as upf:
         upload_prog_dict = json.load(upf)
@@ -218,7 +319,21 @@ def upload_dir(upload_prog_file_path):
 
 
 def upload_file(local_file_path, remote_file_path, sftp):
+    """Upload a single file to a server.
 
+    Args:
+        local_file_path (str): Absolute path of a file to upload.
+        remote_file_path (str): Absolute path of location on server file should be uploaded to.
+        sftp (paramiko.sftp_client.SFTPClient): A paramiko SFTP client object
+
+    Returns:
+        bool: True if file was uploaded successfully, False otherwise.
+
+    :param local_file_path: str
+    :param remote_file_path: str
+    :param sftp: paramiko.sftp_client.SFTPClient
+    :return: bool
+    """
     # try uploading file
     try:
         sftp.put(local_file_path, remote_file_path)
@@ -230,6 +345,18 @@ def upload_file(local_file_path, remote_file_path, sftp):
 
 #### SSH Authentification functions
 def generate_keypair(public_key_save_path):
+    """Generate a private/public key pair.
+
+    Generates a 4096-bit RSA private/public key pair and saves them into appdata/keys/. Also saves a
+    copy of the public key to a specified location.
+
+    Args:
+        public_key_save_path (str): Absolute path of location where to save a copy of the generated
+            public key.
+
+    :param public_key_save_path: str
+    :return: none
+    """
     #print(public_key_save_path)
     private_key = paramiko.RSAKey.generate(4096)
     private_key.write_private_key_file(os.path.join(appdata_path, 'keys', 'braindir_rsa'))
@@ -244,6 +371,17 @@ def generate_keypair(public_key_save_path):
 
 
 def get_hostkey_fingerprint(host):
+    """Get hostkey fingerprint of specified host.
+
+    Args:
+        host (str): IP address or hostname of a server.
+
+    Returns:
+        str: Hostkey fingerprint formatted with a colon every two characters.
+
+    :param host: str
+    :return: str
+    """
     transport = paramiko.Transport(host)
     transport.start_client()
     hostkey = transport.get_remote_server_key()
@@ -257,6 +395,14 @@ def get_hostkey_fingerprint(host):
 
 
 def load_hostkey(host):
+    """Write hostkey from a given host to appdata/keys/
+
+    Args:
+        host (str): IP address or hostname of a server.
+
+    :param host: str
+    :return: none
+    """
     transport = paramiko.Transport(host)
     transport.start_client()
     hostkey = transport.get_remote_server_key()
@@ -268,5 +414,16 @@ def load_hostkey(host):
 
 
 def start_upload(dir_to_upload_path, up_prog_filename):
+    """Wrapper function to generate an upload logfile and upload the associated directory.
+
+    Args:
+        dir_to_upload_path (str): Absolute path of directory to upload.
+        up_prog_filename (str): Filename of upload progress logfile. Basename will also be used as
+            the name of the directory where the files will be uploaded to on the server.
+
+    :param dir_to_upload_path: str
+    :param up_prog_filename: str
+    :return: none
+    """
     log_file = generate_upload_log(dir_to_upload_path, up_prog_filename)
     upload_dir(log_file)
