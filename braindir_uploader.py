@@ -1,4 +1,14 @@
 # -*- coding: utf-8 -*-
+"""
+    braindir_uploader
+    -----------------
+
+    Implements GUI related application logic and launches the app.
+
+    Copyright (c) 2014 Jeremy Moreau.
+    See LICENSE.txt for license information.
+
+"""
 
 import main
 
